@@ -2,10 +2,11 @@
 import React, { useState } from 'react'
 import { users } from "@/mocks/Users/users.mocks"
 import Link from 'next/link';
-// import { number } from 'yup';
+
 
 const itemsPerPage: number = 10; // Cambia esto según tu necesidad
 // types.ts
+
 export type User = {
     id: number;
     nombre: string;
@@ -93,7 +94,7 @@ export default function UserList() {
                 </div>
             </div>
 
-            <div className='bg-white p-2 rounded-md w-full xl:h-[30rem] h-full overflow-x-auto '>
+            <div className='bg-white p-2 rounded-md w-full xl:h-[30rem] h-full overflow-auto'>
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="border-t border-gray-200">

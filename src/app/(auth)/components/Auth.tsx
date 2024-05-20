@@ -1,7 +1,7 @@
 import React from 'react'
-import Image from 'next/image'
-import Form from './Form/Form'
-import { logo } from "@/assets/"
+// import Image from 'next/image'
+import FormLogin from './Form/Form'
+// import { logo } from "@/assets/"
 
 export default function Auth() {
     return (
@@ -13,7 +13,7 @@ export default function Auth() {
                 </div>
             </section>
             <section className='flex flex-col items-center md:items-start justify-center bg-white shadow-2xl w-full md:w-3/6 xl:w-2/6  md:p-8  md:rounded-s-2xl'>
-                <Form />
+                <FormLogin />
             </section>
         </main>
     )

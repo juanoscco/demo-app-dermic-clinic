@@ -7,7 +7,8 @@ dotenv.config();
 
 export default function GetDniApiHook() {
     const [dni, setDni] = useState('');
-    const token = process.env.TOKEN_API_DNI || "Qi7pCkKSYCYTLHKNh6jdKcyAgunmlzqlKcld9hF35qudHHayi6DjRcPi2lks";
+    const token = process.env.TOKEN_API_DNI;
+    
 
     const [getDniData, { data, error, isLoading }] = useGetDniDataMutation();
 

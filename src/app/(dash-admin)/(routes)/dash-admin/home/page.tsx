@@ -26,12 +26,15 @@ export default function Home() {
             <p>2.5% disminuido</p>
           </article>
           <article className='text-white text-center p-3 rounded-md '>
-            <h1>Total Especialidades Médicas</h1>
+            <h1>Total procesos</h1>
             <span className='text-4xl'> 30</span>
             <p>10% aumento</p>
           </article>
         </section>
-
+      </section>
+      <section className='flex justify-end mt-3 gap-3'>
+        <button className='p-2 bg-[#82b440] rounded-md text-white'>Agendar una cita</button>
+        <button className='p-2 bg-[#82b440] rounded-md text-white'>Busqueda de paciente</button>
       </section>
 
     </React.Fragment>

@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { renderLastName, renderName } from "@/app/(dash-admin)/utils/renderNameUtils";
-import GetDniApiHook from "@/app/(dash-admin)/hooks/get-dni-api.hook"
+import GetDniApiHook from "@/app/(dash-admin)/hooks/dni/get-dni-api.hook"
 
 export default function UserCreate() {
     const {data,isLoading, handleClick, setDni } = GetDniApiHook()

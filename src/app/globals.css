@@ -6,7 +6,6 @@
 @import 'react-big-calendar/lib/sass/styles';
 @import 'react-big-calendar/lib/addons/dragAndDrop/styles'; */
 
-
 * {
   padding: 0;
   margin: 0;
@@ -95,6 +94,31 @@ body {
   display: inline-block;
 }
 
+/** Dashboard  */
+.icon-dashboard {
+  background-image: url("../assets/svg/gauge-solid.svg");
+  width: 16px; /* Ajusta el ancho según tus necesidades */
+  height: 16px; /* Ajusta la altura según tus necesidades */
+  display: inline-block;
+}
+
+.icon-doctor {
+  background-image: url("../assets/svg/user-md-solid.svg");
+  width: 16px; /* Ajusta el ancho según tus necesidades */
+  height: 16px; /* Ajusta la altura según tus necesidades */
+  display: inline-block;
+  background-repeat: none;
+  background-position: center;
+}
+.icon-person-circle {
+  background-image: url("../assets/svg/user-circle-regular.svg");
+  width: 16px; /* Ajusta el ancho según tus necesidades */
+  height: 16px; /* Ajusta la altura según tus necesidades */
+  display: inline-block;
+  background-repeat: none;
+  background-position: start;
+}
+
 @media (max-width: 1280px) {
   .showOnMobile {
     display: block !important;
@@ -126,9 +150,9 @@ body {
     position: fixed;
     background-color: #ffff;
     top: 0;
-    left: -50%;
+    left: -60%;
     height: 100%;
-    width: 50%;
+    width: 60%;
     transition: 0.3s;
     z-index: 99;
   }

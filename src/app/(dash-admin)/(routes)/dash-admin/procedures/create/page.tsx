@@ -3,7 +3,7 @@ import React from 'react'
 export default function ProceduresCreate() {
     return (
         <React.Fragment>
-            <h1>Crear procedimiento</h1>
+            <h1 className='text-2xl'>Crear procedimiento</h1>
             <section className='mt-4 p-4 bg-white'>
                 <form className="grid grid-cols-1 md:grid-cols-2 rounded-sm gap-5">
                     <div className="border border-gray-300 text-left p-2">

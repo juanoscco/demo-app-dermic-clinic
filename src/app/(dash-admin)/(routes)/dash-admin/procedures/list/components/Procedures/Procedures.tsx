@@ -12,7 +12,7 @@ type Procedure = {
     subtipo: string;
     estado: string;
 };
-export default function Datatable() {
+export default function Procedures() {
     const [searchTerm, setSearchTerm] = useState<string>('');
 
     const filteredProcedures = procedures.filter((procedure) =>

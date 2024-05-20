@@ -1,103 +1,62 @@
 "use client"
 import React, { useState } from 'react'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import esLocale from '@fullcalendar/core/locales/es';
-import interactionPlugin from '@fullcalendar/interaction';
-
-const Popup = ({ handleClose, handleConfirm }: any) => {
-    const [title, setTitle] = useState('');
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTitle(event.target.value);
-    };
-
-    return (
-        <div className="fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-gray-700 bg-opacity-50 z-50">
-            <div className="bg-white p-8 rounded shadow-lg">
-                <h2 className="text-lg font-bold mb-4">Por favor, ingresa un título para tu evento:</h2>
-                <input
-                    type="text"
-                    value={title}
-                    onChange={handleInputChange}
-                    className="border rounded w-full p-2 mb-4"
-                    placeholder="Título del evento"
-                />
-                <div className="flex justify-between">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => handleConfirm(title)}>Confirmar</button>
-                    <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" onClick={handleClose}>Cancelar</button>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 export default function AppointmentCalendar() {
-   
-    const [showPopup, setShowPopup] = useState(false);
-    const [eventInfo, setEventInfo] = useState<any>(null); // Estado para almacenar la información del evento
-    const [events, setEvents] = useState([
-        {
-            title: 'event 1',
-            start: '2024-05-19T08:00:00',
-            end: "2024-05-19T09:00:00"
-        },
-        {
-            title: 'event 9',
-            start: '2024-05-17T10:00:00',
-            end: "2024-05-17T11:00:00"
-        },
-    ]); // Arreglo de eventos
-    const handleConfirm = (title: string) => {
-        if (eventInfo) {
-            const newEvent = {
-                title,
-                start: eventInfo.dateStr,
-                end: eventInfo.dateStr,
-            };
-            setEvents(prevEvents => [...prevEvents, newEvent]); // Agrega el nuevo evento al arreglo events
-        }
-        setShowPopup(false);
-    };
-
-
-
-    const handleClose = () => {
-        setShowPopup(false);
-    };
-
-    const handleDateClick = (info: any) => {
-        if (info.view.type === 'timeGridDay') {
-            setEventInfo(info); // Almacenamos la información del evento
-            setShowPopup(true);
-        } else {
-            info.view.calendar.changeView('timeGridDay', info.dateStr);
-        }
-    };
 
     return (
         <React.Fragment>
             <h1 className='text-2xl'>Calendario de citas medicas</h1>
-            <section className='w-full'>
-                <FullCalendar
-                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                    initialView={"dayGridMonth"}
-                    locale={esLocale}
-                    events={events}
-                    headerToolbar={{
-                        start: "today prev,next",
-                        center: "title",
-                        end: "dayGridMonth,timeGridWeek,timeGridDay"
-                    }}
-                    height={"70vh"}
-                    selectable={true}
-                    dateClick={handleDateClick}
-                />
-                {showPopup && (
-                    <Popup handleClose={handleClose} handleConfirm={handleConfirm} />
-                )}
+            <section className="bg-white p-4 mt-3 border rounded-md flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                    <input
+                        type="date"
+                        className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <select
+                        name="location"
+                        id="location"
+                        className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">Los Olivos</option>
+                        <option value="">San Isidro</option>
+                    </select>
+                    <select
+                        name="profession"
+                        id="profession"
+                        className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">Doctores</option>
+                        <option value="">Cosmeatras</option>
+                    </select>
+                </div>
+                <button className="bg-blue-500 text-white p-2 rounded-md w-full md:w-auto">
+                    Buscar
+                </button>
+            </section>
 
+            <section className='w-full bg-white h-[40rem] overflow-x-auto mt-4'>
+                <section className='w-full p-4'>
+                    <table className='w-full bg-white rounded-lg'>
+                        <thead>
+                            <tr>
+                                <th className='px-4 py-2 border'>Hora</th>
+                                <th className='px-4 py-2 border'>Sala 1</th>
+                                <th className='px-4 py-2 border'>Sala 2</th>
+                                <th className='px-4 py-2 border'>Sala 3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'].map((time) => (
+                                <tr key={time}>
+                                    <td className='px-4 py-2 border h-24' style={{ width: '100px' }}>{time}</td>
+                                    <td className='px-4 py-2 border' style={{ width: '300px', height: '100px' }}></td>
+                                    <td className='px-4 py-2 border' style={{ width: '300px', height: '100px' }}></td>
+                                    <td className='px-4 py-2 border' style={{ width: '300px', height: '100px' }}></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </section>
             </section>
         </React.Fragment>
     )

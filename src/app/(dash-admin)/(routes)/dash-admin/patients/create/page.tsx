@@ -1,11 +1,11 @@
 "use client"
 
 import React from 'react'
-import GetDniApiHook from "@/app/(dash-admin)/hooks/get-dni-api.hook"
+import GetDniApiHook from "@/app/(dash-admin)/hooks/dni/get-dni-api.hook"
 import { renderLastName, renderName } from "@/app/(dash-admin)/utils/renderNameUtils";
 
 export default function PatientsCreate() {
-    const { data, isLoading, handleClick, setDni } = GetDniApiHook()
+    const { data, isLoading, handleClick, setDni, error } = GetDniApiHook()
 
     return (
         <React.Fragment>
@@ -13,7 +13,7 @@ export default function PatientsCreate() {
             <section className='mt-4 p-4 bg-white'>
                 <form className="grid grid-cols-1 md:grid-cols-2  gap-5">
                     <div className="border border-gray-300 text-left p-2">
-                        <label className='text-font-777 text-sm'>DNI <span className="text-red-500">*</span></label>
+                        <label className='text-font-777 text-sm'>DNI <span className="text-red-500">*</span> {error && (<span className='text-red-500'>No se encontro</span>)} </label>
                         <div className='flex gap-3'>
                             <input type="text" onChange={(e) => setDni(e.target.value)} className='w-full py-2 outline-none px-1' />
 
