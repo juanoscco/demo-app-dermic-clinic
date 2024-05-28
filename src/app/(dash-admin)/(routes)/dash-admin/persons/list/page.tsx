@@ -1,78 +1,108 @@
 "use client"
-import React, { useState } from 'react'
-import { users } from "@/mocks/Users/users.mocks"
+import React, { useState, useEffect } from 'react'
+import { useGetEmployeesQuery } from './store/service'
+import DataTable from "@/components/datatable/datatable.component";
 import Link from 'next/link';
 
 
-const itemsPerPage: number = 10; // Cambia esto según tu necesidad
-// types.ts
-
-export type User = {
-    id: number;
-    nombre: string;
-    apellidos: string;
-    email: string;
-    dni: string;
-    rol: string;
-    telefono: string;
-};
-
-
 export default function UserList() {
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [filter, setFilter] = useState('');
+    const { data, error, isLoading, refetch } = useGetEmployeesQuery({ limit: perPage, page: currentPage - 1, filter })
 
-    const [searchTerm, setSearchTerm] = useState<string>('');
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            refetch();
+        }, 300);
 
-    const filteredUsers = users.filter((user) =>
-        user.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.apellidos.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+        return () => clearTimeout(delayDebounceFn);
+    }, [filter, refetch]);
 
-    const [currentPage, setCurrentPage] = useState<number>(0);
-
-    const handlePageChange = (page: number): void => {
-        setCurrentPage(page);
-    };
-    const pageCount: number = Math.ceil(users.length / itemsPerPage);
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error loading patients</div>;
 
 
-    const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'ascending' | 'descending' }>({
-        key: null,
-        direction: 'ascending',
-    });
+    const columns = [
+        {
+            title: 'Empleado',
+            displayName: 'Nombre',
+            field: 'nombres',
+            render: (fieldValue: any, item: any) => (
+                <div>
+                    <h1>{fieldValue.toLowerCase()}</h1>
+                    <span>DNI: {item.numero}</span>
+                </div>
+            )
+        },
+        {
+            title: 'Datos',
+            displayName: 'Datos',
+            field: 'telefono',
+            render: (fieldValue: any, item:any) => (
+                <div>
+                    <h1>{item.usuario.rol.descripcion.toLowerCase()}</h1>
+                    <span>{fieldValue}</span>
+                </div>
+            )
+        },
+        {
+            title: 'Sede',
+            displayName: 'Sede',
+            field: 'sede',
+            render: (fieldValue: any, item:any) => (
+                <div>
+                    <h1>{item.sede.nombres}</h1>
+                    <span>{fieldValue.direccion}</span>
+                </div>
+            )
+        },
+        {
+            title: 'Acciones',
+            displayName: 'Acción',
+            field: 'id_empleado',
+            render: (fieldValue: any) => (
+              <div>
+                <Link
+                  href={`/dash-admin/persons/list/${fieldValue}`}
+                  className='bg-gray-400 p-2 rounded-md text-white'>Detalle</Link>
+              </div>
+            ),
+          },
+    ]
 
-    const handleSort = (key: string) => {
-        let direction: any = 'ascending';
-        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-            direction = 'descending';
-        }
-        setSortConfig({ key, direction });
-    };
-
-    let sortedUsers = [...filteredUsers];
-
-    if (sortConfig.key) {
-        sortedUsers.sort((a, b) => {
-            const aValue = a[sortConfig.key as keyof User];
-            const bValue = b[sortConfig.key as keyof User];
-            if (aValue < bValue) {
-                return sortConfig.direction === 'ascending' ? -1 : 1;
-            }
-            if (aValue > bValue) {
-                return sortConfig.direction === 'ascending' ? 1 : -1;
-            }
-            return 0;
-        });
-    }
-
-    const displayedUsers = sortedUsers.slice(
-        currentPage * itemsPerPage,
-        (currentPage + 1) * itemsPerPage
-    );
+    // const tableHTML = `          
+    //       <table className="w-full border-collapse">
+    //         <thead>
+    //           <tr>
+    //             <th className='px-4 py-2'>Nombre</th>
+    //             <th className="px-4 py-2">Apellidos</th>
+    //             <th className="px-4 py-2">Email</th>
+    //             <th className="px-4 py-2">DNI</th>
+    //             <th className="px-4 py-2">Rol</th>
+    //             <th className="px-4 py-2">Teléfono</th>
+    //           </tr>
+    //         </thead>
+    //         <tbody>
+    //           ${users.map(user => `
+    //             <tr key=${user.id} className='border-t border-gray-200'>
+    //               <td className='px-4 py-2'>${user.nombre}</td>
+    //               <td className="px-4 py-2">${user.apellidos}</td>
+    //               <td className="px-4 py-2">${user.email}</td>
+    //               <td className="px-4 py-2">${user.dni}</td>
+    //               <td className="px-4 py-2">${user.rol}</td>
+    //               <td className="px-4 py-2">${user.telefono}</td>
+    //             </tr>
+    //           `).join('')}
+    //         </tbody>
+    //       </table>
+    //     `;
 
     return (
         <React.Fragment>
-            <h1 className='text-2xl '>Lista de usuarios</h1>
-            <div className='flex xl:justify-between flex-col xl:flex-row mt-5 bg-white rounded-md p-4'>
+            <h1 className='text-2xl '>Lista de empleados</h1>
+
+            {/* <div className='flex xl:justify-between flex-col xl:flex-row mt-5 bg-white rounded-md p-4'>
                 <input
                     type="text"
                     value={searchTerm}
@@ -80,12 +110,17 @@ export default function UserList() {
                     placeholder="Buscar"
                     className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
                 />
-                {/* TODO: FALTA HACER QUE FUNCIONE EL EXCEL Y EL IMPRIMIR */}
                 <div className='flex items-center gap-3'>
-                    <button className='p-2 bg-green-500 rounded-md text-white'>
+                    <button
+                        className='p-2 bg-green-500 rounded-md text-white'
+                        onClick={() => exportToExcel(users, "personal.xlsx")}
+                    >
                         Excel
                     </button>
-                    <button className='bg-gray-500 p-2 text-white rounded-md'>
+                    <button
+                        className='bg-gray-500 p-2 text-white rounded-md'
+                        onClick={() => handlePrint(tableHTML)}
+                    >
                         Imprimir
                     </button>
                     <Link href='/dash-admin/persons/create'>
@@ -95,7 +130,7 @@ export default function UserList() {
             </div>
 
             <div className='bg-white p-2 rounded-md w-full xl:h-[30rem] h-full overflow-auto'>
-                <table className="w-full border-collapse">
+                <table className="w-full border-collapse" >
                     <thead>
                         <tr className="border-t border-gray-200">
                             <th className="px-4 py-2 text-left" onClick={() => handleSort('nombre')}>
@@ -118,16 +153,7 @@ export default function UserList() {
                                     <span className='ml-1'> {sortConfig.direction === 'ascending' ? '↑' : '↓'} </span>
                                 )}
                             </th>
-                            <th className="px-4 py-2 text-left" onClick={() => handleSort('rol')}>
-                                Rol {sortConfig.key === 'rol' && (
-                                    <span className='ml-1'> {sortConfig.direction === 'ascending' ? '↑' : '↓'} </span>
-                                )}
-                            </th>
-                            <th className="px-4 py-2 text-left" onClick={() => handleSort('telefono')}>
-                                Teléfono {sortConfig.key === 'telefono' && (
-                                    <span className='ml-1'> {sortConfig.direction === 'ascending' ? '↑' : '↓'} </span>
-                                )}
-                            </th>
+                            <th className='className="px-4 py-2 text-left'>Accion</th>
                         </tr>
                     </thead>
                     <tbody >
@@ -135,15 +161,15 @@ export default function UserList() {
                             <tr key={users.id} className='border-t border-gray-200'>
                                 <td className='px-4 py-2'>{users.nombre} </td>
                                 <td className="px-4 py-2">{users.apellidos}</td>
-                                <td className="px-4 py-2">{users.email}</td>
                                 <td className="px-4 py-2">{users.dni}</td>
                                 <td className="px-4 py-2">{users.rol}</td>
-                                <td className="px-4 py-2">{users.telefono}</td>
+                                <td>
+                                    <Link href={`/dash-admin/persons/list/${users.slug}`}>ver detalles</Link>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-
             </div>
             <div className="flex justify-start mt-5">
                 <ul className="flex">
@@ -158,7 +184,23 @@ export default function UserList() {
                         </li>
                     ))}
                 </ul>
-            </div>
+            </div> */}
+
+            <DataTable
+                data={data?.data}
+                isLoading={isLoading}
+                error={error}
+                columns={columns}
+                perPage={perPage}
+                setPerPage={setPerPage}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                // refetch={refetch}
+                setFilter={setFilter}
+                filter={filter}
+            />
+
+
         </React.Fragment>
     )
 }

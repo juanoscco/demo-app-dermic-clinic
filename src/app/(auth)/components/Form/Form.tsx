@@ -1,68 +1,87 @@
 "use client"
-
 import React, { useEffect } from 'react'
+// import { FormLoginProps } from "../../models/login.interface"
+// import LoginHooks from "../../hooks/login.hooks"
+import { useLoginMutation } from '@/app/(auth)/store/service/';
+
 import { useRouter } from 'next/navigation';
-import { useLoginMutation } from '@/app/(auth)/service/authApi'
 import Cookies from 'js-cookie'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { LoginFormValues } from "@/app/(auth)/models/login.interface"
 
-interface LoginFormValues {
-  email: string;
-  password: string;
-}
 
 // TODO: ORDERING THIS CODE BECAUSE I WANNA REUSE
 export default function FormLogin() {
-  const router = useRouter();
+
   const [login, { isLoading, data, error }] = useLoginMutation();
+
+  const router = useRouter();
 
   const formik = useFormik<LoginFormValues>({
     initialValues: {
-      email: 'eve.holt@reqres.in',
-      password: 'cityslicka',
+      username: '',
+      password: '',
     },
     validationSchema: Yup.object({
-      email: Yup.string().email('Correo inválido').required('Requerido'),
-      password: Yup.string().min(6, 'Mínimo 6 caracteres').required('Requerido'),
+      username: Yup.string().required('Requerido'),
+      password: Yup.string().required('Requerido'),
     }),
     onSubmit: async (values) => {
-      login(values);
+      try {
+        await login(values);
+        // setSubmitting(false);
+
+      } catch (err) {
+        console.error('Failed to login', err);
+        // setSubmitting(false);
+      }
     },
   });
 
-
-  // if (data) {
-  //   Cookies.set("token", data.token);
-  //   router.push('/dash-admin/home');
-  // }
-
   useEffect(() => {
     if (data) {
-      Cookies.set("token", data.token);
+      Cookies.set("token", data.jwt);
       router.push('/dash-admin/home');
     }
   }, [data, router]);
 
-  if (isLoading) return <div>Loading...</div>;
+
+  // Prevent default behavior and use Formik's handleSubmit
+  // const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault(); // Prevent default form submission
+  //   formik.handleSubmit(e); // Call Formik's handleSubmit
+  // };
+
+  if (isLoading) {
+    return (
+        // <div className="space-y-4 p-4">
+        //     <div className="h-10 bg-gray-500 rounded animate-pulse" />
+        //     <div className="h-10 bg-gray-500 rounded animate-pulse" />
+        //     <div className="h-12 bg-gray-500 rounded animate-pulse" />
+        // </div>
+        <div>Cargando....</div>
+    );
+}
 
   return (
     <form onSubmit={formik.handleSubmit} className='relative flex flex-col gap-5 w-4/6'>
       <h1 className='font-bold text-2xl'>Iniciar sesión</h1>
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-1'>
-          <label htmlFor="email">Usuario</label>
+          <label htmlFor="username">Usuario</label>
           <input
             type="text"
-            id="email"
-            name="email"
+            id="username"
+            // name="username"
             className='border border-gray-400 w-full px-3 rounded-sm p-2'
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
+            // onChange={formik.handleChange}
+            // onBlur={formik.handleBlur}
+            // value={formik.values.username}
+            {...formik.getFieldProps('username')}
           />
-          {formik.touched.email && formik.errors.email ? (
-            <div className='text-red-400'>{formik.errors.email}</div>
+          {formik.touched.username && formik.errors.username ? (
+            <div className='text-red-400'>{formik.errors.username}</div>
           ) : null}
         </div>
         <div className='flex flex-col gap-1'>
@@ -70,22 +89,34 @@ export default function FormLogin() {
           <input
             type="password"
             id="password"
-            name="password"
+            // name="password"
             className='border border-gray-400 w-full px-3 rounded-sm p-2'
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.password}
+            // onChange={formik.handleChange}
+            // onBlur={formik.handleBlur}
+            // value={formik.values.password}
+            {...formik.getFieldProps('password')}
           />
           {formik.touched.password && formik.errors.password ? (
             <div className='text-red-400'>{formik.errors.password}</div>
           ) : null}
         </div>
         <div className='flex items-center gap-1'>
-          <input type="checkbox" className='w-5 h-8 rounded-lg ' />
-          <span className='text-lg '>Recuérdame</span>
+          <input
+            type="checkbox"
+            // id="rememberMe"
+            // name="rememberMe"
+            className='w-5 h-8 rounded-lg'
+          // onChange={formik.handleChange}
+          // checked={formik.values.rememberMe}
+          />
+          <label htmlFor="rememberMe" className='text-lg'>Recuérdame</label>
         </div>
       </div>
-      <button className='w-full bg-slate-950 shadow-xl p-3 rounded-sm text-white' type='submit'>Ingresar</button>
+      <button
+        className='w-full bg-slate-950 shadow-xl p-3 rounded-sm text-white'
+        type='submit'
+        disabled={isLoading || formik.isSubmitting}
+      >Ingresar</button>
       {error && <p className='text-red-400'>Datos incorrectos</p>}
     </form>
   );

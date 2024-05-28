@@ -7,7 +7,7 @@ interface User {
   email: string;
 }
 
-interface Appointment {
+export interface Appointment {
   id: number;
   user: User;
   fecha: string;
@@ -16,83 +16,224 @@ interface Appointment {
   estado: string;
   distrito: string;
   sala: string;
+  typeDoctor: string;
   doctor: string;
   llegada: string;
   entrada: string;
   salida: string;
 }
 
-// Fechas específicas
-const startDate = new Date(2024, 4, 16); // 12 de mayo de 2024
-const endDate = new Date(2024, 4, 20); // 17 de mayo de 2024
-
-// Función para generar un número aleatorio de 7 dígitos
-const generateRandomDNI = () => {
-  return Math.floor(1000000 + Math.random() * 9000000).toString();
-};
-
-// Función para crear una cita con datos de usuario
-const createAppointment = (
-  id: number,
-  date: Date,
-  hourStart: string,
-  hourEnd: string,
-  status: string,
-  room: string,
-  doctor: string,
-  arrival: string,
-  entry: string,
-  exit: string
-): Appointment => ({
-  id,
-  user: {
-    id,
-    name: `Usuario ${id}`,
-    dni: generateRandomDNI(),
-    telefono: `Telefono${id}`,
-    email: `usuario${id}@ejemplo.com`,
+export const appointments: Appointment[] = [
+  {
+    id: 1,
+    user: {
+      id: 1,
+      name: "Usuario 1",
+      dni: "1234567",
+      telefono: "123456789",
+      email: "usuario1@ejemplo.com",
+    },
+    fecha: "2024-05-17",
+    horaInicio: "08:00 AM",
+    HoraFinal: "09:00 AM",
+    estado: "Confirmada",
+    distrito: "Los Olivos",
+    sala: "Sala 1",
+    typeDoctor: "doctor",
+    doctor: "Dr. Carlos Pérez",
+    llegada: "07:45 AM",
+    entrada: "08:00 AM",
+    salida: "09:00 AM",
   },
-  fecha: date.toLocaleDateString('en-CA'), // Formato yyyy-MM-dd
-  horaInicio: hourStart,
-  HoraFinal: hourEnd,
-  estado: status,
-  distrito: Math.random() > 0.5 ? "Los Olivos" : "San Isidro", // Asignación aleatoria
-  sala: room,
-  doctor: doctor,
-  llegada: arrival,
-  entrada: entry,
-  salida: exit,
-});
-
-// Crear citas para un rango de fechas
-const createAppointmentsForDateRange = (startDate: Date, endDate: Date): Appointment[] => {
-  const appointments: Appointment[] = [];
-  let id = 1;
-  let currentDate = new Date(startDate);
-
-  while (currentDate <= endDate) {
-    for (let i = 0; i < 5; i++) {
-      appointments.push(
-        createAppointment(
-          id,
-          new Date(currentDate),
-          `08:00 AM`,
-          `09:00 AM`,
-          `Estado ${id}`,
-          `Sala ${i + 1}`,
-          `Doctor ${i + 1}`,
-          `07:45 AM`,
-          `08:00 AM`,
-          `09:00 AM`
-        )
-      );
-      id++;
-    }
-    currentDate.setDate(currentDate.getDate() + 1);
+  {
+    id: 2,
+    user: {
+      id: 2,
+      name: "Usuario 2",
+      dni: "2345678",
+      telefono: "234567890",
+      email: "usuario2@ejemplo.com",
+    },
+    fecha: "2024-05-17",
+    horaInicio: "09:00 AM",
+    HoraFinal: "10:00 AM",
+    estado: "Confirmada",
+    distrito: "Los Olivos",
+    sala: "Sala 2",
+    typeDoctor: "cosmetra",
+    doctor: "Dra. Ana Gómez",
+    llegada: "08:45 AM",
+    entrada: "09:00 AM",
+    salida: "10:00 AM",
+  },
+  {
+    id: 3,
+    user: {
+      id: 3,
+      name: "Usuario 3",
+      dni: "3456789",
+      telefono: "345678901",
+      email: "usuario3@ejemplo.com",
+    },
+    fecha: "2024-05-17",
+    horaInicio: "10:00 AM",
+    HoraFinal: "11:00 AM",
+    estado: "Confirmada",
+    distrito: "San Isidro",
+    sala: "Sala 3",
+    typeDoctor: "doctor",
+    doctor: "Dr. Javier Martínez",
+    llegada: "09:45 AM",
+    entrada: "10:00 AM",
+    salida: "11:00 AM",
+  },
+  {
+    id: 4,
+    user: {
+      id: 4,
+      name: "Usuario 4",
+      dni: "0983843",
+      telefono: "99990992",
+      email: "usuario4@ejemplo.com",
+    },
+    fecha: "2024-05-20",
+    horaInicio: "11:00 AM",
+    HoraFinal: "01:00 PM",
+    estado: "Confirmada",
+    distrito: "San Isidro",
+    sala: "Sala 3",
+    typeDoctor: "doctor",
+    doctor: "Dr. Lujan Carrion",
+    llegada: "09:45 AM",
+    entrada: "10:00 AM",
+    salida: "11:00 AM",
+  },
+  {
+    id: 5,
+    user: {
+      id: 5,
+      name: "Usuario 5",
+      dni: "4536271",
+      telefono: "987654321",
+      email: "usuario5@ejemplo.com",
+    },
+    fecha: "2024-05-20",
+    horaInicio: "01:00 PM",
+    HoraFinal: "03:00 PM",
+    estado: "Confirmada",
+    distrito: "Los Olivos",
+    sala: "Sala 2",
+    typeDoctor: "cosmetra",
+    doctor: "Dra. María López",
+    llegada: "12:45 PM",
+    entrada: "01:00 PM",
+    salida: "03:00 PM",
+  },
+  {
+    id: 6,
+    user: {
+      id: 6,
+      name: "Usuario 6",
+      dni: "3748295",
+      telefono: "987654321",
+      email: "usuario6@ejemplo.com",
+    },
+    fecha: "2024-05-20",
+    horaInicio: "03:00 PM",
+    HoraFinal: "05:00 PM",
+    estado: "Confirmada",
+    distrito: "San Isidro",
+    sala: "Sala 1",
+    typeDoctor: "doctor",
+    doctor: "Dr. Alejandro Fernández",
+    llegada: "02:45 PM",
+    entrada: "03:00 PM",
+    salida: "05:00 PM",
+  },
+  {
+    id: 7,
+    user: {
+      id: 7,
+      name: "Usuario 7",
+      dni: "8392847",
+      telefono: "987654321",
+      email: "usuario7@ejemplo.com",
+    },
+    fecha: "2024-05-21",
+    horaInicio: "08:00 AM",
+    HoraFinal: "10:00 AM",
+    estado: "Confirmada",
+    distrito: "Los Olivos",
+    sala: "Sala 3",
+    typeDoctor: "cosmetra",
+    doctor: "Dra. Sofía Ramírez",
+    llegada: "07:45 AM",
+    entrada: "08:00 AM",
+    salida: "10:00 AM",
+  },
+  {
+    id: 8,
+    user: {
+      id: 8,
+      name: "Usuario 8",
+      dni: "6483927",
+      telefono: "987654321",
+      email: "usuario8@ejemplo.com",
+    },
+    fecha: "2024-05-21",
+    horaInicio: "10:00 AM",
+    HoraFinal: "12:00 PM",
+    estado: "Confirmada",
+    distrito: "San Isidro",
+    sala: "Sala 2",
+    typeDoctor: "doctor",
+    doctor: "Dr. Pedro Díaz",
+    llegada: "09:45 AM",
+    entrada: "10:00 AM",
+    salida: "12:00 PM",
+  },
+  {
+    id: 9,
+    user: {
+      id: 9,
+      name: "Usuario 9",
+      dni: "1298347",
+      telefono: "987654321",
+      email: "usuario9@ejemplo.com",
+    },
+    fecha: "2024-05-20",
+    horaInicio: "12:00 PM",
+    HoraFinal: "02:00 PM",
+    estado: "Confirmada",
+    distrito: "Los Olivos",
+    sala: "Sala 1",
+    typeDoctor: "doctor",
+    doctor: "Dra. Andrea Sánchez",
+    llegada: "11:45 AM",
+    entrada: "12:00 PM",
+    salida: "02:00 PM",
+  },
+  {
+    id: 10,
+    user: {
+      id: 10,
+      name: "Usuario 10",
+      dni: "6574829",
+      telefono: "987654321",
+      email: "usuario10@ejemplo.com",
+    },
+    fecha: "2024-05-20",
+    horaInicio: "02:00 PM",
+    HoraFinal: "04:00 PM",
+    estado: "Confirmada",
+    distrito: "Los Olivos",
+    sala: "Sala 3",
+    typeDoctor: "doctor",
+    doctor: "Dr. Daniel Vargas",
+    llegada: "01:45 PM",
+    entrada: "02:00 PM",
+    salida: "04:00 PM",
   }
+  
 
-  return appointments;
-};
-
-// Crear todas las citas
-export const appointments: Appointment[] = createAppointmentsForDateRange(startDate, endDate);
+];

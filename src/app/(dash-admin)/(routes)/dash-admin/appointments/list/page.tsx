@@ -38,11 +38,18 @@ export default function AppointmentList() {
     setFilteredAppointments(result);
   }, [today]);
 
-  const handleFilterChange = () => {
+  // const handleFilterChange = () => {
+  //   const formattedDate = new Date(selectedDate).toLocaleDateString();
+  //   const result = filterAppointments(formattedDate, selectedDistrict);
+  //   setFilteredAppointments(result);
+  // };
+
+  useEffect(() => {
     const formattedDate = new Date(selectedDate).toLocaleDateString();
     const result = filterAppointments(formattedDate, selectedDistrict);
     setFilteredAppointments(result);
-  };
+  }, [selectedDate, selectedDistrict]);
+
 
   // console.log(appointments)
 
@@ -66,34 +73,36 @@ export default function AppointmentList() {
             <option value="San Isidro">San Isidro</option>
           </select>
         </section>
-        <button
+        {/* <button
           className="px-2 py-1 bg-blue-500 text-white rounded-md"
           onClick={handleFilterChange}
         >
           Filtrar
-        </button>
+        </button> */}
       </section>
       <section
-        className='flex xl:justify-between flex-col xl:flex-row mt-5 bg-white rounded-md p-4'
+        className='flex xl:justify-between flex-col xl:flex-row mt-5 gap-3 bg-white rounded-md p-3'
       >
         <input
           type="text"
-          placeholder='Buscar...'
-          className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
-
+          placeholder="Buscar..."
+          className="p-2 border border-gray-300 rounded-md mb-2 outline-none w-full md:w-auto"
         />
-        <div className='flex items-center gap-3'>
-          <button className='p-2  bg-green-500 rounded-md text-white'>
+        <div className="flex flex-col xl:flex-row items-center gap-3 ">
+          <button className="p-2 bg-green-500 rounded-md text-white w-full md:w-auto">
             Excel
           </button>
-          <button className='bg-gray-500 p-2 text-white rounded-md'>
+          <button className="p-2 bg-gray-500 text-white rounded-md mt-2 xl:mt-0 w-full md:w-auto">
             Imprimir
           </button>
-          <Link href='/dash-admin/persons/create'>
-            <button className='p-2 bg-sky-500  rounded-md text-white'>Crear</button>
+          <Link href="/dash-admin/persons/create" className="w-full">
+            <button className="p-2 bg-sky-500 rounded-md text-white mt-2 xl:mt-0 w-full md:w-auto">
+              Crear
+            </button>
           </Link>
         </div>
       </section>
+
       <section className='bg-white p-2 rounded-md w-full xl:h-[35rem] h-full overflow-x-auto'>
         <table className="w-full border-collapse">
           <thead>

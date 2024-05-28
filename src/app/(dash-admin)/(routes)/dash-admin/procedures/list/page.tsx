@@ -5,7 +5,7 @@ import ProceduresView from './components/Procedures/Procedures';
 import Locations from './components/Location/Locations';
 import Personal from './components/Personal/Personal';
 import Rooms from './components/Rooms/Rooms';
-import { Tab } from "@/models/components/TabPanel/TabPanel.model"
+import { Tab } from "@/components/TabPanel/interface/TabPanel.model"
 import { TabPanel } from "@/components/TabPanel/TabPanel.component"
 
 

@@ -1,132 +1,79 @@
 "use client"
-import React, { useState } from 'react'
-import { infrastructure } from '@/mocks/infrastructure/infrastructure.mocks';
+import React, { useState, useEffect } from 'react'
+import { useGetInfrastructureQuery } from "./store/service"
 import Link from "next/link"
+import Datatable from '@/components/datatable/datatable.component';
 
-const itemsPerPage: number = 10; // Cambia esto según tu necesidad
-// types.ts
-export type InfrastructureItem = {
-  id: number;
-  lugar: string;
-  codigoLocalizacion: string;
-  direccion: string;
-  celular: string;
-  estado: string;
-  cuartos: {
-    cuarto: string;
-    piso: string;
-    estadoCuarto: string;
-  }[];
-};
 
 export default function InfrastructureList() {
 
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [perPage, setPerPage] = useState(10); // Estado para almacenar el número de pacientes por página
+  const [currentPage, setCurrentPage] = useState(1); // Estado para almacenar la página actual
 
-  const filteredCuartos = infrastructure.filter((cuarto) =>
-    cuarto.lugar.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cuarto.direccion.toLowerCase().includes(searchTerm.toLowerCase())
-    // cuarto.lugar.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [filter, setFilter] = useState(''); // Estado para almacenar el filtro de búsqueda
 
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const { data, error, isLoading, refetch } = useGetInfrastructureQuery({ limit: perPage, page: currentPage - 1, filter })
 
-  const handlePageChange = (page: number): void => {
-    setCurrentPage(page);
-  };
-  const pageCount: number = Math.ceil(filteredCuartos.length / itemsPerPage);
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      refetch();
+    }, 300);
 
-  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'ascending' | 'descending' }>({
-    key: null,
-    direction: 'ascending',
-  });
+    return () => clearTimeout(delayDebounceFn);
+  }, [filter, refetch]);
 
-  const handleSort = (key: string) => {
-    let direction: any = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-  };
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading patients</div>;
 
-  let sortedCuartos = [...filteredCuartos];
+  const columns = [
+    {
+      title: 'Nombre',
+      displayName: 'Nombre',
+      field: 'nombres',
+      render: (fieldValue: any) => (
+        <div>{fieldValue}</div>
+      )
+    },
+    {
+      title: 'Direccion',
+      displayName: 'Direccion',
+      field: 'direccion',
+      render: (fieldValue: any) => (
+        <div>{fieldValue}</div>
+      )
+    },
+    {
+      title: 'Acciones',
+      displayName: 'Acción',
+      field: 'id_sede',
+      render: (fieldValue: any) => (
+        <div className='flex items-center'>
+          <Link
+            href={`/dash-admin/infrastructure/list/${fieldValue}`}
+            className=' rounded-md text-gray-500 hover:text-gray-900'
+          >Detalle</Link>
+        </div>
+      )
+    },
+  ]
 
-  if (sortConfig.key) {
-    sortedCuartos.sort((a, b) => {
-      const aValue = a[sortConfig.key as keyof InfrastructureItem];
-      const bValue = b[sortConfig.key as keyof InfrastructureItem];
-      if (aValue < bValue) {
-        return sortConfig.direction === 'ascending' ? -1 : 1;
-      }
-      if (aValue > bValue) {
-        return sortConfig.direction === 'ascending' ? 1 : -1;
-      }
-      return 0;
-    });
-  }
-
-  const displayedCuartos = sortedCuartos.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
-  console.log(infrastructure)
+  console.log(data?.data)
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Infraestructura</h1>
-
-      <div className='flex lg:justify-between flex-col lg:flex-row mt-5 bg-white rounded-md p-4'>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Buscar"
-          className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
-        />
-        {/* TODO: FALTA HACER QUE FUNCIONE EL EXCEL Y EL IMPRIMIR */}
-        <div className='flex items-center gap-3'>
-          <button className='p-2 bg-green-500 rounded-md text-white'>
-            Excel
-          </button>
-          <button className='bg-gray-500 p-2 text-white rounded-md'>
-            Imprimir
-          </button>
-          <Link href='/dash-admin/infrastructure/create'>
-            <button className='p-2 bg-sky-500 rounded-md text-white'>Crear</button>
-          </Link>
-        </div>
-      </div>
-      <section className='bg-white p-2 rounded-md w-full xl:h-[30rem] h-full overflow-x-auto'>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className='border-t border-gray-200'>
-              <th  className="px-4 py-2 text-left" onClick={() => handleSort('lugar')}>Distrito
-                  {sortConfig.key === 'lugar' && (
-                    <span className='ml-1'>{sortConfig.direction === 'ascending' ? '↑' : '↓'}</span>
-                  )}
-              </th>
-              <th  className="px-4 py-2 text-left" onClick={() => handleSort('direccion')}>Dirección
-                  {sortConfig.key === 'direccion' && (
-                    <span className='ml-1'>{sortConfig.direction === 'ascending' ? '↑' : '↓'}</span>
-                  )}
-              </th>
-              <th className="px-4 py-2 text-left">
-                Ver
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayedCuartos.map((rooms) => (
-              <tr key={rooms.id}>
-                <td className='px-4 py-2'>{rooms.lugar}</td>
-                <td className='px-4 py-2'>{rooms.direccion}</td>
-                <td className='px-4 py-2'>
-                  <button>Detalles</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <Datatable
+        data={data?.data}
+        isLoading={isLoading}
+        error={error}
+        columns={columns}
+        perPage={perPage}
+        setPerPage={setPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        // refetch={refetch}
+        setFilter={setFilter}
+        filter={filter}
+      />
     </React.Fragment>
   );
 }

@@ -2,11 +2,8 @@ import React from 'react'
 import LogoutExitHook from '../../hooks/logout/logout-exit.hook'
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Props } from "@/app/(dash-admin)/models/navbar/navbar.models"
 
-interface Props {
-    handleBurgerClick: any,
-    isNavActive: any
-}
 
 export default function NavbarComponent({ handleBurgerClick, isNavActive }: Props) {
 
@@ -21,7 +18,7 @@ export default function NavbarComponent({ handleBurgerClick, isNavActive }: Prop
                 >
                     <i className={`icon-burger `}></i>
                 </button>
-                <input type="text" placeholder='Buscar...'  className='px-2 outline-none text-md bg-transparent w-full'/>
+                <input type="text" placeholder='Buscar...' className='px-2 outline-none text-md bg-transparent w-full' />
             </div>
             <ul className='flex gap-5'>
                 <li>Crear</li>

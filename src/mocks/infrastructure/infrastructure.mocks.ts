@@ -7,10 +7,11 @@ export const infrastructure = [
         direccion: "Dirección San Isidro",
         celular: "123-456-7890",
         estado: "Activo",
-        cuartos: Array.from({ length: 10 }, (_, index) => ({
+        cuartos: Array.from({ length: 6 }, (_, index) => ({
             cuarto: `Cuarto ${index + 1}`,
             piso: `Piso ${index + 1}`,
             estadoCuarto: "Habilitado",
+            procedimientos: Array.from({ length: 4 }, (_, procIndex) => `Procedimiento ${index + 1}-${procIndex + 1}`)
         })),
     },
     {
@@ -21,10 +22,11 @@ export const infrastructure = [
         direccion: "Dirección Los Olivos",
         celular: "987-654-3210",
         estado: "Activo",
-        cuartos: Array.from({ length: 15 }, (_, index) => ({
+        cuartos: Array.from({ length: 5 }, (_, index) => ({
             cuarto: `Cuarto ${index + 1}`,
             piso: `Piso ${index + 1}`,
             estadoCuarto: "Habilitado",
+            procedimientos: Array.from({ length: 5 }, (_, procIndex) => `Procedimiento ${index + 1}-${procIndex + 1}`)
         })),
     },
 ];

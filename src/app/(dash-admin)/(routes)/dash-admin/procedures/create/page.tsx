@@ -1,75 +1,228 @@
+"use client"
 import React from 'react'
+import { useAddProcedureMutation } from './store/service'
+import { Procedure } from "./interface"
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 export default function ProceduresCreate() {
+    const [addProcedure, { data, isLoading, isError }] = useAddProcedureMutation();
+
+    const durationOptions = [
+        { id: 14, descripcion: "5 minutos" },
+        { id: 15, descripcion: "10 minutos" },
+        { id: 16, descripcion: "15 minutos" },
+        { id: 17, descripcion: "20 minutos" },
+        { id: 18, descripcion: "25 minutos" },
+        { id: 19, descripcion: "30 minutos" },
+        { id: 20, descripcion: "35 minutos" },
+        { id: 21, descripcion: "40 minutos" },
+        { id: 22, descripcion: "45 minutos" },
+        { id: 23, descripcion: "50 minutos" },
+        { id: 24, descripcion: "55 minutos" },
+        { id: 25, descripcion: "60 minutos" },
+    ];
+    const handleDuracionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedId = parseInt(event.target.value, 10);
+        const selectedOption = durationOptions.find(option => option.id === selectedId);
+
+        if (selectedOption) {
+            formik.setFieldValue('duracion.id_cabecera_detalle', selectedId);
+            formik.setFieldValue('duracion.descripcion', selectedOption.descripcion);
+        }
+    };
+    const anestesiaOptions = [
+        { value: 'true', label: "Sí" },
+        { value: 'false', label: "No" },
+    ];
+
+    const typeProceduresOptions = [
+        { id: 27, descripcion: 'Piel' },
+        { id: 28, descripcion: 'Otros' },
+    ];
+
+    const subtypeProceduresOptions = [
+        { id: 29, descripcion: 'Público' },
+        { id: 30, descripcion: 'Privado' },
+    ];
+
+    const handleTypeProceduresChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedOption = typeProceduresOptions.find(option => option.id === parseInt(e.target.value));
+        formik.setFieldValue('tipo_procedimiento.id_cabecera_detalle', selectedOption?.id);
+        formik.setFieldValue('tipo_procedimiento.descripcion', selectedOption?.descripcion);
+    };
+
+    const handleSubtypeProceduresChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedOption = subtypeProceduresOptions.find(option => option.id === parseInt(e.target.value));
+        formik.setFieldValue('subtipo_procedimiento.id_cabecera_detalle', selectedOption?.id);
+        formik.setFieldValue('subtipo_procedimiento.descripcion', selectedOption?.descripcion);
+    };
+    const formik = useFormik<Procedure>({
+        initialValues: {
+            nombres: "",
+            duracion: {
+                id_cabecera: 5,
+                id_cabecera_detalle: 17,
+                descripcion: "20 minutos",
+                valor: ""
+            },
+            anestesia: true,
+            tipo_procedimiento: {
+                id_cabecera: 6,
+                id_cabecera_detalle: 27,
+                descripcion: "Piel",
+                valor: ""
+            },
+            subtipo_procedimiento: {
+                id_cabecera: 7,
+                id_cabecera_detalle: 30,
+                descripcion: "Privado",
+                valor: ""
+            },
+            estado: true
+        },
+        validationSchema: Yup.object({
+            nombres: Yup.string().required('Requerido'),
+            duracion: Yup.object({
+                id_cabecera: Yup.number().required('Requerido'),
+                id_cabecera_detalle: Yup.number().required('Requerido'),
+                descripcion: Yup.string().required('Requerido'),
+                valor: Yup.string().optional()
+            }),
+            anestesia: Yup.boolean().required('Requerido'),
+            tipo_procedimiento: Yup.object({
+                id_cabecera: Yup.number().required('Requerido'),
+                id_cabecera_detalle: Yup.number().required('Requerido'),
+                descripcion: Yup.string().required('Requerido'),
+                valor: Yup.string().optional()
+            }),
+            subtipo_procedimiento: Yup.object({
+                id_cabecera: Yup.number().required('Requerido'),
+                id_cabecera_detalle: Yup.number().required('Requerido'),
+                descripcion: Yup.string().required('Requerido'),
+                valor: Yup.string().optional()
+            }),
+            estado: Yup.boolean().required('Requerido')
+        }),
+        onSubmit: async (values, { resetForm }) => {
+            try {
+                addProcedure(values)
+                alert(data?.message)
+                resetForm();
+            } catch (error) {
+                alert(error)
+            }
+        }
+    })
+
     return (
         <React.Fragment>
             <h1 className='text-2xl'>Crear procedimiento</h1>
             <section className='mt-4 p-4 bg-white'>
-                <form className="grid grid-cols-1 md:grid-cols-2 rounded-sm gap-5">
+                <form className="grid grid-cols-1 md:grid-cols-2 rounded-sm gap-5" onSubmit={formik.handleSubmit}>
                     <div className="border border-gray-300 text-left p-2">
                         <label className='text-font-777 text-sm'>Nombre <span className="text-red-500">*</span></label>
-                        <input type="text" className='w-full py-2 outline-none px-1' />
+                        <input
+                            type="text"
+                            className='w-full py-2 outline-none px-1'
+                            name="nombres"
+                            value={formik.values.nombres}
+                            onChange={formik.handleChange}
+                        />
+                        {formik.errors.nombres && formik.touched.nombres ? (
+                            <div>{formik.errors.nombres}</div>
+                        ) : null}
                     </div>
                     <div className="border border-gray-300 text-left p-2">
                         <label className='text-font-777 text-sm'>Duracion <span className="text-red-500">*</span></label>
                         {/* <input type="text" className='w-full py-2 outline-none px-1' /> */}
-                        <select className='w-full py-2 outline-none px-1'>
-                            <option value=""></option>
-                            <option value="0">0 minutos</option>
-                            <option value="5">5 minutos</option>
-                            <option value="10">10 minutos</option>
-                            <option value="15">15 minutos</option>
-                            <option value="20">20 minutos</option>
-                            <option value="25">25 minutos</option>
-                            <option value="30">30 minutos</option>
-                            <option value="35">35 minutos</option>
-                            <option value="40">40 minutos</option>
-                            <option value="45">45 minutos</option>
-                            <option value="50">50 minutos</option>
-                            <option value="55">55 minutos</option>
-                            <option value="60">1 hora</option>
+                        <select
+                            className='w-full py-2 outline-none px-1'
+                            name="duracion.id_cabecera_detalle"
+                            value={formik.values.duracion.id_cabecera_detalle}
+                            onChange={handleDuracionChange}
+                        >
+                            {durationOptions.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.descripcion}
+                                </option>
+                            ))}
                         </select>
-
+                        {formik.errors.duracion?.descripcion && formik.touched.duracion?.descripcion ? (
+                            <div>{formik.errors.duracion.descripcion}</div>
+                        ) : null}
                     </div>
                     <div className="border border-gray-300 text-left p-2">
-                        <label className='text-font-777 text-sm'>Con Anestecia <span className="text-red-500">*</span></label>
+                        <label className='text-font-777 text-sm'>Anestecia <span className="text-red-500">*</span></label>
                         {/* <input type="text" className='w-full py-2 outline-none px-1' /> */}
-                        <select className='w-full py-2 outline-none px-1'>
-                            <option value=""></option>
-                            <option value="">si</option>
-                            <option value="">no</option>
+                        <select
+                            className='w-full py-2 outline-none px-1'
+                            name="anestesia"
+                            onChange={(event) => formik.setFieldValue('anestesia', event.target.value === 'true')}
+                            value={formik.values.anestesia.toString()}
+
+                        >
+                            {anestesiaOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
                         </select>
+                        {formik.errors.anestesia && formik.touched.anestesia ? (
+                            <div>{formik.errors.anestesia}</div>
+                        ) : null}
                     </div>
                     <div className="border border-gray-300 text-left p-2">
                         <label className='text-font-777 text-sm'>Tipo <span className="text-red-500">*</span></label>
-                        {/* <input type="email" className='w-full py-2 outline-none px-1' /> */}
-                        <select className='w-full py-2 outline-none px-1'>
-                            <option value=""></option>
-                            <option value="">Depilacion</option>
-                            <option value="">Piel</option>
-                            <option value="">Otros</option>
+                        <select
+                            className='w-full py-2 outline-none px-1'
+                            name="tipo_procedimiento.id_cabecera_detalle"
+                            value={formik.values.tipo_procedimiento.id_cabecera_detalle}
+                            onChange={handleTypeProceduresChange}
+                        >
+                            {typeProceduresOptions.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.descripcion}
+                                </option>
+                            ))}
                         </select>
+                        {formik.errors.tipo_procedimiento?.descripcion && formik.touched.tipo_procedimiento?.descripcion ? (
+                            <div>{formik.errors.tipo_procedimiento.descripcion}</div>
+                        ) : null}
                     </div>
+
                     <div className="border border-gray-300 text-left p-2">
                         <label className='text-font-777 text-sm'>Subtipo <span className="text-red-500">*</span></label>
-                        {/* <input type="text" className='w-full py-2 outline-none px-1' /> */}
-                        <select className='w-full py-2 outline-none px-1'>
-                            <option value=""></option>
-                            <option value="">Privado</option>
-                            <option value="">Publico</option>
+                        <select
+                            className='w-full py-2 outline-none px-1'
+                            name="subtipo_procedimiento.id_cabecera_detalle"
+                            value={formik.values.subtipo_procedimiento.id_cabecera_detalle}
+                            onChange={handleSubtypeProceduresChange}
+                        >
+                            {subtypeProceduresOptions.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.descripcion}
+                                </option>
+                            ))}
                         </select>
+                        {formik.errors.subtipo_procedimiento?.descripcion && formik.touched.subtipo_procedimiento?.descripcion ? (
+                            <div>{formik.errors.subtipo_procedimiento.descripcion}</div>
+                        ) : null}
                     </div>
                     <div className="border border-gray-300 text-left p-2">
                         <label className='text-font-777 text-sm'>Estado <span className="text-red-500">*</span></label>
-                        {/* <input type="text" className='w-full py-2 outline-none px-1' /> */}
-                        <select className='w-full py-2 outline-none px-1'>
-                            <option value=""></option>
-                            <option value="">Habilitado</option>
-                            <option value="">Desabilitado</option>
+                        <select
+                            name='estado'
+                            value={formik.values.estado ? 'true' : 'false'}
+                            onChange={(e) => formik.setFieldValue('estado', e.target.value === 'true')}
+                            className='w-full py-2 outline-none px-1'
+                        >
+                            {/* <option value=""></option> */}
+                            <option value="true">Habilitado</option>
+                            <option value="false">Desabilitado</option>
                         </select>
-
                     </div>
-                    <button className='bg-[#82b440] p-2 text-white'>Crear</button>
+                    <button className='bg-[#82b440] p-2 text-white' type='submit'>Crear</button>
                 </form>
             </section>
         </React.Fragment>
