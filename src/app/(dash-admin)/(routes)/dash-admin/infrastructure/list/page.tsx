@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useGetInfrastructureQuery } from "./store/service"
 import Link from "next/link"
-import Datatable from '@/components/datatable/datatable.component';
+import { DatatableComponent } from '@/components/datatable/';
 
 
 export default function InfrastructureList() {
@@ -61,7 +61,7 @@ export default function InfrastructureList() {
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Infraestructura</h1>
-      <Datatable
+      <DatatableComponent
         data={data?.data}
         isLoading={isLoading}
         error={error}

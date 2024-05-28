@@ -1,9 +1,10 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import DataTable from "@/components/datatable/datatable.component";
 import Link from 'next/link';
 import { useGetPatientsQuery } from "./store/service/list-patient.service";
+import { DatatableComponent } from "@/components/datatable/";
+
 // TODO: DATA IN EXCEL
 // import { exportToExcel } from "@/utils/excel/excel.utils"
 // import { handlePrint } from "@/utils/print/print.utils"
@@ -19,7 +20,7 @@ export default function PatientsList() {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       refetch();
-    }, 300); 
+    }, 300);
 
     return () => clearTimeout(delayDebounceFn);
   }, [filter, refetch]);
@@ -103,7 +104,7 @@ export default function PatientsList() {
           
         </div>
       </section> */}
-      <DataTable
+      <DatatableComponent
         data={data?.data}
         isLoading={isLoading}
         error={error}

@@ -20,7 +20,7 @@ interface Props {
   setFilter?: any;
 }
 
-export default function DatatableComponent(
+export function DatatableComponent(
   { data, isLoading, error, columns, perPage, setPerPage, currentPage, setCurrentPage, filter, setFilter }: Props
 ) {
 

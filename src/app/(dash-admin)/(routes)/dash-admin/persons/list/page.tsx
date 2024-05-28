@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { useGetEmployeesQuery } from './store/service'
-import DataTable from "@/components/datatable/datatable.component";
+import { DatatableComponent } from "@/components/datatable/";
 import Link from 'next/link';
 
 
@@ -39,7 +39,7 @@ export default function UserList() {
             title: 'Datos',
             displayName: 'Datos',
             field: 'telefono',
-            render: (fieldValue: any, item:any) => (
+            render: (fieldValue: any, item: any) => (
                 <div>
                     <h1>{item.usuario.rol.descripcion.toLowerCase()}</h1>
                     <span>{fieldValue}</span>
@@ -50,7 +50,7 @@ export default function UserList() {
             title: 'Sede',
             displayName: 'Sede',
             field: 'sede',
-            render: (fieldValue: any, item:any) => (
+            render: (fieldValue: any, item: any) => (
                 <div>
                     <h1>{item.sede.nombres}</h1>
                     <span>{fieldValue.direccion}</span>
@@ -62,13 +62,13 @@ export default function UserList() {
             displayName: 'Acción',
             field: 'id_empleado',
             render: (fieldValue: any) => (
-              <div>
-                <Link
-                  href={`/dash-admin/persons/list/${fieldValue}`}
-                  className='bg-gray-400 p-2 rounded-md text-white'>Detalle</Link>
-              </div>
+                <div>
+                    <Link
+                        href={`/dash-admin/persons/list/${fieldValue}`}
+                        className='bg-gray-400 p-2 rounded-md text-white'>Detalle</Link>
+                </div>
             ),
-          },
+        },
     ]
 
     // const tableHTML = `          
@@ -186,7 +186,7 @@ export default function UserList() {
                 </ul>
             </div> */}
 
-            <DataTable
+            <DatatableComponent
                 data={data?.data}
                 isLoading={isLoading}
                 error={error}
