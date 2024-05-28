@@ -6,6 +6,20 @@ const nextConfig = {
     API_MIGO_DNI_REST: process.env.API_MIGO_DNI_REST,
   },
   // output: "export",
+  reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        source: "/",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: "upgrade-insecure-requests",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
