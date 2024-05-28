@@ -2,8 +2,9 @@ import './globals.css'
 import { Providers } from '@/redux/Provider'
 import type { Metadata } from 'next'
 import { Exo_2 } from 'next/font/google'
+import Head from 'next/head'
 
-const exo_2 = Exo_2({ weight: ["300","400","500", "600", "700"], subsets: ['cyrillic'] })
+const exo_2 = Exo_2({ weight: ["300", "400", "500", "600", "700"], subsets: ['cyrillic'] })
 
 
 export const metadata: Metadata = {
@@ -19,6 +20,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <Head>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+      </Head>
+
       <body className={exo_2.className}>
         <Providers>{children}</Providers>
       </body>
