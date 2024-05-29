@@ -20,6 +20,7 @@ interface SubtipoProcedimiento {
 }
 
 export interface Procedure {
+    id_procedimiento?: number;
     nombres: string;
     duracion: Duracion;
     anestesia: boolean;

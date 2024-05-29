@@ -1,130 +1,126 @@
 "use client"
-import React, { useState } from 'react'
-import { procedures } from '@/mocks/procedures/procedures.mocks'
-import Link from "next/link"
+import React, { useState, useEffect } from 'react'
+// import Link from "next/link"
+import { useGetProceduresQuery } from './store/service'
+import { DatatableComponent } from '@/components/datatable';
+import UpdateProceduresComponents from './update-procedures/update-procedures.components';
 
-type Procedure = {
-    id: number;
-    nombre: string;
-    duracion: string;
-    conAnestesia: boolean;
-    tipo: string;
-    subtipo: string;
-    estado: string;
-};
+
 export default function Procedures() {
-    const [searchTerm, setSearchTerm] = useState<string>('');
 
-    const filteredProcedures = procedures.filter((procedure) =>
-        procedure.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // update
+    const [showPopup, setShowPopup] = useState(false);
+    const [selectedProcedureId, setSelectedProcedureId] = useState<number | null>(null);
+    // End update
 
-    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [filter, setFilter] = useState('');
 
-    const handlePageChange = (page: number): void => {
-        setCurrentPage(page);
-    };
-    const itemsPerPage: number = 10; // Establece el número de procedimientos por página
-    const pageCount: number = Math.ceil(filteredProcedures.length / itemsPerPage);
+    const { data, isLoading, error, refetch } = useGetProceduresQuery({ limit: perPage, page: currentPage - 1, filter })
 
-    const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'ascending' | 'descending' }>({
-        key: null,
-        direction: 'ascending',
-    });
-
-    const handleSort = (key: string) => {
-        let direction: 'ascending' | 'descending' = 'ascending';
-        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-            direction = 'descending';
+    // Update
+    const togglePopup = (id?: number) => {
+        if (id) {
+            setSelectedProcedureId(id);
         }
-        setSortConfig({ key, direction });
+        setShowPopup(!showPopup);
     };
+    //  end update
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            refetch();
+        }, 300);
 
-    let sortedProcedures = [...filteredProcedures];
+        return () => clearTimeout(delayDebounceFn);
+    }, [filter, refetch]);
 
-    if (sortConfig.key) {
-        sortedProcedures.sort((a, b) => {
-            const aValue = a[sortConfig.key as keyof typeof procedures[0]];
-            const bValue = b[sortConfig.key as keyof typeof procedures[0]];
-            if (aValue < bValue) {
-                return sortConfig.direction === 'ascending' ? -1 : 1;
-            }
-            if (aValue > bValue) {
-                return sortConfig.direction === 'ascending' ? 1 : -1;
-            }
-            return 0;
-        });
-    }
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error loading procedures</div>;
 
-    const displayedProcedures = sortedProcedures.slice(
-        currentPage * itemsPerPage,
-        (currentPage + 1) * itemsPerPage
-    );
+    const selectedProcedure = selectedProcedureId !== null
+        ? data.data.content.find((proc: any) => proc.id_procedimiento === selectedProcedureId)
+        : null;
 
+    const columns = [
+        {
+            title: 'Procediento',
+            displayName: 'Procediento',
+            field: 'nombres',
+            render: (fieldValue: any) => (
+                <div>{fieldValue}</div>
+            )
+        },
+        {
+            title: 'Duracion',
+            displayName: 'Duracion',
+            field: 'duracion',
+            render: (fieldValue: any) => (
+                <div>{fieldValue.descripcion}</div>
+            )
+        },
+        {
+            title: 'Anestesia',
+            displayName: 'Anestesia',
+            field: 'anestesia',
+            render: (fieldValue: any) => (
+                <div>{fieldValue ? 'si' : 'no'}</div>
+            )
+        },
+        {
+            title: 'Tipo de Procedimiento',
+            displayName: 'Tipo',
+            field: 'tipo_procedimiento',
+            render: (fieldValue: any) => (
+                <div>{fieldValue.descripcion}</div>
+            )
+        },
+        {
+            title: 'Sub tipo de Procedimiento',
+            displayName: 'Sub tipo',
+            field: 'subtipo_procedimiento',
+            render: (fieldValue: any) => (
+                <div>{fieldValue.descripcion}</div>
+            )
+        },
+        {
+            title: 'Acciones',
+            displayName: 'Acciones',
+            field: 'id_procedimiento',
+            render: (fieldValue: any) => (
+                <div className='flex gap-2'>
+                    <button className='text-yellow-500 hover:text-yellow-600' onClick={() => togglePopup(fieldValue)}>Editar</button>
+                    <button className='text-red-500 hover:text-red-700'>Eliminar</button>
+                </div>
+            )
+        }
+
+    ]
     return (
         <React.Fragment>
-            <div className='flex xl:justify-between flex-col xl:flex-row p-3 mt-2 bg-white rounded-t-md '>
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Buscar"
-                    className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
-                />
-                {/* TODO: FALTA HACER QUE FUNCIONE EL EXCEL Y EL IMPRIMIR */}
-                <div className='flex items-center gap-3'>
-                    <button className='p-2 bg-green-500 rounded-md text-white'>
-                        Excel
-                    </button>
-                    <button className='bg-gray-500 p-2 text-white rounded-md'>
-                        Imprimir
-                    </button>
-                    <Link href='/dash-admin/procedures/create'>
-                        <button className='p-2 bg-sky-500 rounded-md text-white'>Crear</button>
-                    </Link>
-                </div>
+            <DatatableComponent
+                data={data?.data}
+                isLoading={isLoading}
+                error={error}
+                columns={columns}
+                perPage={perPage}
+                setPerPage={setPerPage}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                // refetch={refetch}
+                setFilter={setFilter}
+                filter={filter}
+            />
 
-            </div>
-            <section className='bg-white rounded-md w-full xl:h-[30rem] h-full overflow-x-auto '>
-                <table className='w-full border-collapse'>
-                    <thead>
-                        <tr className="border-t border-gray-200">
-                            <th className="px-4 py-2 text-left">Nombre</th>
-                            <th className="px-4 py-2 text-left">Duracion</th>
-                            {/* <th className="px-4 py-2 text-left">Anestecia</th> */}
-                            <th className="px-4 py-2 text-left">Tipo</th>
-                            <th className="px-4 py-2 text-left">Sub tipo</th>
-                            <th className="px-4 py-2 text-left">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {displayedProcedures.map((procedure) => (
-                            <tr key={procedure.id} className='border-t border-gray-200'>
-                                <td className='px-4 py-2'>{procedure.nombre}</td>
-                                <td className='px-4 py-2'>{procedure.duracion}</td>
-                                {/* <td className='px-4 py-2'>{procedure.conAnestesia}</td> */}
-                                <td className='px-4 py-2'>{procedure.tipo}</td>
-                                <td className='px-4 py-2'>{procedure.subtipo}</td>
-                                <td className='px-4 py-2'>{procedure.estado}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </section>
-            <div className="flex justify-start mt-5">
-                <ul className="flex">
-                    {[...Array(pageCount)].map((_, index) => (
-                        <li
-                            key={index}
-                            className={`cursor-pointer mx-1 px-3 py-1 ${currentPage === index ? 'bg-[#82b440] text-white' : 'bg-gray-300'
-                                }`}
-                            onClick={() => handlePageChange(index)}
-                        >
-                            {index + 1}
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            {showPopup && selectedProcedure &&
+                <UpdateProceduresComponents
+                    onClose={togglePopup}
+                    id={selectedProcedure.id_procedimiento}
+                    data={selectedProcedure}
+                    update={refetch}
+                />
+
+            }
         </React.Fragment>
     )
 }

@@ -57,7 +57,6 @@ export default function InfrastructureList() {
     },
   ]
 
-  console.log(data?.data)
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Infraestructura</h1>
