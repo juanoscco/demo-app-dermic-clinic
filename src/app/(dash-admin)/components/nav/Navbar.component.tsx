@@ -22,8 +22,9 @@ export default function NavbarComponent({ handleBurgerClick, isNavActive }: Prop
             </div>
             <ul className='flex gap-5'>
                 <li>Crear</li>
-                <li>
-                    <FontAwesomeIcon icon={faPowerOff} onClick={handleLogout} className='cursor-pointer' />
+                <li className='flex items-center '>
+                    {/* <FontAwesomeIcon icon={faPowerOff} onClick={handleLogout} className='cursor-pointer' /> */}
+                    <i className='icon-power-off cursor-pointer' onClick={handleLogout}></i>
                 </li>
             </ul>
         </nav>

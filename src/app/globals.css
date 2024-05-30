@@ -119,6 +119,16 @@ body {
   background-position: start;
 }
 
+
+.icon-power-off {
+  background-image: url("../assets/svg/power-off-solid.svg");
+  width: 16px; /* Ajusta el ancho según tus necesidades */
+  height: 16px; /* Ajusta la altura según tus necesidades */
+  display: inline-block;
+  background-repeat: none;
+  background-position: start;
+}
+
 @media (max-width: 1280px) {
   .showOnMobile {
     display: block !important;

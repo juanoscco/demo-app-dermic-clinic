@@ -107,7 +107,7 @@ export default function ProceduresCreate() {
         onSubmit: async (values, { resetForm }) => {
             try {
                 addProcedure(values)
-                alert(data?.message)
+                alert("Procedimiento creado satisfactoriamente!")
                 resetForm();
             } catch (error) {
                 alert(error)
