@@ -9,6 +9,7 @@ interface Company {
 export interface Headquarters {
     id_sede?: number;
     nombres: string;
+    codigo?: string;
     direccion: string;
     telefono: string;
     empresa: Company;

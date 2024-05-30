@@ -14,6 +14,7 @@ export default function InfraUpdateComponent({ onClose, id, data, update }: Prop
         initialValues: {
             id_sede: id,
             nombres: data.nombres,
+            codigo: data.codigo,
             direccion: data.direccion,
             telefono: data.telefono,
             empresa: {

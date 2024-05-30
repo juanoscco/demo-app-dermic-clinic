@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-import { Headquarters, ResponseHeadquartes } from "../../interface/"
+import { InfraRoom, ReponseInfraRoom } from "../../interface"
 
-const baseUrl = `${process.env.API_DOCKER_JAVA_REST}/sede`;
+const baseUrl = `${process.env.API_DOCKER_JAVA_REST}/sala_tratamiento`;
 
-export const infrastructureCreateApi = createApi({
-    reducerPath: 'infrastructureCreateApi',
+export const infrastructureRoomCreateApi = createApi({
+    reducerPath: 'infrastructureRoomCreateApi',
     baseQuery: fetchBaseQuery({
         baseUrl,
         prepareHeaders: (headers) => {
@@ -17,14 +17,14 @@ export const infrastructureCreateApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        addInfrastructure: builder.mutation<ResponseHeadquartes, Headquarters>({
-            query: (newInfrastructure) => ({
+        addInfrastructureRoom: builder.mutation<ReponseInfraRoom, InfraRoom>({
+            query: (newInfrastructureRoom) => ({
                 url: '',
                 method: 'POST',
-                body: newInfrastructure,
+                body: newInfrastructureRoom,
             }),
         }),
     }),
 });
 
-export const { useAddInfrastructureMutation } = infrastructureCreateApi;
+export const { useAddInfrastructureRoomMutation } = infrastructureRoomCreateApi;

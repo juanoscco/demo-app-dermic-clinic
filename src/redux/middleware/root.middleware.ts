@@ -4,6 +4,7 @@ import { patientMiddlewares } from "@/app/(dash-admin)/store/middleware/patients
 import { personsMiddleware } from "@/app/(dash-admin)/store/middleware/persons";
 import { infrastructureMiddleware } from "@/app/(dash-admin)/store/middleware/infrastructure";
 import { proceduresMiddleware } from "@/app/(dash-admin)/store/middleware/procedures/procedures.middleware";
+import { infrastructureRoomsMiddleware } from "@/app/(dash-admin)/store/middleware/infrastructure-rooms";
 
 export const rootMiddlewares = (
     getDefaultMiddleware: any
@@ -13,5 +14,6 @@ export const rootMiddlewares = (
     ...patientMiddlewares,
     ...personsMiddleware,
     ...infrastructureMiddleware,
-    ...proceduresMiddleware
+    ...proceduresMiddleware,
+    ...infrastructureRoomsMiddleware
 )
