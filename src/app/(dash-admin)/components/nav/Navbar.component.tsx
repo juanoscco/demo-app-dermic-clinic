@@ -1,7 +1,5 @@
 import React from 'react'
 import LogoutExitHook from '../../hooks/logout/logout-exit.hook'
-import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Props } from "@/app/(dash-admin)/models/navbar/navbar.models"
 
 
