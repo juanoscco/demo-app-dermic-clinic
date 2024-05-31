@@ -20,11 +20,11 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
 
   // 
-  const [perPage, setPerPage] = useState(10);
+  // const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [filter, setFilter] = useState('');
-  const { data: dataRoom, isLoading, error, refetch } = useGetRoomsListQuery({ limit: perPage, page: currentPage - 1, filter })
+  const { data: dataRoom, isLoading, error, refetch } = useGetRoomsListQuery({ limit: 10, page: currentPage - 1, filter })
   const filteredRooms = dataRoom?.data?.content.filter((room: any) => room.sede.id_sede === id);
 
   // 
@@ -60,8 +60,8 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
     setCurrentPage(currentPage - 1);
   };
 
-  const totalPages = Math.ceil(filteredRooms.length / perPage);
-  const paginatedRooms = filteredRooms.slice((currentPage - 1) * perPage, currentPage * perPage);
+  const totalPages = Math.ceil(filteredRooms.length / 10);
+  const paginatedRooms = filteredRooms.slice((currentPage - 1) * 10, currentPage * 10);
 
 
   // 
