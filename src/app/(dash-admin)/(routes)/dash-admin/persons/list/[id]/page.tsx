@@ -2,6 +2,8 @@
 import React, { useState } from 'react'
 import { useGetEmployeeByIdQuery } from './store/service';
 import EmployeeUpdateComponent from './employee-update/employee-update.component';
+import Link from 'next/link';
+import ScheludePersonComponent from './components/schedule-component/schelude-person.component';
 
 interface Props {
   params: {
@@ -25,10 +27,14 @@ export default function DetailsUserEmployees({ params }: Props) {
   if (error) return <div>Error loading patient details</div>;
 
   return (
-    <section className="flex flex-wrap">
-      {/* Datos del usuario */}
-      <div className="w-full p-4">
-        <div className="bg-white p-8">
+    <section className="p-4">
+      <Link
+        href={`/dash-admin/persons/list`}
+        className="inline-block mb-4 text-blue-500 hover:text-blue-700 transition-all duration-200"
+      >Atras</Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Datos del usuario */}
+        <div className="bg-white p-6 rounded-lg ">
           <h1 className="text-2xl font-bold mb-4 capitalize">
             Empleado: {dataEmployee.nombres.toLowerCase()}
           </h1>
@@ -61,7 +67,7 @@ export default function DetailsUserEmployees({ params }: Props) {
           <div className="mb-4">
             <p className="text-gray-600 font-medium">Sede:</p>
             <h1 className="text-gray-900 font-bold capitalize">Nombre: {dataEmployee.sede.nombres}</h1>
-            <p className="text-gray-900 capitalize">Direccion: {dataEmployee.sede.direccion}</p>
+            <p className="text-gray-900 capitalize">Dirección: {dataEmployee.sede.direccion}</p>
             <p className="text-gray-900">Celular: {dataEmployee.sede.telefono}</p>
           </div>
           <div className="flex justify-between mt-6">
@@ -71,8 +77,7 @@ export default function DetailsUserEmployees({ params }: Props) {
             >
               Editar
             </button>
-            {showPopup
-              &&
+            {showPopup &&
               <EmployeeUpdateComponent
                 onClose={togglePopup}
                 id={dataEmployee.id_empleado}
@@ -85,41 +90,18 @@ export default function DetailsUserEmployees({ params }: Props) {
             </button>
           </div>
         </div>
-      </div>
-      {/* Datos del horario del usuario */}
-      <div className="w-full p-4">
-        <div className="bg-white p-8">
-          <h2 className="text-xl font-bold mb-4">Horario de Trabajo</h2>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="py-2 text-left">Día</th>
-                <th className="py-2 text-left">Horario</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border px-4 py-2">Lunes</td>
-                <td className="border px-4 py-2">08:00 - 16:00</td>
-              </tr>
-              <tr className="bg-gray-100">
-                <td className="border px-4 py-2">Martes</td>
-                <td className="border px-4 py-2">09:00 - 17:00</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">Miércoles</td>
-                <td className="border px-4 py-2">10:00 - 18:00</td>
-              </tr>
-              <tr className="bg-gray-100">
-                <td className="border px-4 py-2">Jueves</td>
-                <td className="border px-4 py-2">08:00 - 16:00</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">Viernes</td>
-                <td className="border px-4 py-2">09:00 - 17:00</td>
-              </tr>
-            </tbody>
-          </table>
+
+        <ScheludePersonComponent
+          dataPerson={dataEmployee}
+          idPerson={dataEmployee.id_empleado}
+        />
+
+        {/* Espacios en blanco */}
+        <div className="bg-white p-6 rounded-lg">
+          <h1>Apertura de agenda</h1>
+        </div>
+        <div className="bg-white p-6 rounded-lg ">
+          <h1>Lista de Excepciones</h1>
         </div>
       </div>
     </section>

@@ -14,10 +14,10 @@ export const agendaListApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getScheludes: builder.query({
+    getAgenda: builder.query({
       query: ({ limit = 10, page = 0, filter = '' }) => `agenda?p=${page}&limit=${limit}&filtro=${filter}`,
     }),
   }),
 });
 
-export const { useGetScheludesQuery } = agendaListApi;
+export const { useGetAgendaQuery } = agendaListApi;

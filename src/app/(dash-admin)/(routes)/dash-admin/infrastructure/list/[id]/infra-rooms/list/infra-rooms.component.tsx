@@ -19,7 +19,7 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
   const [showPopupUpdate, setShowPopupUpdate] = useState(false);
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
 
-  // 
+  // TODO: SHOW THE FILTER COMING SOON
   // const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -33,12 +33,14 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
   };
   // 
 
+  // 
   const togglePopupId = (id?: number) => {
     if (id) {
       setSelectedRoomId(id)
     }
     setShowPopupUpdate(!showPopupUpdate)
   }
+  // 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       refetch();
