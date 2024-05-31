@@ -1,6 +1,6 @@
 import React from 'react'
 import { useUpdateProcedureMutation } from './store/service'
-import PopupUpdate from '@/components/popup/popup-update/popup-update.component';
+import { PopupUpdate } from '@/components/popup/popup-update/';
 
 import { Procedure } from "../../../../create/interface"
 import { useFormik } from 'formik';
@@ -239,7 +239,7 @@ export default function UpdateProceduresComponents({ onClose, id, data, update }
                         <option value="false">Desabilitado</option>
                     </select>
                 </div>
-                <button className='bg-[#82b440] p-2 text-white' type='submit'>{isLoading ? 'Editando..': 'Actualizar'}</button>
+                <button className='bg-[#82b440] p-2 text-white' type='submit'>{isLoading ? 'Editando..' : 'Actualizar'}</button>
             </form>
         </PopupUpdate>
     )

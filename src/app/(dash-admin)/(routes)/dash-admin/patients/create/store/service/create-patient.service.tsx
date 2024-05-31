@@ -28,4 +28,3 @@ export const patientCreateApi = createApi({
 });
 
 export const { useAddPacienteMutation } = patientCreateApi;
-// export default pacienteApi;

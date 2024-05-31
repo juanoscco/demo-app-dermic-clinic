@@ -33,9 +33,9 @@ export default function InfrastructureCreate() {
             }),
             estado: Yup.boolean().required('Requerido'),
         }),
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             // console.log(values)
-            addInfrastructure(values);
+            await addInfrastructure(values);
         },
     });
     return (

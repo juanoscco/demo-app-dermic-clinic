@@ -122,7 +122,7 @@ export function DatatableComponent(
           </select>
         </div>
 
-        <div className="flex items-center ">
+        <div className="flex items-center">
           <button
             onClick={goToPrevPage}
             disabled={currentPage === 1}

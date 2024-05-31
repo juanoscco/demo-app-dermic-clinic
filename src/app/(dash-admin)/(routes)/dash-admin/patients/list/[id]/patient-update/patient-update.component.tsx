@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import PopupUpdate from "@/components/popup/popup-update/popup-update.component"
+import {PopupUpdate} from "@/components/popup/popup-update/"
 import { useUpdatePatientMutation } from "./store/service/patient-update.service";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';

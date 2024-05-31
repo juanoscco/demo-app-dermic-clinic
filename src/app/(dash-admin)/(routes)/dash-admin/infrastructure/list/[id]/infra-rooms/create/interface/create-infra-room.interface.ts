@@ -16,6 +16,7 @@ interface Sede {
 }
 
 export interface InfraRoom {
+    id_sala_tratamiento?: number;
     sede: Sede;
     nombres: string;
     piso: number;

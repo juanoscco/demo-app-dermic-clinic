@@ -21,5 +21,3 @@ export const patientDetailApi = createApi({
 });
 
 export const { useGetPatientByIdQuery } = patientDetailApi;
-
-// export default patientDetailApi;

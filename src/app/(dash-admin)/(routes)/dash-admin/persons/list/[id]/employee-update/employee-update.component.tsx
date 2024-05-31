@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useUpdateEmployeeMutation } from './store/service'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import PopupUpdate from '@/components/popup/popup-update/popup-update.component';
+import {PopupUpdate} from '@/components/popup/popup-update/';
 import { GetDniApiHook } from '@/config/hook-dni';
 import { useGetInfrastructureQuery } from '../../../../infrastructure/list/store/service';
 import { Employee } from "../../../create/interface"
