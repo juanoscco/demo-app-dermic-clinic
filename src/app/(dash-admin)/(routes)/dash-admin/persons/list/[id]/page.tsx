@@ -4,6 +4,7 @@ import { useGetEmployeeByIdQuery } from './store/service';
 import EmployeeUpdateComponent from './employee-update/employee-update.component';
 import Link from 'next/link';
 import ScheludePersonComponent from './components/schedule-component/schelude-person.component';
+import AgendaPersonComponent from './components/agenda-component/agenda-person.component';
 
 interface Props {
   params: {
@@ -80,7 +81,7 @@ export default function DetailsUserEmployees({ params }: Props) {
             {showPopup &&
               <EmployeeUpdateComponent
                 onClose={togglePopup}
-                id={dataEmployee.id_empleado}
+                id={dataEmployee?.id_empleado}
                 data={dataEmployee}
                 update={refetch}
               />
@@ -97,9 +98,10 @@ export default function DetailsUserEmployees({ params }: Props) {
         />
 
         {/* Espacios en blanco */}
-        <div className="bg-white p-6 rounded-lg">
-          <h1>Apertura de agenda</h1>
-        </div>
+        <AgendaPersonComponent
+          dataPerson={dataEmployee}
+          idPerson={dataEmployee.id_empleado}
+        />
         <div className="bg-white p-6 rounded-lg ">
           <h1>Lista de Excepciones</h1>
         </div>

@@ -38,7 +38,7 @@ const validationSchema = Yup.object({
 
 export default function CreateInfraRoomComponent({ id, dataInfra, update, onClose }: Props) {
 
-  const [addRoom, { data, isLoading, isError }] = useAddInfrastructureRoomMutation()
+  const [addRoom, { isLoading }] = useAddInfrastructureRoomMutation()
   const formik = useFormik<InfraRoom>({
     initialValues: {
       sede: {

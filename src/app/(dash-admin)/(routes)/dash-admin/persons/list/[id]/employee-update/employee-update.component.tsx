@@ -72,6 +72,7 @@ export default function EmployeeUpdateComponent({ onClose, id, data, update }: P
         estado: true,
       },
       usuario: {
+        id_usuario: data.usuario?.id_usuario,
         username: data.usuario?.username || '',
         password: data.usuario?.password || '',
         rol: {
@@ -109,6 +110,7 @@ export default function EmployeeUpdateComponent({ onClose, id, data, update }: P
     onSubmit: async (values) => {
       // console.log(values)
       try {
+        console.log({ employeeId: values.id_empleado, employeeData: values });
         await updateEmployee({ employeeId: values.id_empleado, employeeData: values }).unwrap();
         update();
         onClose();
