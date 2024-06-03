@@ -418,110 +418,105 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                         <div className="text-red-500 flex items-center">{formik.errors.nombre_horario}</div>
                     ) : null}
                 </div>
-                <div className=" ">
+                <div>
                     {/* <label className="block text-gray-700">Horario de Trabajo Detalle</label> */}
-                    <div className='flex flex-col gap-1'>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {formik.values.horario_trabajo_detalle?.map((detalle, index) => (
-                            <div key={index} className='flex border border-gray-300 p-2 rounded flex-col mb-2'>
-                                <div className="mb-1">
-                                    <label className="block text-gray-700">{detalle.semana?.descripcion}</label>
+                            <div key={index} className="flex gap-2 border border-gray-300 p-2 rounded">
+                                <div className="flex flex-col gap-3">
+                                    <div className="mb-2">
+                                        <label className="block text-gray-700">Temprano Inicio</label>
+                                        <select
+                                            name={`horario_trabajo_detalle[${index}].temprano_inicio.id_cabecera_detalle`}
+                                            onChange={(e) => handleSelectChange(e, index, 'temprano_inicio', opcionesInicioTemprano)}
+                                            onBlur={formik.handleBlur}
+                                            value={detalle.temprano_inicio?.id_cabecera_detalle || ''}
+                                            disabled={!detalle.estado}
+                                            className="mt-1 p-2 border rounded w-full"
+                                        >
+                                            {opcionesInicioTemprano.map((opcion) => (
+                                                <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
+                                                    {opcion.descripcion}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="mb-2">
+                                        <label className="block text-gray-700">Tarde Inicio</label>
+                                        <select
+                                            name={`horario_trabajo_detalle[${index}].tarde_inicio.id_cabecera_detalle`}
+                                            onChange={(e) => handleSelectChange(e, index, 'tarde_inicio', opcionesInicioTarde)}
+                                            onBlur={formik.handleBlur}
+                                            value={detalle.tarde_inicio?.id_cabecera_detalle || ''}
+                                            disabled={!detalle.estado}
+                                            className="mt-1 p-2 border rounded w-full"
+                                        >
+                                            {opcionesInicioTarde.map((opcion) => (
+                                                <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
+                                                    {opcion.descripcion}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
-                                <div className="flex gap-3">
-                                    <div className='flex gap-3'>
-                                        <div className="mb-2">
-                                            <label className="block text-gray-700">Temprano Inicio</label>
-                                            <select
-                                                name={`horario_trabajo_detalle[${index}].temprano_inicio.id_cabecera_detalle`}
-                                                onChange={(e) => handleSelectChange(e, index, 'temprano_inicio', opcionesInicioTemprano)}
-                                                onBlur={formik.handleBlur}
-                                                value={detalle.temprano_inicio?.id_cabecera_detalle || ''}
-                                                disabled={!detalle.estado}
-                                                className="mt-1 p-2 border rounded w-full"
-                                            >
-                                                {opcionesInicioTemprano.map((opcion) => (
-                                                    <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
-                                                        {opcion.descripcion}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="mb-2">
-                                            <label className="block text-gray-700">Temprano Final</label>
-                                            <select
-                                                name={`horario_trabajo_detalle[${index}].temprano_final.id_cabecera_detalle`}
-                                                onChange={(e) => handleSelectChange(e, index, 'temprano_final', opcionesFinalTemprano)}
-                                                onBlur={formik.handleBlur}
-                                                value={detalle.temprano_final?.id_cabecera_detalle || ''}
-                                                disabled={!detalle.estado}
-                                                className="mt-1 p-2 border rounded w-full"
-                                            >
-                                                {opcionesFinalTemprano.map((opcion) => (
-                                                    <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
-                                                        {opcion.descripcion}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="mb-2">
-                                            <label className="block text-gray-700">Tarde Inicio</label>
-                                            <select
-                                                name={`horario_trabajo_detalle[${index}].tarde_inicio.id_cabecera_detalle`}
-                                                onChange={(e) => handleSelectChange(e, index, 'tarde_inicio', opcionesInicioTarde)}
-                                                onBlur={formik.handleBlur}
-                                                value={detalle.tarde_inicio?.id_cabecera_detalle || ''}
-                                                disabled={!detalle.estado}
-                                                className="mt-1 p-2 border rounded w-full"
-                                            >
-                                                {opcionesInicioTarde.map((opcion) => (
-                                                    <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
-                                                        {opcion.descripcion}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="mb-2">
-                                            <label className="block text-gray-700">Tarde Final</label>
-                                            <select
-                                                name={`horario_trabajo_detalle[${index}].tarde_final.id_cabecera_detalle`}
-                                                onChange={(e) => handleSelectChange(e, index, 'tarde_final', opcionesFinalTarde)}
-                                                onBlur={formik.handleBlur}
-                                                value={detalle.tarde_final?.id_cabecera_detalle || ''}
-                                                disabled={!detalle.estado}
-                                                className="mt-1 p-2 border rounded w-full"
-                                            >
-                                                {opcionesFinalTarde.map((opcion) => (
-                                                    <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
-                                                        {opcion.descripcion}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-end gap-3 mb-2'>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleActivationToggle(index, true)}
-                                            className={`w-32 h-9 p-1 ${detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-blue-500 text-white'} rounded`}
+                                <div className="flex flex-col gap-3 items-end">
+                                    <div className="mb-2">
+                                        <label className="block text-gray-700">Temprano Final</label>
+                                        <select
+                                            name={`horario_trabajo_detalle[${index}].temprano_final.id_cabecera_detalle`}
+                                            onChange={(e) => handleSelectChange(e, index, 'temprano_final', opcionesFinalTemprano)}
+                                            onBlur={formik.handleBlur}
+                                            value={detalle.temprano_final?.id_cabecera_detalle || ''}
+                                            disabled={!detalle.estado}
+                                            className="mt-1 p-2 border rounded w-full"
                                         >
-                                            Activar
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleActivationToggle(index, false)}
-                                            className={`w-32 h-9 p-1 ${!detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-red-500 text-white'} rounded`}
-                                        >
-                                            Desactivar
-                                        </button>
+                                            {opcionesFinalTemprano.map((opcion) => (
+                                                <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
+                                                    {opcion.descripcion}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
+                                    <div className="mb-2">
+                                        <label className="block text-gray-700">Tarde Final</label>
+                                        <select
+                                            name={`horario_trabajo_detalle[${index}].tarde_final.id_cabecera_detalle`}
+                                            onChange={(e) => handleSelectChange(e, index, 'tarde_final', opcionesFinalTarde)}
+                                            onBlur={formik.handleBlur}
+                                            value={detalle.tarde_final?.id_cabecera_detalle || ''}
+                                            disabled={!detalle.estado}
+                                            className="mt-1 p-2 border rounded w-full"
+                                        >
+                                            {opcionesFinalTarde.map((opcion) => (
+                                                <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
+                                                    {opcion.descripcion}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="flex items-end gap-3 mb-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleActivationToggle(index, true)}
+                                        className={`w-32 h-9 p-1 ${detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-blue-500 text-white'} rounded`}
+                                    >
+                                        Activar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleActivationToggle(index, false)}
+                                        className={`w-32 h-9 p-1 ${!detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-red-500 text-white'} rounded`}
+                                    >
+                                        Desactivar
+                                    </button>
                                 </div>
                             </div>
                         ))}
                     </div>
+
                 </div>
-                <div className='border border-gray-300 text-left p-2'>
+                <div className='border border-gray-300 text-left p-2 mt-1'>
                     <label className='block text-sm font-medium'>Estado</label>
                     <select
                         name='estado'
