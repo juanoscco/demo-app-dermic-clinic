@@ -17,7 +17,7 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
     const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null)
     // 
 
-    const { data: dataSchedule, isLoading, isError, refetch } = useGetScheludesQuery({ page: 0, limit: 5, filter: '' })
+    const { data: dataSchedule, isLoading, refetch } = useGetScheludesQuery({ page: 0, limit: 5, filter: '' })
 
     const filteredSchedules = dataSchedule?.data?.content.filter((schedule: any) => schedule?.empleado?.id_empleado === idPerson)
 
@@ -36,6 +36,16 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
         }
         setShowPopupUpdate(!showPopupUpdate);
     }
+
+
+    const dayOrder: any = {
+        'Lunes': 1,
+        'Martes': 2,
+        'Miércoles': 3,
+        'Jueves': 4,
+        'Viernes': 5,
+        'Sábado': 6
+    };
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -57,15 +67,15 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
 
                     <React.Fragment>
                         <h2 className="text-xl font-bold mb-4">{filteredSchedules[0].nombre_horario}</h2>
-                        <button 
-                        className='text-yellow-400 hover:text-yellow-500'
+                        <button
+                            className='text-yellow-400 hover:text-yellow-500'
 
-                        onClick={() => togglePopupUpdateId(filteredSchedules[0].id_horario_trabajo)}>Editar</button>
+                            onClick={() => togglePopupUpdateId(filteredSchedules[0].id_horario_trabajo)}>Editar</button>
                     </React.Fragment>
                 ) : (
                     <React.Fragment>
-                        <h1 className="text-xl font-bold mb-4">Horario del usuario</h1>
-                        <button onClick={togglePopup}>Crear Usuario</button>
+                        <h1 className="text-xl font-bold mb-4">Horario</h1>
+                        <button onClick={togglePopup} className='text-blue-500'>Crear Horario</button>
                     </React.Fragment>
                 )}
 
@@ -77,24 +87,32 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
                     <thead>
                         <tr>
                             <th className="py-2 text-left">Día</th>
-                            {/* <th className="py-2 text-left">Horario</th> */}
                             <th className='px-4 py-2 text-left'>Turno mañana</th>
                             <th className='px-4 py-2 text-left'>Turno tarde</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredSchedules[0].horario_trabajo_detalle.map((detalle: any, i: number) => (
-                            <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-100"}>
-                                <td className="border px-4 py-2">{detalle.semana.descripcion}</td>
-                                <td className="border px-4 py-2">
-                                    {`${detalle.temprano_inicio.descripcion} - ${detalle.temprano_final.descripcion}`}
-                                </td>
-                                <td className="border px-4 py-2"> {`${detalle.tarde_inicio.descripcion} - ${detalle.tarde_final.descripcion}`}</td>
-                            </tr>
-                        ))}
+                        {filteredSchedules[0].horario_trabajo_detalle
+                            .filter((detalle: any) => detalle.estado) // Filtra los elementos con estado true
+                            .map((detalle: any, i: number) => (
+                                <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-100"}>
+                                    <td className="border px-4 py-2">{detalle.semana.descripcion}</td>
+                                    <td className="border px-4 py-2">
+                                        {`${detalle.temprano_inicio.descripcion} - ${detalle.temprano_final.descripcion}`}
+                                    </td>
+                                    <td className="border px-4 py-2">
+                                        {`${detalle.tarde_inicio.descripcion} - ${detalle.tarde_final.descripcion}`}
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
+
+
+
                 </table>) : (
-                <div>No hay nada</div>
+                <div className='flex justify-center items-center h-full'>
+                    Horario vacio, crea un horario
+                </div>
             )}
 
 
