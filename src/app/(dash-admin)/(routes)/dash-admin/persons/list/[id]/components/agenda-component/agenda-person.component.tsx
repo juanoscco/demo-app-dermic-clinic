@@ -39,10 +39,10 @@ export default function AgendaPersonComponent({ dataPerson, idPerson }: Props) {
 
     return (
         <div className="bg-white p-6 rounded-lg">
-            <div className='flex justify-center items-center'>
+            <div className='flex justify-between items-center'>
                 <h1>Apertura de agenda</h1>
 
-                {/* <button onClick={togglePopup}>Crear</button> */}
+                <button onClick={togglePopup}>Crear</button>
             </div>
             {/* <table>
                 <thead>

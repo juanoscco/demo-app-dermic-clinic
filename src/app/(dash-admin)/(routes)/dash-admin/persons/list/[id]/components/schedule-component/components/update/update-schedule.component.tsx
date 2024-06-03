@@ -13,9 +13,9 @@ interface Props {
 }
 
 export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, onClose }: Props) {
-    const [updateSchedule, { data, isLoading, isError }] = useUpdateScheduleMutation()
+    const [updateSchedule, { isLoading }] = useUpdateScheduleMutation()
 
-    console.log(dataUpdate)
+    // console.log(dataUpdate)
     const formik = useFormik<Schedule>({
         initialValues: {
             id_horario_trabajo: idUpdate,
@@ -174,14 +174,13 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
             )
         }),
         onSubmit: async (values) => {
-
             try {
                 console.log(values);
 
                 await updateSchedule({ scheduleId: values.id_horario_trabajo, scheduleData: values }).unwrap();
-                update();
-                alert("Acualizado correctamente!!")
                 onClose();
+                update();
+
             } catch (error) {
                 console.error(error)
             }
@@ -211,7 +210,6 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
 
     ];
 
-
     const opcionesInicioTarde = [
         { id_cabecera_detalle: 52, descripcion: "13:00 p.m." },
         { id_cabecera_detalle: 53, descripcion: "13:20 p.m." },
@@ -221,7 +219,6 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
         { id_cabecera_detalle: 57, descripcion: "14:40 p.m." },
         { id_cabecera_detalle: 58, descripcion: "15:00 p.m." }
     ];
-
     const opcionesFinalTarde = [
         { id_cabecera_detalle: 44, descripcion: "15:20 p.m." },
         { id_cabecera_detalle: 45, descripcion: "15:40 p.m." },
@@ -241,9 +238,9 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
     };
     return (
         <PopupUpdate>
-            <button onClick={onClose}>x</button>
-            <form onSubmit={formik.handleSubmit}>
-                <div className="mb-4">
+            <button onClick={onClose} className='flex justify-end w-full'>x</button>
+            <form onSubmit={formik.handleSubmit} className='overflow-y-auto'>
+                <div className="mb-4 flex">
                     <label className="block text-gray-700">Nombre Horario</label>
                     <input
                         type="text"
@@ -257,107 +254,116 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                         <div className="text-red-500">{formik.errors.nombre_horario}</div>
                     ) : null}
                 </div>
-                <div className="mb-4 ">
-                    <label className="block text-gray-700">Horario de Trabajo Detalle</label>
-                    <div className='flex gap-4'>
+                <div className=" ">
+                    {/* <label className="block text-gray-700">Horario de Trabajo Detalle</label> */}
+                    <div className='flex flex-col gap-1'>
                         {formik.values.horario_trabajo_detalle?.map((detalle, index) => (
-                            <div key={index} className="mb-4 p-4 border rounded">
-                                <div className="mb-2">
-                                    <label className="block text-gray-700">Semana {detalle.semana?.descripcion}</label>
-                                </div>
-                                <div className="mb-2">
-                                    <label className="block text-gray-700">Temprano Inicio</label>
-                                    <select
-                                        name={`horario_trabajo_detalle[${index}].temprano_inicio.id_cabecera_detalle`}
-                                        onChange={(e) => handleSelectChange(e, index, 'temprano_inicio', opcionesInicioTemprano)}
-                                        onBlur={formik.handleBlur}
-                                        value={detalle.temprano_inicio?.id_cabecera_detalle || ''}
-                                        className="mt-1 p-2 border rounded w-full"
-                                    >
-                                        {opcionesInicioTemprano.map((opcion) => (
-                                            <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
-                                                {opcion.descripcion}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {/* {formik.touched.horario_trabajo_detalle?.[index]?.temprano_inicio?.id_cabecera_detalle && formik.errors.horario_trabajo_detalle?.[index]?.temprano_inicio?.id_cabecera_detalle ? (
+                            <div key={index} className='flex flex-col'>
+                                <div className="mb-4 p-2 border rounded flex gap-3">
+                                    <div className="mb-2">
+                                        <label className="block text-gray-700">{detalle.semana?.descripcion}</label>
+                                    </div>
+
+                                    <div className='flex gap-3'>
+                                        <div className="mb-2">
+                                            <label className="block text-gray-700">Temprano Inicio</label>
+                                            <select
+                                                name={`horario_trabajo_detalle[${index}].temprano_inicio.id_cabecera_detalle`}
+                                                onChange={(e) => handleSelectChange(e, index, 'temprano_inicio', opcionesInicioTemprano)}
+                                                onBlur={formik.handleBlur}
+                                                value={detalle.temprano_inicio?.id_cabecera_detalle || ''}
+                                                className="mt-1 p-2 border rounded w-full"
+                                            >
+                                                {opcionesInicioTemprano.map((opcion) => (
+                                                    <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
+                                                        {opcion.descripcion}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {/* {formik.touched.horario_trabajo_detalle?.[index]?.temprano_inicio?.id_cabecera_detalle && formik.errors.horario_trabajo_detalle?.[index]?.temprano_inicio?.id_cabecera_detalle ? (
                                         <div className="text-red-500 text-sm">{formik.errors.horario_trabajo_detalle?.[index]?.temprano_inicio?.id_cabecera_detalle}</div>
                                     ) : null} */}
-                                </div>
-
-
-                                <div className="mb-2">
-                                    <label className="block text-gray-700">Temprano Final</label>
-                                    <select
-                                        name={`horario_trabajo_detalle[${index}].temprano_final.id_cabecera_detalle`}
-                                        onChange={(e) => handleSelectChange(e, index, 'temprano_final', opcionesFinalTemprano)}
-                                        onBlur={formik.handleBlur}
-                                        value={detalle.temprano_final?.id_cabecera_detalle || ''}
-                                        className="mt-1 p-2 border rounded w-full"
-                                    >
-                                        {opcionesFinalTemprano.map((opcion) => (
-                                            <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
-                                                {opcion.descripcion}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {/* {formik.touched.horario_trabajo_detalle?.[index]?.temprano_final?.id_cabecera_detalle && formik.errors.horario_trabajo_detalle?.[index]?.temprano_final?.id_cabecera_detalle ? (
+                                        </div>
+                                        
+                                        <div className="mb-2">
+                                            <label className="block text-gray-700">Temprano Final</label>
+                                            <select
+                                                name={`horario_trabajo_detalle[${index}].temprano_final.id_cabecera_detalle`}
+                                                onChange={(e) => handleSelectChange(e, index, 'temprano_final', opcionesFinalTemprano)}
+                                                onBlur={formik.handleBlur}
+                                                value={detalle.temprano_final?.id_cabecera_detalle || ''}
+                                                className="mt-1 p-2 border rounded w-full"
+                                            >
+                                                {opcionesFinalTemprano.map((opcion) => (
+                                                    <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
+                                                        {opcion.descripcion}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {/* {formik.touched.horario_trabajo_detalle?.[index]?.temprano_final?.id_cabecera_detalle && formik.errors.horario_trabajo_detalle?.[index]?.temprano_final?.id_cabecera_detalle ? (
                                         <div className="text-red-500 text-sm">{formik.errors.horario_trabajo_detalle?.[index]?.temprano_final?.id_cabecera_detalle}</div>
                                     ) : null} */}
-                                </div>
-                                <div className="mb-2">
-                                    <label className="block text-gray-700">Tarde Inicio</label>
-                                    <select
-                                        name={`horario_trabajo_detalle[${index}].tarde_inicio.id_cabecera_detalle`}
-                                        onChange={(e) => handleSelectChange(e, index, 'tarde_inicio', opcionesInicioTarde)}
-                                        onBlur={formik.handleBlur}
-                                        value={detalle.tarde_inicio?.id_cabecera_detalle || ''}
-                                        className="mt-1 p-2 border rounded w-full"
-                                    >
-                                        {opcionesInicioTarde.map((opcion) => (
-                                            <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
-                                                {opcion.descripcion}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {/* {formik.touched.horario_trabajo_detalle?.[index]?.tarde_inicio?.id_cabecera_detalle && formik.errors.horario_trabajo_detalle?.[index]?.tarde_inicio?.id_cabecera_detalle ? (
+                                        </div>
+
+                                        <div className="mb-2">
+                                            <label className="block text-gray-700">Tarde Inicio</label>
+                                            <select
+                                                name={`horario_trabajo_detalle[${index}].tarde_inicio.id_cabecera_detalle`}
+                                                onChange={(e) => handleSelectChange(e, index, 'tarde_inicio', opcionesInicioTarde)}
+                                                onBlur={formik.handleBlur}
+                                                value={detalle.tarde_inicio?.id_cabecera_detalle || ''}
+                                                className="mt-1 p-2 border rounded w-full"
+                                            >
+                                                {opcionesInicioTarde.map((opcion) => (
+                                                    <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
+                                                        {opcion.descripcion}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {/* {formik.touched.horario_trabajo_detalle?.[index]?.tarde_inicio?.id_cabecera_detalle && formik.errors.horario_trabajo_detalle?.[index]?.tarde_inicio?.id_cabecera_detalle ? (
                                         <div className="text-red-500 text-sm">{formik.errors.horario_trabajo_detalle?.[index]?.tarde_inicio?.id_cabecera_detalle}</div>
                                     ) : null} */}
-                                </div>
+                                        </div>
 
-                                <div className="mb-2">
-                                    <label className="block text-gray-700">Tarde Final</label>
-                                    <select
-                                        name={`horario_trabajo_detalle[${index}].tarde_final.id_cabecera_detalle`}
-                                        onChange={(e) => handleSelectChange(e, index, 'tarde_final', opcionesFinalTarde)}
-                                        onBlur={formik.handleBlur}
-                                        value={detalle.tarde_final?.id_cabecera_detalle || ''}
-                                        className="mt-1 p-2 border rounded w-full"
-                                    >
-                                        {opcionesFinalTarde.map((opcion) => (
-                                            <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
-                                                {opcion.descripcion}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {/* {formik.touched.  */}
+                                        <div className="mb-2">
+                                            <label className="block text-gray-700">Tarde Final</label>
+                                            <select
+                                                name={`horario_trabajo_detalle[${index}].tarde_final.id_cabecera_detalle`}
+                                                onChange={(e) => handleSelectChange(e, index, 'tarde_final', opcionesFinalTarde)}
+                                                onBlur={formik.handleBlur}
+                                                value={detalle.tarde_final?.id_cabecera_detalle || ''}
+                                                className="mt-1 p-2 border rounded w-full"
+                                            >
+                                                {opcionesFinalTarde.map((opcion) => (
+                                                    <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
+                                                        {opcion.descripcion}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {/* {formik.touched.  */}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Estado</label>
-                    <input
-                        type="checkbox"
-                        name="estado"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        checked={formik.values.estado}
-                        className="mt-1"
-                    />
+                <div className='border border-gray-300 text-left p-2'>
+                    <label className='block text-sm font-medium'>Estado</label>
+                    <select
+                        name='estado'
+                        value={formik.values.estado ? 'true' : 'false'}
+                        onChange={(e) => formik.setFieldValue('estado', e.target.value === 'true')}
+                        className='w-full py-2 outline-none px-1'
+                    >
+                        <option value='true'>Habilitado</option>
+                        <option value='false'>Deshabilitado</option>
+                    </select>
+                    {formik.touched.estado && formik.errors.estado ? (
+                        <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
+                    ) : null}
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-end mt-3">
                     <button type="button" className="mr-2 py-2 px-4 bg-gray-500 text-white rounded" onClick={onClose}>Cancelar</button>
                     <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded">{isLoading ? 'Editando...' : 'Editar'}</button>
                 </div>

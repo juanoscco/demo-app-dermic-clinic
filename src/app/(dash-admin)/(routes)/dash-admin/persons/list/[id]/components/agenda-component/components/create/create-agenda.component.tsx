@@ -15,77 +15,6 @@ interface Props {
 
 
 const validationSchema = Yup.object({
-    usuario: Yup.object({
-        id_usuario: Yup.number().required('Required'),
-        username: Yup.string().required('Required'),
-        rol: Yup.object({
-            id_rol: Yup.number().required('Required'),
-            descripcion: Yup.string().required('Required'),
-            valor: Yup.string().required('Required'),
-            estado: Yup.boolean().required('Required')
-        }).required('Required'),
-        estado: Yup.boolean().required('Required')
-    }).required('Required'),
-    empleado: Yup.object({
-        id_empleado: Yup.number().required('Required'),
-        tipo_documento: Yup.object({
-            id_cabecera: Yup.number().required('Required'),
-            id_cabecera_detalle: Yup.number().required('Required'),
-            descripcion: Yup.string().required('Required'),
-            valor: Yup.string().required('Required')
-        }).required('Required'),
-        numero: Yup.string().required('Required'),
-        nombres: Yup.string().required('Required'),
-        telefono: Yup.string().required('Required'),
-        correo: Yup.string().email('Invalid email').required('Required'),
-        sede: Yup.object({
-            id_sede: Yup.number().required('Required'),
-            codigo: Yup.string().required('Required'),
-            nombres: Yup.string().required('Required'),
-            direccion: Yup.string().required('Required'),
-            telefono: Yup.string().required('Required'),
-            empresa: Yup.object({
-                id_empresa: Yup.number().required('Required'),
-                nro_documento: Yup.string().required('Required'),
-                nombres: Yup.string().required('Required'),
-                direccion: Yup.string().required('Required'),
-                estado: Yup.boolean().required('Required')
-            }).required('Required'),
-            estado: Yup.boolean().required('Required')
-        }).required('Required'),
-        titulo: Yup.object({
-            id_cabecera: Yup.number().required('Required'),
-            id_cabecera_detalle: Yup.number().required('Required'),
-            descripcion: Yup.string().required('Required'),
-            valor: Yup.string().required('Required')
-        }).required('Required'),
-        dia_sin_refriguerio: Yup.object({
-            id_cabecera: Yup.number().required('Required'),
-            id_cabecera_detalle: Yup.number().required('Required'),
-            descripcion: Yup.string().required('Required'),
-            valor: Yup.string().required('Required')
-        }).required('Required'),
-        empresa: Yup.object({
-            id_empresa: Yup.number().required('Required'),
-            nro_documento: Yup.string().required('Required'),
-            nombres: Yup.string().required('Required'),
-            direccion: Yup.string().required('Required'),
-            estado: Yup.boolean().required('Required')
-        }).required('Required'),
-        usuario: Yup.object({
-            id_usuario: Yup.number().required('Required'),
-            username: Yup.string().required('Required'),
-            password: Yup.string().required('Required'),
-            rol: Yup.object({
-                id_rol: Yup.number().required('Required'),
-                descripcion: Yup.string().required('Required'),
-                valor: Yup.string().required('Required'),
-                estado: Yup.boolean().required('Required')
-            }).required('Required'),
-            estado: Yup.boolean().required('Required')
-        }).required('Required'),
-        estado: Yup.boolean().required('Required')
-    }).required('Required'),
     fecha_apertura: Yup.string().required('Required'),
     hora_inicio: Yup.string().required('Required'),
     hora_final: Yup.string().required('Required'),
@@ -103,7 +32,7 @@ export default function CreateAgendaComponent({ id, data, onClose, update }: Pro
                 username: data?.usuario?.username,
                 password: data?.usuario?.password,
                 rol: {
-                    id_rol: data?.usuario?.rol.id_rol,
+                    id_rol: data?.usuario?.rol.id_rol || 1,
                     descripcion: data?.usuario?.rol.descripcion,
                     valor: data?.usuario?.rol.valor || "",
                     estado: data?.usuario?.rol.estado
@@ -176,9 +105,9 @@ export default function CreateAgendaComponent({ id, data, onClose, update }: Pro
             estado: true
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             try {
-                // await addAgenda(values)
+                await addAgenda(values)
                 console.log(values)
             } catch (error) {
                 console.error("Error !!")
@@ -188,7 +117,10 @@ export default function CreateAgendaComponent({ id, data, onClose, update }: Pro
     return (
         <PopupUpdate>
             <button onClick={onClose}>X</button>
-            <form onSubmit={formik.handleSubmit}>
+            <form
+                onSubmit={formik.handleSubmit}
+                className='grid grid-cols-1 md:grid-cols-2 gap-5'
+            >
                 <div className='border border-gray-300 text-left p-2'>
                     <label>Dia de apertura</label>
                     <input
@@ -212,18 +144,23 @@ export default function CreateAgendaComponent({ id, data, onClose, update }: Pro
                     />
                     {formik.errors.hora_inicio ? <div>{formik.errors.hora_inicio}</div> : null}
                 </div>
-                <div>
+                <div className='border border-gray-300 text-left p-2'>
                     <label>End Time</label>
                     <input
                         type="time"
                         name="hora_final"
                         onChange={formik.handleChange}
                         value={formik.values.hora_final}
+                        className='w-full py-2 outline-none px-1'
+
                     />
                     {formik.errors.hora_final ? <div>{formik.errors.hora_final}</div> : null}
                 </div>
 
-                <button type="submit">
+                <button
+                    className='px-4 py-2 bg-[#82b440] text-white hover:bg-green-700'
+
+                    type="submit">
                     {isLoading ? 'Creando...' : 'Crear'}
                 </button>
             </form>
