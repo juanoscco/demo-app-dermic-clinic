@@ -79,31 +79,6 @@ export default function PatientsList() {
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Lista de pacientes </h1>
-      {/* <section className='flex xl:justify-between flex-col xl:flex-row mt-5 bg-white rounded-md p-4'>
-        <input
-          type="text"
-          placeholder="Buscar"
-          className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        />
-        <div className='flex items-center gap-3'>
-          <button
-            className='p-2 bg-green-500 rounded-md text-white'
-          >
-            Excel
-          </button>
-          <button
-            className='bg-gray-500 p-2 text-white rounded-md'
-          >
-            Imprimir
-          </button>
-          <Link href='/dash-admin/patients/create' className='bg-blue-500 p-2 text-white rounded-md'>
-            Crear
-          </Link>
-          
-        </div>
-      </section> */}
       <DatatableComponent
         data={data?.data}
         isLoading={isLoading}

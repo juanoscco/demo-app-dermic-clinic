@@ -1,10 +1,12 @@
 "use client"
 import React, { useState } from 'react'
-import { useGetEmployeeByIdQuery } from './store/service';
 import EmployeeUpdateComponent from './employee-update/employee-update.component';
-import Link from 'next/link';
 import ScheludePersonComponent from './components/schedule-component/schelude-person.component';
 import AgendaPersonComponent from './components/agenda-component/agenda-person.component';
+import ExceptionPersonComponent from './components/exception-component/exception-person.component';
+import { useGetEmployeeByIdQuery } from './store/service';
+
+import Link from 'next/link';
 
 interface Props {
   params: {
@@ -64,13 +66,13 @@ export default function DetailsUserEmployees({ params }: Props) {
               <p className="text-gray-600 font-medium">Día sin refrigerio:</p>
               <p className="text-gray-900 font-bold">{dataEmployee.dia_sin_refriguerio?.descripcion}</p>
             </div>
+            <div className="mb-4">
+              <h1 className="text-gray-900 font-bold capitalize">Sede: {dataEmployee.sede.nombres}</h1>
+              <p className="text-gray-900 capitalize">Dirección: {dataEmployee.sede.direccion}</p>
+              <p className="text-gray-900">Celular: {dataEmployee.sede.telefono}</p>
+            </div>
           </div>
-          <div className="mb-4">
-            <p className="text-gray-600 font-medium">Sede:</p>
-            <h1 className="text-gray-900 font-bold capitalize">Nombre: {dataEmployee.sede.nombres}</h1>
-            <p className="text-gray-900 capitalize">Dirección: {dataEmployee.sede.direccion}</p>
-            <p className="text-gray-900">Celular: {dataEmployee.sede.telefono}</p>
-          </div>
+
           <div className="flex justify-between mt-6">
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -94,17 +96,17 @@ export default function DetailsUserEmployees({ params }: Props) {
 
         <ScheludePersonComponent
           dataPerson={dataEmployee}
-          idPerson={dataEmployee.id_empleado}
+          idPerson={dataEmployee?.id_empleado}
         />
 
         {/* Espacios en blanco */}
         <AgendaPersonComponent
           dataPerson={dataEmployee}
-          idPerson={dataEmployee.id_empleado}
+          idPerson={dataEmployee?.id_empleado}
         />
-        <div className="bg-white p-6 rounded-lg ">
-          <h1>Lista de Excepciones</h1>
-        </div>
+        <ExceptionPersonComponent
+          dataPerson={dataEmployee}
+          idPerson={dataEmployee?.id_empleado} />
       </div>
     </section>
 

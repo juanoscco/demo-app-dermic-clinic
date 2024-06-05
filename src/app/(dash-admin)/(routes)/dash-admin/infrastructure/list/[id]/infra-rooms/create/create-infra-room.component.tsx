@@ -14,60 +14,50 @@ interface Props {
 }
 
 const validationSchema = Yup.object({
+  nombres: Yup.string().required('Nombre es requerido'),
+  piso: Yup.number().required('Piso es requerido'),
+  estado: Yup.boolean().required('Estado es requerido'),
   sede: Yup.object({
     id_sede: Yup.number().required('ID de sede es requerido'),
-    nombres: Yup.string().required('Nombre de la sede es requerido'),
-    direccion: Yup.string().required('Dirección de la sede es requerida'),
-    telefono: Yup.string().required('Teléfono de la sede es requerido'),
-    empresa: Yup.object({
-      id_empresa: Yup.number().required('ID de empresa es requerido'),
-      nro_documento: Yup.string().required('Número de documento es requerido'),
-      nombres: Yup.string().required('Nombre de la empresa es requerido'),
-      direccion: Yup.string().required('Dirección de la empresa es requerida'),
-      estado: Yup.boolean().required('Estado de la empresa es requerido'),
-    }).required(),
-    estado: Yup.boolean().required('Estado de la sede es requerido'),
-  }).required(),
-  nombres: Yup.string().required('Nombre es requerido'),
-  piso: Yup.number()
-    .typeError('Piso debe ser un número')
-    .required('Piso es requerido'),
-  estado: Yup.boolean().required('Estado es requerido'),
+  }),
+  usuario_registro: Yup.object({
+    id_usuario: Yup.number().required('ID de usuario es requerido'),
+  }),
+  empresa: Yup.object({
+    id_empresa: Yup.number().required('ID de empresa es requerido'),
+  }),
 });
 
 
 export default function CreateInfraRoomComponent({ id, dataInfra, update, onClose }: Props) {
 
-  const [addRoom, { isLoading }] = useAddInfrastructureRoomMutation()
+  const [addRoom, { isLoading }] = useAddInfrastructureRoomMutation();
+  console.log(dataInfra);
+  console.log(id)
   const formik = useFormik<InfraRoom>({
     initialValues: {
       sede: {
-        id_sede: id || 1,
-        nombres: dataInfra?.nombres || '',
-        direccion: dataInfra?.direccion || '',
-        telefono: dataInfra?.telefono || '',
-        empresa: {
-          id_empresa: dataInfra?.empresa?.id_empresa || '',
-          nro_documento: dataInfra?.empresa?.nro_documento || '',
-          nombres: dataInfra?.empresa?.nombres || '',
-          direccion: dataInfra?.empresa?.direccion || '',
-          estado: dataInfra?.empresa?.estado || true,
-        },
-        estado: dataInfra?.estado || true,
+        id_sede: id || 0,
+      },
+      usuario_registro: {
+        id_usuario: 1,
+      },
+      empresa: {
+        id_empresa: dataInfra?.empresa.id_empresa,
       },
       nombres: '',
-      piso: 1,
-      estado: true,
+      piso:  '',
+      estado:  true,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
         await addRoom(values);
         update();
-        alert("Creado correctamente")
+        alert("Creado correctamente");
         onClose();
       } catch (error) {
-        console.error('Error adding infrastructure room:', error);
+        console.error('Error al agregar el consultorio:', error);
       }
     },
   });
@@ -122,7 +112,7 @@ export default function CreateInfraRoomComponent({ id, dataInfra, update, onClos
             value={formik.values.estado ? 'true' : 'false'}
             onChange={(e) => formik.setFieldValue('estado', e.target.value === 'true')}
             className='w-full py-2 outline-none px-1'
-            >
+          >
             <option value='true'>Habilitado</option>
             <option value='false'>Deshabilitado</option>
           </select>

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-import { Agenda, ResponseAgenda } from "../../../../interface"
+import { AgendaOpening, ResponseAgendaOpening } from "../../../../interface"
 
 const baseUrl = `${process.env.API_DOCKER_JAVA_REST}/agenda`;
 
@@ -17,7 +17,7 @@ export const agendaCreateApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        addAgenda: builder.mutation<ResponseAgenda, Agenda>({
+        addAgenda: builder.mutation<ResponseAgendaOpening, AgendaOpening>({
             query: (newAgenda) => ({
                 url: '',
                 method: 'POST',

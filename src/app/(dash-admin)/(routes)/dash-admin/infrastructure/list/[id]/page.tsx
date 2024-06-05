@@ -28,7 +28,12 @@ export default function DetailsInfraestructure({ params }: Props) {
 
   return (
     <div className="p-4 md:p-8">
-      <Link href={`/dash-admin/infrastructure/list`} className='inline-block mb-4 text-blue-500 hover:text-blue-700 transition-all duration-200'>Atras</Link>
+      <Link
+        href={`/dash-admin/infrastructure/list`}
+        className='inline-block mb-4 text-blue-500 hover:text-blue-700 transition-all duration-200'
+      >
+        Atras
+      </Link>
       <div className="bg-white p-4 rounded-lg flex flex-col sm:flex-row justify-between items-start md:items-center space-y-4 sm:space-y-0 sm:space-x-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{dataInfrastructure.nombres}</h1>
         <div className="flex flex-col sm:flex-row sm:space-x-4">
@@ -48,7 +53,6 @@ export default function DetailsInfraestructure({ params }: Props) {
         >
           Editar
         </button>
-
       </div>
       {showPopup &&
         <InfraUpdateComponent

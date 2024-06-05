@@ -88,7 +88,6 @@ interface HorarioTrabajoDetalle {
 }
 
 export interface Schedule {
-    id_horario_trabajo?: number;
     nombre_horario: string;
     usuario: Usuario;
     empleado: Empleado;
@@ -96,7 +95,7 @@ export interface Schedule {
     estado: boolean;
 }
 
-export interface ResponseSchedule {
+export interface ResponseSchedule{
     data: Schedule;
     message: string;
 }

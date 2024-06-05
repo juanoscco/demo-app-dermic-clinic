@@ -12,7 +12,7 @@ export default function UserCreate() {
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
     const [addEmployee, { isLoading: loadingEmployee, data: dataEmployee, error: errorEmployee }] = useAddEmployeeMutation();
 
-    const { data: dataInfra, error: errorInfra, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0 })
+    const { data: dataInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0 })
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -35,9 +35,9 @@ export default function UserCreate() {
             telefono: '',
             correo: '',
             sede: {
-                id_sede: 2,
-                codigo: '001',
-                nombres: 'Sede Principal',
+                id_sede: 1,
+                codigo: '',
+                nombres: '',
                 direccion: '',
                 telefono: '',
                 empresa: {
@@ -57,8 +57,8 @@ export default function UserCreate() {
             },
             dia_sin_refriguerio: {
                 id_cabecera: 4,
-                id_cabecera_detalle: 8,
-                descripcion: 'Lunes',
+                id_cabecera_detalle: 11,
+                descripcion: 'Jueves',
                 valor: '',
             },
             empresa: {
@@ -279,7 +279,7 @@ export default function UserCreate() {
                         >
                             {/* <option value=""></option> */}
                             <option value={1}>Administrador</option>
-                            <option value={2}>Empleado</option>
+                            {/* <option value={2}>Empleado</option> */}
                         </select>
                         {formik.touched.usuario?.rol?.id_rol && formik.errors.usuario?.rol?.id_rol ? (
                             <div
@@ -295,7 +295,7 @@ export default function UserCreate() {
                             onChange={(e) => {
                                 const selectedIdSede: any = e.target.value;
                                 setSelectedSede(selectedIdSede);
-                                const selectedSedeInfo = dataInfra?.data.content.find((item: any) => item.id_sede === parseInt(selectedIdSede));
+                                const selectedSedeInfo = dataInfra?.data.content.find((item: any) => item.id_sede === parseFloat(selectedIdSede));
                                 if (selectedSedeInfo) {
                                     formik.setFieldValue('sede.id_sede', selectedSedeInfo.id_sede);
                                     formik.setFieldValue('sede.codigo', selectedSedeInfo.codigo);

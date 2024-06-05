@@ -20,10 +20,12 @@ export default function PersonsSchedulesList() {
   }, [filter, refetch]);
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading patients</div>;
+  if (error) return <div>Error al cargar los horarios</div>;
 
   const schedulesDays = (item: any) => {
-    return item?.horario_trabajo_detalle.map(
+    const filteredDetails = item?.horario_trabajo_detalle.filter((detail: any) => detail.estado === true);
+
+    return filteredDetails.map(
 
       (detail: any, i: number) => (
         <>

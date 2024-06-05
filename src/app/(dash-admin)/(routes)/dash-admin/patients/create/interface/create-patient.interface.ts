@@ -24,7 +24,7 @@ export interface Patient {
     tipo_documento_identidad: TipoDocumentoIdentidad;
     numero_documento_identidad: string;
     telefono: string;
-    nacimiento: string; // Puede ser string o Date, dependiendo de cómo lo manejes
+    nacimiento: string;
     estado_civil: EstadoCivil;
     ocupacion: string;
     email: string;

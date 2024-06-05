@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 export default function InfrastructureCreate() {
-    const [addInfrastructure, { data, isLoading, isError, error }] = useAddInfrastructureMutation();
+    const [addInfrastructure, { data, isLoading, isError }] = useAddInfrastructureMutation();
     const formik = useFormik({
         initialValues: {
             nombres: '',
@@ -13,10 +13,7 @@ export default function InfrastructureCreate() {
             telefono: '',
             empresa: {
                 id_empresa: 1,
-                nro_documento: '20605571078',
-                nombres: 'M & S CONSULTORES EN TECNOLOGIA S.A.C.',
-                direccion: 'CIUDAD SOL DE COLLIQUE',
-                estado: true,
+                
             },
             estado: true,
         },
@@ -26,12 +23,8 @@ export default function InfrastructureCreate() {
             telefono: Yup.string().required('Requerido'),
             empresa: Yup.object({
                 id_empresa: Yup.number().required('Requerido'),
-                nro_documento: Yup.string().required('Requerido'),
-                nombres: Yup.string().required('Requerido'),
-                direccion: Yup.string().required('Requerido'),
-                estado: Yup.boolean().required('Requerido'),
             }),
-            estado: Yup.boolean().required('Requerido'),
+            // estado: Yup.boolean().required('Requerido'),
         }),
         onSubmit: async (values) => {
             // console.log(values)

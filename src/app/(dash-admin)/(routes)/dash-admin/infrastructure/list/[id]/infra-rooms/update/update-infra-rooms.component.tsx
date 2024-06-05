@@ -4,7 +4,7 @@ import React from 'react'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useInfrastructureRoomUpdateMutation } from './store/service';
-import { InfraRoom } from "../create/interface/"
+import { InfraRoom } from "./interface"
 interface Props {
     id?: number;
     dataUpdate?: any;
@@ -14,17 +14,6 @@ interface Props {
 const validationSchema = Yup.object({
     sede: Yup.object({
         id_sede: Yup.number().required('ID de sede es requerido'),
-        nombres: Yup.string().required('Nombre de la sede es requerido'),
-        direccion: Yup.string().required('Dirección de la sede es requerida'),
-        telefono: Yup.string().required('Teléfono de la sede es requerido'),
-        empresa: Yup.object({
-            id_empresa: Yup.number().required('ID de empresa es requerido'),
-            nro_documento: Yup.string().required('Número de documento es requerido'),
-            nombres: Yup.string().required('Nombre de la empresa es requerido'),
-            direccion: Yup.string().required('Dirección de la empresa es requerida'),
-            estado: Yup.boolean().required('Estado de la empresa es requerido'),
-        }).required(),
-        estado: Yup.boolean().required('Estado de la sede es requerido'),
     }).required(),
     nombres: Yup.string().required('Nombre es requerido'),
     piso: Yup.number()
@@ -34,27 +23,23 @@ const validationSchema = Yup.object({
 });
 
 export default function UpdateInfraRoomsComponent({ id, dataUpdate, onClose, update }: Props) {
+    console.log(dataUpdate)
     const [updateRoom, { isLoading }] = useInfrastructureRoomUpdateMutation()
     const formik = useFormik<InfraRoom>({
         initialValues: {
             sede: {
-                id_sede: dataUpdate?.sede?.id_sede,
-                nombres: dataUpdate?.sede?.nombres,
-                direccion: dataUpdate?.sede?.direccion,
-                telefono: dataUpdate?.sede?.telefono,
-                empresa: {
-                    id_empresa: dataUpdate?.sede?.empresa?.id_empresa,
-                    nro_documento: dataUpdate?.sede?.empresa?.nro_documento,
-                    nombres: dataUpdate?.sede?.empresa?.nombres,
-                    direccion: dataUpdate?.sede?.empresa?.direccion,
-                    estado: dataUpdate?.sede?.empresa?.estado,
-                },
-                estado: dataUpdate?.sede?.estado,
+                id_sede: dataUpdate?.sede.id_sede,
             },
-            id_sala_tratamiento: id,
-            nombres: dataUpdate.nombres,
-            piso: dataUpdate.piso,
-            estado: dataUpdate.estado,
+            usuario_registro: {
+                id_usuario: 1,
+            },
+            empresa: {
+                id_empresa: dataUpdate?.empresa.id_empresa,
+            },
+            nombres: dataUpdate?.nombres,
+            piso: dataUpdate?.piso,
+            estado: dataUpdate?.estado,
+            id_sala_tratamiento: dataUpdate?.id_sala_tratamiento
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {

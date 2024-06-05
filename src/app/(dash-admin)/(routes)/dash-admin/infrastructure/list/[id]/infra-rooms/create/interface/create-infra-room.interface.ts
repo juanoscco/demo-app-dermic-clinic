@@ -1,28 +1,23 @@
-interface Empresa {
-    id_empresa: number;
-    nro_documento: string;
-    nombres: string;
-    direccion: string;
-    estado: boolean;
-}
-
 interface Sede {
     id_sede: number;
-    nombres: string;
-    direccion: string;
-    telefono: string;
-    empresa: Empresa;
-    estado: boolean;
+}
+
+interface UsuarioRegistro {
+    id_usuario: number;
+}
+
+interface Empresa {
+    id_empresa: number;
 }
 
 export interface InfraRoom {
-    id_sala_tratamiento?: number;
     sede: Sede;
+    usuario_registro: UsuarioRegistro;
+    empresa: Empresa;
     nombres: string;
-    piso: number;
+    piso: number | string;
     estado: boolean;
 }
-
 
 export interface ReponseInfraRoom {
     data: InfraRoom;

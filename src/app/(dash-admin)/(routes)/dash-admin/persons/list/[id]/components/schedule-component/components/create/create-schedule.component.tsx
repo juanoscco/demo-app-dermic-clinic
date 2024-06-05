@@ -3,7 +3,7 @@ import React from 'react'
 import { PopupUpdate } from '@/components/popup/popup-update';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Schedule } from "../../inteface/"
+import { Schedule } from "./inteface"
 import { useAddScheduleMutation } from '@/app/(dash-admin)/(routes)/dash-admin/persons/schedules/components/create/store/service';
 
 interface Props {
@@ -16,78 +16,18 @@ interface Props {
 export default function CreateScheduleComponent({ idPerson, dataPerson, onClose, update }: Props) {
     const [addSchelude, { isLoading }] = useAddScheduleMutation()
 
+    console.log(dataPerson)
     const formik = useFormik<Schedule>({
         initialValues: {
             nombre_horario: '',
-            usuario: {
+            usuario_registro: {
                 id_usuario: dataPerson.usuario.id_usuario,
-                username: dataPerson?.usuario.username,
-                rol: {
-                    id_rol: dataPerson?.usuario.rol.id_rol,
-                    descripcion: dataPerson?.usuario.rol.descripcion,
-                    valor: dataPerson?.usuario.rol.valor,
-                    estado: dataPerson?.usuario.rol.estado
-                },
-                estado: dataPerson?.usuario.estado
             },
             empleado: {
-                id_empleado: dataPerson?.id_empleado || 0,
-                tipo_documento: {
-                    id_cabecera: dataPerson?.tipo_documento.id_cabecera || 0,
-                    id_cabecera_detalle: dataPerson?.tipo_documento.id_cabecera_detalle || 0,
-                    descripcion: dataPerson?.tipo_documento.descripcion || '',
-                    valor: dataPerson?.tipo_documento.valor || ''
-                },
-                numero: dataPerson?.numero || '',
-                nombres: dataPerson?.nombres || '',
-                telefono: dataPerson?.telefono || '',
-                correo: dataPerson?.correo || '',
-                sede: {
-                    id_sede: dataPerson?.sede.id_sede || 0,
-                    codigo: dataPerson?.sede.codigo || '',
-                    nombres: dataPerson?.sede.nombres || '',
-                    direccion: dataPerson?.sede.direccion || '',
-                    telefono: dataPerson?.sede.telefono || '',
-                    empresa: {
-                        id_empresa: dataPerson?.sede.empresa.id_empresa || 0,
-                        nro_documento: dataPerson?.sede.empresa.nro_documento || '',
-                        nombres: dataPerson?.sede.empresa.nombres || '',
-                        direccion: dataPerson?.sede.empresa.direccion || '',
-                        estado: dataPerson?.sede.empresa.estado || false
-                    },
-                    estado: dataPerson?.sede.estado || false
-                },
-                titulo: {
-                    id_cabecera: dataPerson?.titulo.id_cabecera || 3,
-                    id_cabecera_detalle: dataPerson?.titulo.id_cabecera_detalle || 0,
-                    descripcion: dataPerson?.titulo.descripcion || '',
-                    valor: dataPerson?.titulo.valor || ''
-                },
-                dia_sin_refriguerio: {
-                    id_cabecera: dataPerson?.dia_sin_refriguerio?.id_cabecera || 4,
-                    id_cabecera_detalle: dataPerson?.dia_sin_refriguerio?.id_cabecera_detalle || 0,
-                    descripcion: dataPerson?.dia_sin_refriguerio?.descripcion || '',
-                    valor: dataPerson?.dia_sin_refriguerio?.valor || ''
-                },
-                empresa: {
-                    id_empresa: dataPerson?.empresa.id_empresa || 0,
-                    nro_documento: dataPerson?.empresa.nro_documento || '',
-                    nombres: dataPerson?.empresa.nombres || '',
-                    direccion: dataPerson?.empresa.direccion || '',
-                    estado: dataPerson?.empresa.estado || false
-                },
-                usuario: {
-                    id_usuario: dataPerson.usuario.id_usuario,
-                    username: dataPerson?.usuario.username,
-                    rol: {
-                        id_rol: dataPerson?.usuario.rol.id_rol || 0,
-                        descripcion: dataPerson?.usuario.rol.descripcion || '',
-                        valor: dataPerson?.usuario.rol.valor || '',
-                        estado: dataPerson?.usuario.rol.estado || false
-                    },
-                    estado: dataPerson?.usuario.estado || false
-                },
-                estado: dataPerson?.estado || false
+                id_empleado: idPerson,
+            },
+            empresa: {
+                id_empresa: dataPerson?.empresa.id_empresa,
             },
             horario_trabajo_detalle: [
                 {
@@ -143,15 +83,6 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
         },
         validationSchema: Yup.object({
             nombre_horario: Yup.string().required('Requerido'),
-            usuario: Yup.object({
-                username: Yup.string().required('Requerido')
-            }),
-            empleado: Yup.object({
-                numero: Yup.string().required('Requerido'),
-                nombres: Yup.string().required('Requerido'),
-                telefono: Yup.string().required('Requerido'),
-                correo: Yup.string().email('Correo inválido').required('Requerido')
-            }),
             horario_trabajo_detalle: Yup.array().of(
                 Yup.object({
                     semana: Yup.object({
@@ -173,11 +104,10 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
             )
         }),
         onSubmit: async (values) => {
-
             try {
                 console.log(values);
 
-                await addSchelude(values);
+                await addSchelude(values as any);
                 update();
                 alert("Creado correctamente!!")
                 onClose();
@@ -249,7 +179,7 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
     return (
         <PopupUpdate>
             <button onClick={onClose} className='flex justify-end w-full'>x</button>
-            <form onSubmit={formik.handleSubmit} className='overflow-y-auto'>
+            <form onSubmit={formik.handleSubmit}>
                 <div className="mb-4 flex gap-2">
                     <label className="block text-gray-700">Nombre Horario</label>
                     <input
@@ -264,11 +194,14 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                         <div className="text-red-500 flex items-center">{formik.errors.nombre_horario}</div>
                     ) : null}
                 </div>
-                <div>
-                    {/* <label className="block text-gray-700">Horario de Trabajo Detalle</label> */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {formik.values.horario_trabajo_detalle?.map((detalle, index) => (
-                            <div key={index} className="flex gap-2 border border-gray-300 p-2 rounded">
+
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {formik.values.horario_trabajo_detalle?.map((detalle, index) => (
+                        <div key={index} className='border border-gray-300  p-4 '>
+                            <h1 className="font-bold text-lg">{detalle?.semana.descripcion}</h1>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded">
                                 <div className="flex flex-col gap-3">
                                     <div className="mb-2">
                                         <label className="block text-gray-700">Temprano Inicio</label>
@@ -304,8 +237,15 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                                             ))}
                                         </select>
                                     </div>
+                                    {/* <button
+                                        type="button"
+                                        onClick={() => handleActivationToggle(index, true)}
+                                        className={`w-full h-9 p-1 ${detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-blue-500 text-white'} rounded`}
+                                    >
+                                        Activar
+                                    </button> */}
                                 </div>
-                                <div className="flex flex-col gap-3 items-end">
+                                <div className="flex flex-col gap-3">
                                     <div className="mb-2">
                                         <label className="block text-gray-700">Temprano Final</label>
                                         <select
@@ -340,28 +280,37 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                                             ))}
                                         </select>
                                     </div>
+                                    {/* <button
+                                        type="button"
+                                        onClick={() => handleActivationToggle(index, false)}
+                                        className={`w-5/6 h-9 p-1 ${!detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-red-500 text-white'} rounded`}
+                                    >
+                                        Desactivar
+                                    </button> */}
                                 </div>
-                                <div className="flex items-end gap-3 mb-2">
+                                <>
                                     <button
                                         type="button"
                                         onClick={() => handleActivationToggle(index, true)}
-                                        className={`w-32 h-9 p-1 ${detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-blue-500 text-white'} rounded`}
+                                        className={`w-full h-9 p-1 ${detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-blue-500 text-white'} rounded`}
                                     >
                                         Activar
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => handleActivationToggle(index, false)}
-                                        className={`w-32 h-9 p-1 ${!detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-red-500 text-white'} rounded`}
+                                        className={`w-full h-9 p-1 ${!detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-red-500 text-white'} rounded`}
                                     >
                                         Desactivar
                                     </button>
-                                </div>
+                                </>
                             </div>
-                        ))}
-                    </div>
+                        </div>
 
+                    ))}
                 </div>
+
+
                 <div className='border border-gray-300 text-left p-2 mt-2'>
                     <label className='block text-sm font-medium'>Estado</label>
                     <select
@@ -379,7 +328,7 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                 </div>
                 <div className="flex justify-end mt-3">
                     <button type="button" className="mr-2 py-2 px-4 bg-gray-500 text-white rounded" onClick={onClose}>Cancelar</button>
-                    <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded">{isLoading ? 'Editando...' : 'Editar'}</button>
+                    <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded">{isLoading ? 'Creando...' : 'Crear'}</button>
                 </div>
             </form>
         </PopupUpdate>

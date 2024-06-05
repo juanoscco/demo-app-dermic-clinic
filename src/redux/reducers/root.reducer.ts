@@ -8,6 +8,7 @@ import { infrastructureRoomsReducer } from "@/app/(dash-admin)/store/reducers/in
 import { personsSchedulesReducer } from "@/app/(dash-admin)/store/reducers/persons-schedules"
 import { personsExceptionsReducers } from "@/app/(dash-admin)/store/reducers/persons-exception"
 import { personsAgendaOpeningReducer } from "@/app/(dash-admin)/store/reducers/persons-agenda-opening"
+import { appointmentsReducer } from "@/app/(dash-admin)/store/reducers/appointments"
 
 
 export const rootReducer = {
@@ -21,5 +22,6 @@ export const rootReducer = {
     ...infrastructureRoomsReducer,
     ...personsSchedulesReducer,
     ...personsExceptionsReducers,
-    ...personsAgendaOpeningReducer
+    ...personsAgendaOpeningReducer,
+    ...appointmentsReducer
 }

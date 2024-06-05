@@ -19,10 +19,7 @@ export default function InfraUpdateComponent({ onClose, id, data, update }: Prop
             telefono: data.telefono,
             empresa: {
                 id_empresa: data.empresa.id_empresa,
-                nro_documento: data.empresa.nro_documento,
-                nombres: data.empresa.nombres,
-                direccion: data.empresa.direccion,
-                estado: data.empresa.estado,
+                
             },
             estado: data.estado,
         },
@@ -32,12 +29,8 @@ export default function InfraUpdateComponent({ onClose, id, data, update }: Prop
             telefono: Yup.string().required('Requerido'),
             empresa: Yup.object({
                 id_empresa: Yup.number().required('Requerido'),
-                nro_documento: Yup.string().required('Requerido'),
-                nombres: Yup.string().required('Requerido'),
-                direccion: Yup.string().required('Requerido'),
-                estado: Yup.boolean().required('Requerido'),
             }),
-            estado: Yup.boolean().required('Requerido'),
+            // estado: Yup.boolean().required('Requerido'),
         }),
         onSubmit: async (values) => {
             await updateInfra({ infrastructureId: values.id_sede, infrastructureData: values })
@@ -94,46 +87,6 @@ export default function InfraUpdateComponent({ onClose, id, data, update }: Prop
                         <div className='text-red-500 text-sm'>{formik.errors.telefono}</div>
                     ) : null}
                 </div>
-
-                {/* <div>
-                    <label className='block text-sm font-medium'>Empresa</label>
-                    <div className='space-y-2'>
-                        <input
-                            type='text'
-                            name='empresa.nro_documento'
-                            value={formik.values.empresa.nro_documento}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            className='mt-1 block w-full rounded-md border-gray-300 shadow-sm'
-                        />
-                        {formik.touched.empresa?.nro_documento && formik.errors.empresa?.nro_documento ? (
-                            <div className='text-red-500 text-sm'>{formik.errors.empresa.nro_documento}</div>
-                        ) : null}
-                        <input
-                            type='text'
-                            name='empresa.nombres'
-                            value={formik.values.empresa.nombres}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            className='mt-1 block w-full rounded-md border-gray-300 shadow-sm'
-                        />
-                        {formik.touched.empresa?.nombres && formik.errors.empresa?.nombres ? (
-                            <div className='text-red-500 text-sm'>{formik.errors.empresa.nombres}</div>
-                        ) : null}
-                        <input
-                            type='text'
-                            name='empresa.direccion'
-                            value={formik.values.empresa.direccion}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            className='mt-1 block w-full rounded-md border-gray-300 shadow-sm'
-                        />
-                        {formik.touched.empresa?.direccion && formik.errors.empresa?.direccion ? (
-                            <div className='text-red-500 text-sm'>{formik.errors.empresa.direccion}</div>
-                        ) : null}
-                    </div>
-                </div> */}
-
                 <div className='border border-gray-300 text-left p-2'>
                     <label className='block text-sm font-medium'>Estado</label>
                     <select

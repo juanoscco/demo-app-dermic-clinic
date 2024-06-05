@@ -10,7 +10,6 @@ const filterAppointments = (date: any, district: any) => {
   });
 };
 
-// Función para formatear la fecha en "yyyy-MM-dd"
 const formatDate = (date: any) => {
   const d = new Date(date);
   let month = '' + (d.getMonth() + 1);
@@ -38,11 +37,6 @@ export default function AppointmentList() {
     setFilteredAppointments(result);
   }, [today]);
 
-  // const handleFilterChange = () => {
-  //   const formattedDate = new Date(selectedDate).toLocaleDateString();
-  //   const result = filterAppointments(formattedDate, selectedDistrict);
-  //   setFilteredAppointments(result);
-  // };
 
   useEffect(() => {
     const formattedDate = new Date(selectedDate).toLocaleDateString();
@@ -73,12 +67,7 @@ export default function AppointmentList() {
             <option value="San Isidro">San Isidro</option>
           </select>
         </section>
-        {/* <button
-          className="px-2 py-1 bg-blue-500 text-white rounded-md"
-          onClick={handleFilterChange}
-        >
-          Filtrar
-        </button> */}
+
       </section>
       <section
         className='flex xl:justify-between flex-col xl:flex-row mt-5 gap-3 bg-white rounded-md p-3'

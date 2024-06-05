@@ -8,6 +8,7 @@ import { infrastructureRoomsMiddleware } from "@/app/(dash-admin)/store/middlewa
 import { personsSchedulesMiddleware } from "@/app/(dash-admin)/store/middleware/persons-schedules";
 import { personsExceptionsMiddleware } from "@/app/(dash-admin)/store/middleware/persons-exception/persons-exception.middleware";
 import { personsAgendaOpeningMiddleware } from "@/app/(dash-admin)/store/middleware/persons-agenda-opening";
+import { appointmentsMiddleware } from "@/app/(dash-admin)/store/middleware/appointments";
 
 export const rootMiddlewares = (
     getDefaultMiddleware: any
@@ -21,5 +22,6 @@ export const rootMiddlewares = (
     ...infrastructureRoomsMiddleware,
     ...personsSchedulesMiddleware,
     ...personsExceptionsMiddleware,
-    ...personsAgendaOpeningMiddleware
+    ...personsAgendaOpeningMiddleware,
+    ...appointmentsMiddleware
 )
