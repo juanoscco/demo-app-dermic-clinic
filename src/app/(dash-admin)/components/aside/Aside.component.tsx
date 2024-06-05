@@ -32,7 +32,7 @@ export default function AsideComponent({ isNavActive, handleNavItemClick }: Prop
         </button>
       </section>
       <section className='flex gap-3 items-center shadow-md p-1 rounded-md'>
-        <Image src={user_admin} alt="user admin" className='h-10 w-10 rounded-full' />
+        <Image src={user_admin} alt="user admin" className='h-10 w-10 rounded-full' unoptimized />
         <div>
           <h2 className='text-md text-gray-500'>Bienvenido</h2>
           <span className='text-sm font-bold text-gray-500'>Adm. Jhon Doe</span>
