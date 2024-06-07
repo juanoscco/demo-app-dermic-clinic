@@ -47,22 +47,11 @@ export default function FormLogin() {
   }, [data, router]);
 
 
-  // Prevent default behavior and use Formik's handleSubmit
-  // const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault(); // Prevent default form submission
-  //   formik.handleSubmit(e); // Call Formik's handleSubmit
-  // };
-
   if (isLoading) {
     return (
-        // <div className="space-y-4 p-4">
-        //     <div className="h-10 bg-gray-500 rounded animate-pulse" />
-        //     <div className="h-10 bg-gray-500 rounded animate-pulse" />
-        //     <div className="h-12 bg-gray-500 rounded animate-pulse" />
-        // </div>
-        <div>Cargando....</div>
+      <div>Cargando....</div>
     );
-}
+  }
 
   return (
     <form onSubmit={formik.handleSubmit} className='relative flex flex-col gap-5 w-4/6'>
