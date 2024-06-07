@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect } from 'react';
 import { GetDniApiHook } from "@/config/hook-dni/";
-import { useAddPacienteMutation } from "./store/service/create-patient.service";
+import { useAddPacienteMutation } from "./store/service/";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -15,6 +15,12 @@ export default function PatientsCreate() {
     const formik = useFormik({
         initialValues: {
             nombres: "",
+            empresa: {
+                id_empresa: 1
+            },
+            usuario_registro: {
+                id_usuario: 2
+            },
             tipo_documento_identidad: {
                 id_cabecera: 2,
                 id_cabecera_detalle: 3,

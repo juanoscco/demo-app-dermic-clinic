@@ -12,8 +12,7 @@ export default function InfrastructureCreate() {
             direccion: '',
             telefono: '',
             empresa: {
-                id_empresa: 1,
-                
+                id_empresa: 1, 
             },
             estado: true,
         },

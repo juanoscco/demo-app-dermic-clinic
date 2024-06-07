@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-import { Procedure, ProcedureResponse } from "../../interface/"
+import { Procedure, ResponseProcedure } from "../../interface/"
 
 const baseUrl = `${process.env.API_DOCKER_JAVA_REST}/procedimiento`;
 
@@ -17,7 +17,7 @@ export const procedureCreateApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        addProcedure: builder.mutation<ProcedureResponse, Procedure>({
+        addProcedure: builder.mutation<ResponseProcedure, Procedure>({
             query: (newProcedure) => ({
                 url: '',
                 method: 'POST',

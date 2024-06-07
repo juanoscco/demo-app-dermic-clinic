@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-import { Patient, PatientResponse } from "../../interface/create-patient.interface"
+import { Patient, PatientResponse } from "../../interface/"
 
 const baseUrl = `${process.env.API_DOCKER_JAVA_REST}/paciente`;
 

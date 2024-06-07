@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import {PopupUpdate} from "@/components/popup/popup-update/"
+import { PopupUpdate } from "@/components/popup/popup-update/"
 import { useUpdatePatientMutation } from "./store/service/patient-update.service";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -27,14 +27,20 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
   const formik = useFormik({
     initialValues: {
       id_paciente: id,
-      nombres: data.nombres || '',
+      nombres: data?.nombres,
+      empresa: {
+        id_empresa: 1
+      },
+      usuario_registro: {
+        id_usuario: 2
+      },
       tipo_documento_identidad: {
         id_cabecera: data.tipo_documento_identidad.id_cabecera,
         id_cabecera_detalle: data.tipo_documento_identidad.id_cabecera_detalle,
         descripcion: data.tipo_documento_identidad.descripcion || '',
         valor: data.tipo_documento_identidad.valor || ''
       },
-      numero_documento_identidad: data.numero_documento_identidad || '',
+      numero_documento_identidad: data?.numero_documento_identidad || '',
       telefono: data.telefono || '',
       nacimiento: formatDate(data.nacimiento),
       estado_civil: {
@@ -54,7 +60,7 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
         descripcion: data.estado_antiguedad.descripcion || '',
         valor: data.estado_antiguedad.valor || ''
       },
-      estado: data.estado || true
+      estado: data.estado
     },
     validationSchema: Yup.object({
       nombres: Yup.string().required('Requerido'),
@@ -101,8 +107,8 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
           <input
             type="text"
             name="nombres"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.nombres}
+            className="w-full p-2 border border-gray-300 rounded capitalize"
+            value={formik.values.nombres.toLowerCase()}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />

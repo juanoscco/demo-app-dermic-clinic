@@ -66,6 +66,12 @@ export default function ProceduresCreate() {
                 descripcion: "20 minutos",
                 valor: ""
             },
+            empresa: {
+                id_empresa: 1
+            },
+            usuario_registro: {
+                id_usuario: 2
+            },
             anestesia: true,
             tipo_procedimiento: {
                 id_cabecera: 6,

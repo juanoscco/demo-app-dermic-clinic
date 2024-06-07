@@ -1,3 +1,11 @@
+interface Empresa {
+    id_empresa: number;
+}
+
+interface UsuarioRegistro {
+    id_usuario: number;
+}
+
 interface TipoDocumentoIdentidad {
     id_cabecera: number;
     id_cabecera_detalle: number;
@@ -21,6 +29,8 @@ interface EstadoAntiguedad {
 
 export interface Patient {
     nombres: string;
+    empresa: Empresa;
+    usuario_registro: UsuarioRegistro;
     tipo_documento_identidad: TipoDocumentoIdentidad;
     numero_documento_identidad: string;
     telefono: string;
@@ -34,7 +44,6 @@ export interface Patient {
     estado_antiguedad: EstadoAntiguedad;
     estado: boolean;
 }
-
 
 export interface PatientResponse {
     data: Patient;

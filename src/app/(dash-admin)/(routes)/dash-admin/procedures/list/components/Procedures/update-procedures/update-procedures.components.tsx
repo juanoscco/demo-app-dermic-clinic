@@ -15,11 +15,17 @@ interface Props {
 
 export default function UpdateProceduresComponents({ onClose, id, data, update }: Props) {
 
-    const [updateProcedure, { isLoading, isError }] = useUpdateProcedureMutation();
+    const [updateProcedure, { isLoading }] = useUpdateProcedureMutation();
 
     const formik = useFormik<Procedure>({
         initialValues: {
             id_procedimiento: id,
+            empresa: {
+                id_empresa: 1
+            },
+            usuario_registro: {
+                id_usuario: 2
+            },
             nombres: data.nombres || "",
             duracion: {
                 id_cabecera: 5,
@@ -65,7 +71,7 @@ export default function UpdateProceduresComponents({ onClose, id, data, update }
             }),
             estado: Yup.boolean().required('Requerido')
         }),
-        onSubmit: async (values, { resetForm }) => {
+        onSubmit: async (values) => {
             try {
                 await updateProcedure({ procedureId: values.id_procedimiento, procedureData: values }).unwrap();
                 alert('Acualizacion exitosa!')
@@ -77,7 +83,6 @@ export default function UpdateProceduresComponents({ onClose, id, data, update }
             }
         }
     })
-
 
     const durationOptions = [
         { id: 14, descripcion: "5 minutos" },
@@ -129,9 +134,6 @@ export default function UpdateProceduresComponents({ onClose, id, data, update }
         formik.setFieldValue('subtipo_procedimiento.descripcion', selectedOption?.descripcion);
     };
 
-
-
-    console.log(data)
     return (
         <PopupUpdate>
             <button className='flex justify-end w-full text-2xl' onClick={onClose}>x</button>
