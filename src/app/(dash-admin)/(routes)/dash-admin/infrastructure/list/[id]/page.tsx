@@ -1,10 +1,9 @@
 "use client"
 import React, { useState } from 'react';
 import { useGetInfrastructureByIdQuery } from "./store/service";
-
-import Link from 'next/link';
 import InfraUpdateComponent from './infra-update/infra-update.component';
 import InfraRoomsComponent from './infra-rooms/list/infra-rooms.component';
+import Link from 'next/link';
 
 interface Props {
   params: {

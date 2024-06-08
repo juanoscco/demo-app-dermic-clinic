@@ -1,17 +1,34 @@
-import React from 'react'
-import { infrastructure } from "@/mocks/infrastructure/infrastructure.mocks"
-import { procedures } from "@/mocks/procedures/procedures.mocks"
+"use client"
+import React, { useState } from 'react'
+import { useGetProceduresQuery } from '../Procedures/store/service'
+import { useGetProcedureRoomAvailableByIdQuery } from './store/get-find-id/service';
 
 export default function Rooms() {
+  const { data: dataProcedures, isLoading: loadingProcedures } = useGetProceduresQuery({ limit: 10000, page: 0, filter: '' });
+  const procedures = dataProcedures?.data?.content;
+
+  const [selectedProcedureId, setSelectedProcedureId] = useState<any>(null);
+  const { data: dataProcedure, isLoading: loadProcedure } = useGetProcedureRoomAvailableByIdQuery(selectedProcedureId);
+
+  const handleProcedureClick = (procedureId: any) => {
+    setSelectedProcedureId(procedureId);
+  };
+  // console.log(dataProcedure)
   return (
     <section className='mt-2 bg-white'>
       <section className='flex flex-col lg:flex-row items-center justify-around h-5/6 w-full p-5'>
         <section className='w-full lg:w-2/6 max-h-full h-[35rem] border border-gray-300 overflow-x-auto'>
           <ul className='p-2'>
             <input type="text" className='outline-none border border-gray-200 rounded-md p-2 w-full' placeholder='Buscar...' />
-            {procedures.map((procedure) => (
-              <li key={procedure.id} className='flex items-center justify-between mt-1 py-1 px-2 hover:bg-gray-200 cursor-pointer'>
-                {procedure.nombre}
+            {procedures?.map((procedure: any) => (
+              <li
+                key={procedure.id_procedimiento}
+                className={`flex items-center justify-between mt-1 py-1 px-2 cursor-pointer ${selectedProcedureId === procedure.id_procedimiento ? 'bg-gray-200' : 'hover:bg-gray-200'
+                  }`}
+                onClick={() => handleProcedureClick(procedure.id_procedimiento)}
+
+              >
+                {procedure.nombres}
               </li>
             ))}
           </ul>
@@ -19,19 +36,29 @@ export default function Rooms() {
         <section className='w-full lg:w-2/6 max-h-full h-[35rem] border border-gray-300 overflow-x-auto mt-4 lg:mt-0'>
           <ul className='p-4 flex flex-col'>
             <input className='outline-none border border-gray-200 rounded-md p-2 w-full' type='text' placeholder='Buscar...' />
-            {infrastructure.map((infra) => (
-              <li key={infra.id}>
-                <h1 className='border-b pb-2 my-2 border-gray-200'>{infra.lugar}</h1>
-                <ul className='flex flex-col gap-1 mt-1 p-1'>
-                  {infra.cuartos.map((room, i) => (
-                    <li key={i} className='border-b border-gray-200 flex justify-between items-center'>
-                      <p>{room.cuarto}</p>
-                      <input type="checkbox" />
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
+            {loadProcedure ? (
+              <p>Cargando...</p>
+            ) : dataProcedure ? (
+              <div>
+                <h2 className='text-xl font-semibold mb-2'>Información del Procedimiento</h2>
+                {dataProcedure?.data.map((detail: any, index: number) => (
+                  <div key={index}>
+                    {/* <p><strong>Nombres:</strong> {detail.nombres}</p> */}
+                    <p>{detail.sede}</p>
+                    {detail.procedimiento_sala_detalle.map((proc: any, i: number) => (
+                      <ul key={i} >
+                        <li className='flex justify-between gap-2'>
+                          <span>Sala: {proc.sala_tratamiento}</span>
+                          <input type="checkbox" />
+                        </li>
+                      </ul>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Seleccione un procedimiento para ver los detalles</p>
+            )}
           </ul>
         </section>
       </section>
