@@ -1,0 +1,1 @@
+export * from "./popup-alert.component"

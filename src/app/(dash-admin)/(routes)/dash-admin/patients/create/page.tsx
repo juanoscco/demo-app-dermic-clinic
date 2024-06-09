@@ -4,12 +4,14 @@ import { GetDniApiHook } from "@/config/hook-dni/";
 import { useAddPacienteMutation } from "./store/service/";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { Alert } from '@/components/popup/popup-alert';
 
 export default function PatientsCreate() {
 
     // 
-    const [addPaciente, { isLoading: loadingPatient, data: dataPatient, error: errorPatient }] = useAddPacienteMutation();
-    // 
+    const [addPaciente, { isLoading: loadingPatient, data: dataPatient, error: errorPatient, isError }] = useAddPacienteMutation();
+
+    //DNI 
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
 
     const formik = useFormik({
@@ -95,7 +97,24 @@ export default function PatientsCreate() {
     }, [dniData, formik.setFieldValue]);
 
 
-    if (loadingPatient) return <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">Loading...</div>;
+    if (loadingPatient) return (
+        <div className="space-y-4 p-4 border border-gray-200 rounded-md shadow-md">
+            <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+            <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
+            <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
+            <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
+            <div className="h-10 bg-gray-200 rounded w-1/4"></div>
+        </div>
+    )
 
 
     return (
@@ -177,41 +196,6 @@ export default function PatientsCreate() {
                             <div className='text-red-400'>{formik.errors.nacimiento}</div>
                         ) : null}
                     </div>
-                    {/* <div className='border border-gray-300 text-left p-2'>
-                        <label htmlFor="estado_civil">Estado Civil</label>
-                        <input
-                            type="text"
-                            id="estado_civil"
-                            name="estado_civil.descripcion"
-                            className='w-full py-2 outline-none px-1'
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.estado_civil.descripcion}
-                        />
-                        {formik.touched.estado_civil?.descripcion && formik.errors.estado_civil?.descripcion ? (
-                            <div className='text-red-400'>{formik.errors.estado_civil.descripcion}</div>
-                        ) : null}
-                    </div> */}
-                    {/* <div className='border border-gray-300 text-left p-2'>
-                        <label htmlFor="estado_civil">Estado Civil</label>
-                        <select
-                            id="estado_civil"
-                            name="estado_civil.id_cabecera_detalle"
-                            className='w-full py-2 outline-none px-1'
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.estado_civil.id_cabecera_detalle}
-                        >
-                            <option value="">Selecciona una opción</option>
-                            <option value="31">Soltero/a</option>
-                            <option value="32">Casado/a</option>
-                            <option value="33">Divorciado/a</option>
-                            <option value="34">Viudo/a</option>
-                        </select>
-                        {formik.touched.estado_civil?.id_cabecera_detalle && formik.errors.estado_civil?.id_cabecera_detalle ? (
-                            <div className='text-red-400'>{formik.errors.estado_civil.id_cabecera_detalle}</div>
-                        ) : null}
-                    </div> */}
                     <div className='border border-gray-300 text-left p-2'>
                         <label htmlFor="estado_civil">Estado Civil</label>
                         <select
@@ -318,21 +302,6 @@ export default function PatientsCreate() {
                             <div className='text-red-400'>{formik.errors.lugar_nacimiento}</div>
                         ) : null}
                     </div>
-                    {/* <div className='border border-gray-300 text-left p-2'>
-                        <label htmlFor="estado_antiguedad">Estado</label>
-                        <input
-                            type="text"
-                            id="estado_antiguedad"
-                            name="estado_antiguedad.descripcion"
-                            className='w-full py-2 outline-none px-1'
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.estado_antiguedad.descripcion}
-                        />
-                        {formik.touched.estado_antiguedad?.descripcion && formik.errors.estado_antiguedad?.descripcion ? (
-                            <div className='text-red-400'>{formik.errors.estado_antiguedad.descripcion}</div>
-                        ) : null}
-                    </div> */}
                     <div className='border border-gray-300 text-left p-2'>
                         <label htmlFor="estado_antiguedad">Estado</label>
                         <select
@@ -365,8 +334,8 @@ export default function PatientsCreate() {
                     </div>
 
                     <button className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white' type='submit'>Enviar</button>
-                    {errorPatient && <p className='text-red-400'>Error al enviar los datos</p>}
-                    {dataPatient && <p className='text-blue-500'>Paciente creado con éxito: {dataPatient.message}</p>}
+                    {errorPatient && <Alert type='error'>Error en enviar el paciente</Alert>}
+                    {dataPatient && <Alert type='success'>Estado: {dataPatient.message}</Alert>}
 
                 </form>
             </section>

@@ -4,6 +4,7 @@ import { PopupUpdate } from "@/components/popup/popup-update/"
 import { useUpdatePatientMutation } from "./store/service/patient-update.service";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { Alert } from '@/components/popup/popup-alert';
 
 interface Props {
   onClose: any;
@@ -14,7 +15,7 @@ interface Props {
 
 export default function PatientUpdateComponent({ onClose, id, data, update }: Props) {
 
-  const [updatePatient, { isLoading, isError }] = useUpdatePatientMutation();
+  const [updatePatient, { data: dataPatient, isLoading, isError }] = useUpdatePatientMutation();
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -84,12 +85,12 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
       estado: Yup.boolean().required('Requerido'),
     }),
     onSubmit: async (values) => {
-      // Llama a la mutación para actualizar al paciente
       try {
-        await updatePatient({ pacienteId: values.id_paciente, pacienteData: values }).unwrap();
-        console.log('Paciente actualizado exitosamente');
-        update()
-        onClose();
+        await updatePatient({ pacienteId: values.id_paciente, pacienteData: values }).unwrap().then(() => (
+          update(),          
+          onClose()
+        ));
+
       } catch (error) {
         console.log('Error al actualizar el paciente:', error);
       }
@@ -309,9 +310,9 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
           )}
         </div>
         <div className="col-span-2">
-          <button type="submit" disabled={isLoading} className="w-full p-2 bg-blue-500 text-white rounded">Guardar</button>
-          {isLoading && <div className="text-blue-500 mt-2">Cargando...</div>}
-          {isError && <div className="text-red-500 mt-2">Error al guardar cambios</div>}
+          <button type="submit" disabled={isLoading} className="w-full p-2 bg-blue-500 text-white rounded">{isLoading ? "Actualizando" : "Actualizar"}</button>
+          {/* {dataPatient && <Alert type='success'>Actualizado correctamente</Alert>} */}
+          {isError && <Alert type='error'>Error al guardar cambios</Alert>}
         </div>
       </form>
 
