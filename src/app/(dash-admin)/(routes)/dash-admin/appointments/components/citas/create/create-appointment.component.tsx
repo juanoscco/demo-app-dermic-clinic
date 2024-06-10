@@ -110,7 +110,7 @@ export function CreateAppointmentComponent({ hour, room, date, closePopup, emplo
                         ) : null}
                     </div>
 
-                    <div>
+                    {/* <div>
                         <label htmlFor="usuario_registro.id_usuario">Doctor</label>
                         <input
                             id="usuario_registro.id_usuario"
@@ -124,7 +124,7 @@ export function CreateAppointmentComponent({ hour, room, date, closePopup, emplo
                         {formik.touched.usuario_registro?.id_usuario && formik.errors.usuario_registro?.id_usuario ? (
                             <div className="text-red-600">{formik.errors.usuario_registro.id_usuario}</div>
                         ) : null}
-                    </div>
+                    </div> */}
                     <div>
                         <label htmlFor="paciente.id_paciente">Paciente ID</label>
                         <input

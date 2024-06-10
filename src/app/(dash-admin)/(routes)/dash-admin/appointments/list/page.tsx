@@ -1,16 +1,12 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
-import { appointments } from '@/mocks/appointments/appointments.mocks';
+import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
+import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 
-const filterAppointments = (date: any, district: any) => {
-  return appointments.filter(appointment => {
-    const appointmentDate = new Date(appointment.fecha).toLocaleDateString();
-    return appointmentDate === date && appointment.distrito === district;
-  });
-};
 
-const formatDate = (date: any) => {
+
+const formatDate = (date: string | Date) => {
   const d = new Date(date);
   let month = '' + (d.getMonth() + 1);
   let day = '' + d.getDate();
@@ -24,29 +20,68 @@ const formatDate = (date: any) => {
 
 export default function AppointmentList() {
 
-  const today = formatDate(new Date().toLocaleDateString());
+  const { data: appointments, isLoading: loadingAppointments, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150, page: 0, filter: '' });
+  const { data: dataInfra, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' })
 
-  // console.log(today)
+  const infrastructure = dataInfra?.data?.content
+
+  const today = formatDate(new Date());
+
+  const appointmentsData = useMemo(() => appointments?.data?.content || [], [appointments]);
+
   const [selectedDate, setSelectedDate] = useState(today);
-  const [selectedDistrict, setSelectedDistrict] = useState('Los Olivos');
+  const [selectedDistrict, setSelectedDistrict] = useState('Sede Los olivos');
   const [filteredAppointments, setFilteredAppointments] = useState<any>([]);
 
+  const filterAppointments = useCallback((date: string, district: string) => {
+    return appointmentsData.filter((appointment: any) => {
+      const appointmentDate = appointment.fecha_cita;
+      return appointmentDate === date && appointment.sede.nombres === district;
+    });
+  }, [appointmentsData]);
+
   useEffect(() => {
-    const formattedToday = new Date(today).toLocaleDateString();
-    const result = filterAppointments(formattedToday, 'Los Olivos');
-    setFilteredAppointments(result);
-  }, [today]);
+    const delayDebounceFn = setTimeout(() => {
+      refetchAppointment();
+    }, 300);
 
+    return () => clearTimeout(delayDebounceFn);
+  }, [refetchAppointment]);
 
   useEffect(() => {
-    const formattedDate = new Date(selectedDate).toLocaleDateString();
-    const result = filterAppointments(formattedDate, selectedDistrict);
+    const delayDebounceFn = setTimeout(() => {
+      refetchInfra();
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [refetchInfra]);
+
+  useEffect(() => {
+    const result = filterAppointments(today, selectedDistrict);
     setFilteredAppointments(result);
-  }, [selectedDate, selectedDistrict]);
+  }, [today, selectedDistrict, filterAppointments]);
+
+  useEffect(() => {
+    const result = filterAppointments(selectedDate, selectedDistrict);
+    setFilteredAppointments(result);
+  }, [selectedDate, selectedDistrict, appointmentsData, filterAppointments]);
 
 
-  // console.log(appointments)
 
+  if (loadingAppointments) {
+    return (
+      <div className="p-4 bg-white">
+        {/* Puedes agregar un esqueleto o un indicador de carga aquí */}
+        <div className="animate-pulse space-y-4">
+          <div className="h-4 bg-gray-200 rounded"></div>
+          <div className="h-4 bg-gray-200 rounded"></div>
+          <div className="h-4 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  console.log(filteredAppointments)
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Lista de Citas</h1>
@@ -60,11 +95,17 @@ export default function AppointmentList() {
           />
           <select
             className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
-            value={selectedDistrict}
+            value={loadingInfra ? '......' : selectedDistrict}
             onChange={(e) => setSelectedDistrict(e.target.value)}
           >
-            <option value="Los Olivos">Los Olivos</option>
-            <option value="San Isidro">San Isidro</option>
+
+            {infrastructure?.map((infra: any, i: number) => (
+              <React.Fragment key={i}>
+                <option value={infra.nombres} className='capitalize'>{infra.nombres}</option>
+                {/* <option value="Sede san isidro">San Isidro</option> */}
+              </React.Fragment>
+            ))}
+
           </select>
         </section>
 
@@ -84,13 +125,9 @@ export default function AppointmentList() {
           <button className="p-2 bg-gray-500 text-white rounded-md mt-2 xl:mt-0 w-full md:w-auto">
             Imprimir
           </button>
-          <Link href="/dash-admin/persons/create" className="w-full">
-            <button className="p-2 bg-sky-500 rounded-md text-white mt-2 xl:mt-0 w-full md:w-auto">
-              Crear
-            </button>
-          </Link>
         </div>
       </section>
+
 
       <section className='bg-white p-2 rounded-md w-full xl:h-[35rem] h-full overflow-x-auto'>
         <table className="w-full border-collapse">
@@ -120,30 +157,26 @@ export default function AppointmentList() {
             </tr>
           </thead>
           <tbody>
+
+
+
             {filteredAppointments.map((appointment: any) => (
-              <tr key={appointment.id}>
-                {/* <td className="border-b px-4 py-2">{appointment.id}</td> */}
-                <td className="border-b px-4 py-2">
-                  <p>{appointment.user.name}</p>
-                  <p>{appointment.user.dni}</p>
+              <tr key={appointment.id_cita} className='border-b'>
+                <td className="px-4 py-2">
+                  <p>{appointment.paciente.nombres}</p>
+                  <p>{appointment.paciente.numero_documento_identidad}</p>
                 </td>
-                <td className="border-b px-4 py-2">
-                  <p>{appointment.sala}</p>
-                  <span>{appointment.doctor}</span>
+                <td className="px-4 py-2">
+                  -
                 </td>
-
-                {/* <td className="border-b px-4 py-2">{appointment.Fecha}</td> */}
-                <td className="border-b px-4 py-2">{appointment.horaInicio} a {appointment.HoraFinal}</td>
-                {/* <td className="border-b px-4 py-2"></td> */}
-
-                <td className="border-b px-4 py-2">{appointment.llegada}</td>
-                <td className="border-b px-4 py-2">{appointment.entrada}</td>
-                <td className="border-b px-4 py-2">{appointment.salida}</td>
-                <td className="border-b px-4 py-2">{appointment.estado}</td>
-                <td className="border-b px-4 py-2">
-                  <button className='text-white bg-blue-700 p-1 rounded-md'>Detalles</button>
+                <td className="px-4 py-2">
+                  {appointment.hora.descripcion}
                 </td>
-
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td className="px-4 py-2">Detalle</td>
               </tr>
             ))}
           </tbody>

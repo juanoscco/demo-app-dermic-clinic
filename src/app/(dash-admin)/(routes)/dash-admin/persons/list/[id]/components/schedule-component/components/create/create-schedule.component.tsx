@@ -161,8 +161,10 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
         { id_cabecera_detalle: 66, descripcion: "17:40 p.m." },
         { id_cabecera_detalle: 67, descripcion: "18:00 p.m." },
         { id_cabecera_detalle: 68, descripcion: "18:20 p.m." },
-        { id_cabecera_detalle: 69, descripcion: "18:40 p.m." }
-
+        { id_cabecera_detalle: 69, descripcion: "18:40 p.m." },
+        { id_cabecera_detalle: 70, descripcion: "19:00 p.m." },
+        { id_cabecera_detalle: 71, descripcion: "19:20 p.m." },
+        { id_cabecera_detalle: 72, descripcion: "19:40 p.m." }
     ];
 
 
@@ -237,13 +239,6 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                                             ))}
                                         </select>
                                     </div>
-                                    {/* <button
-                                        type="button"
-                                        onClick={() => handleActivationToggle(index, true)}
-                                        className={`w-full h-9 p-1 ${detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-blue-500 text-white'} rounded`}
-                                    >
-                                        Activar
-                                    </button> */}
                                 </div>
                                 <div className="flex flex-col gap-3">
                                     <div className="mb-2">

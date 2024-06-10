@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { useGetRoomsListQuery } from '../../infrastructure/list/[id]/infra-rooms/list/store/service';
 import { useGetEmployeesQuery } from '../../persons/list/store/service';
@@ -48,16 +48,14 @@ export default function AppointmentCalendar() {
     const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 10, page: 0, filter: '' })
     const { data: dataEmployee, isLoading: loadEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 15000, page: 0, filter: '' })
 
-    const { data:dataAppointment, isLoading } = useGetAppointmentListQuery({ limit: 15000, page: 0, filter: '' })
-    console.log(dataAppointment)
-    // console.log(dataRoom)
-    // console.log(dataEmployee)
-    // Hooks
-    const [selectedSedeId, setSelectedSedeId] = useState('');
+    const { data: dataAppointment, isLoading, refetch: refetchAppointments } = useGetAppointmentListQuery({ limit: 15000, page: 0, filter: '' })
 
-    // Manejar el cambio de selección en el select
+    // Hooks
+    const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
+
     const handleSedeChange = (event: any) => {
-        setSelectedSedeId(event.target.value);
+        setSelectedSedeId(parseInt(event.target.value, 10));
+        // Aquí puedes realizar otras acciones según sea necesario al cambiar la sede seleccionada
     };
 
     // Filtrar los cuartos basados en el id_sede seleccionado
@@ -68,8 +66,7 @@ export default function AppointmentCalendar() {
     const [selectedHour, setSelectedHour] = useState<any>(null);
     const [selectedRoom, setSelectedRoom] = useState<any>(null);
 
-    const handleCellClick = (event: React.MouseEvent, hour: any, room: any) => {
-        
+    const handleCellClick = (hour: any, room: any) => {
         setSelectedHour(hour);
         setSelectedRoom(room);
         setPopupVisible(true);
@@ -92,18 +89,26 @@ export default function AppointmentCalendar() {
 
     const [selectedDate, setSelectedDate] = useState(getCurrentDate());
 
-    // Manejar el cambio de fecha
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDate(event.target.value);
     };
 
-    // useEffect(() => {
-    //     const delayDebounceFn = setTimeout(() => {
-    //       refetchEmployee();
-    //     }, 300);
 
-    //     return () => clearTimeout(delayDebounceFn);
-    //   }, [refetchEmployee]);
+    const selectFirstSedeId = useCallback(() => {
+        if (dataInfra?.data?.content && dataInfra.data.content.length > 0 && selectedSedeId === null) {
+            setSelectedSedeId(dataInfra.data.content[0].id_sede);
+        }
+    }, [dataInfra, selectedSedeId]);
+
+    useEffect(() => {
+        selectFirstSedeId();
+    }, [selectFirstSedeId]);
+
+    // Ordenar dataInfra por 'codigo' en orden ascendente
+    const sortedDataInfra = dataInfra?.data?.content?.slice().sort((a: any, b: any) => {
+        return a.codigo.localeCompare(b.codigo);
+    });
+
     return (
         <React.Fragment>
             <h1 className='text-2xl'>Calendario de citas medicas</h1>
@@ -120,11 +125,11 @@ export default function AppointmentCalendar() {
                         value={selectedSedeId} onChange={handleSedeChange}
                         className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        {
-                            dataInfra?.data?.content.map((infra: any, i: number) => (
-                                <option key={i} value={infra.id_sede}> {infra.nombres}</option>
-                            ))
-                        }
+                        {sortedDataInfra?.map((infra: any, i: number) => (
+                            <option key={i} value={infra.id_sede}>
+                                {infra.nombres}
+                            </option>
+                        ))}
                     </select>
                     <select
                         name="profession"
@@ -167,7 +172,7 @@ export default function AppointmentCalendar() {
                                                 <td
                                                     key={j}
                                                     className='px-4 py-2 border h-24 cursor-pointer'
-                                                    onClick={(e) => handleCellClick(e, hour, room)}
+                                                    onClick={() => handleCellClick(hour, room)}
                                                 ></td>
                                             ))
                                         ) : (

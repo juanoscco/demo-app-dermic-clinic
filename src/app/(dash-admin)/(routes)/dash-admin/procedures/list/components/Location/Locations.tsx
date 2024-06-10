@@ -1,20 +1,27 @@
 "use client"
 import React from 'react'
 import { useGetProceduresQuery } from '../Procedures/store/service'
+import { useGetInfrastructureQuery } from '../../../../infrastructure/list/store/service'
 
 export default function Sedes() {
   const { data: dataProcedures, isLoading: loadingProcedures } = useGetProceduresQuery({ limit: 10000, page: 0, filter: '' })
+  const { data: dataInfra, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 100, page: 0, filter: '' })
+
+
+  const infrastructure = dataInfra?.data?.content
+  
+
   const procedures = dataProcedures?.data?.content
   return (
     <section className='mt-2 bg-white'>
       <section className='flex flex-col lg:flex-row items-center justify-around h-5/6 w-full p-5'>
         <section className='w-full lg:w-2/6 max-h-full h-[35rem] border border-gray-300 overflow-x-auto'>
-          {/* <ul className='p-4'>
+          <ul className='p-4'>
             <input className='outline-none border border-gray-200 rounded-md p-2 w-full' type='text' placeholder='Buscar...' />
-            {infrastructure.map((infra) => (
-              <li key={infra.id} className='px-2 py-1 mt-1 border-b hover:bg-gray-200 cursor-pointer border-gray-200'>{infra.lugar}</li>
+            {infrastructure?.map((infra: any) => (
+              <li key={infra.id_sede} className='px-2 py-1 mt-1 border-b hover:bg-gray-200 cursor-pointer border-gray-200'>{infra.nombres}</li>
             ))}
-          </ul> */}
+          </ul>
         </section>
         <section className='w-full lg:w-2/6 max-h-full h-[35rem] border border-gray-300 overflow-x-auto mt-4 lg:mt-0'>
           <ul className='p-2'>

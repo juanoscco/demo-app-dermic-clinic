@@ -14,10 +14,10 @@ export const getRoomProcedureApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getLocationProcedure: builder.query({
+    getRoomProcedure: builder.query({
       query: ({ limit = 10, page = 0, filter = '' }) => `procedimiento_sala?p=${page}&limit=${limit}&filtro=${filter}`,
     }),
   }),
 });
 
-export const { useGetLocationProcedureQuery } = getRoomProcedureApi;
+export const { useGetRoomProcedureQuery } = getRoomProcedureApi;

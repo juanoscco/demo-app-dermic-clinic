@@ -5,6 +5,7 @@ import { useAddEmployeeMutation } from './store/services';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
+import { Alert } from '@/components/popup/popup-alert';
 
 export default function UserCreate() {
     const [selectedSede, setSelectedSede] = useState(null);
@@ -337,7 +338,8 @@ export default function UserCreate() {
                 </form>
                 {errorEmployee &&
                     <div className='text-red-500 text-sm mt-2'>{'Error al crear empleado'}</div>}
-                {dataEmployee && <div>{dataEmployee.message}</div>}
+                {dataEmployee && <Alert type='success'>{dataEmployee.message}</Alert>}
+                {errorEmployee && <Alert type='error'>Estado {dataEmployee?.message}</Alert>}
             </section>
         </React.Fragment>
     )
