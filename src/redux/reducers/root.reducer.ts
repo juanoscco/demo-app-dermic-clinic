@@ -12,11 +12,13 @@ import { appointmentsReducer } from "@/app/(dash-admin)/store/reducers/appointme
 import { proceduresLocationReducer } from "@/app/(dash-admin)/store/reducers/procedures-location"
 import { proceduresPersonalReducer } from "@/app/(dash-admin)/store/reducers/procedures-personal"
 import { proceduresRoomsReducers } from "@/app/(dash-admin)/store/reducers/procedures-rooms"
+import { findHeadboarReducer } from "@/config/search-headboard/reducer"
 
 
 export const rootReducer = {
     ...authReducer,
     ...dniSearchReducer,
+    ...findHeadboarReducer,
     // 
     ...patientReducers,
     ...personsReducers,

@@ -12,12 +12,14 @@ import { appointmentsMiddleware } from "@/app/(dash-admin)/store/middleware/appo
 import { proceduresLocationMiddleware } from "@/app/(dash-admin)/store/middleware/procedures-location";
 import { proceduresPersonalMiddleware } from "@/app/(dash-admin)/store/middleware/procedures-personal";
 import { proceduresRoomsMiddleware } from "@/app/(dash-admin)/store/middleware/procedures-rooms";
+import { findHeadboardMiddleware } from "@/config/search-headboard/middleware";
 
 export const rootMiddlewares = (
     getDefaultMiddleware: any
 ) => getDefaultMiddleware().concat(
     dniSearchMiddleware,
     authMiddleware,
+    findHeadboardMiddleware,
     ...patientMiddlewares,
     ...personsMiddleware,
     ...infrastructureMiddleware,

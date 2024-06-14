@@ -1,14 +1,14 @@
 "use client"
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useGetProceduresQuery } from '../Procedures/store/service'
 import { useGetProcedureRoomAvailableByIdQuery } from './store/get-find-id/service';
 import { useGetRoomProcedureQuery } from './store/get/service';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { useAddRoomProcedureMutation } from './store/post/service';
-import { Alert } from '@/components/popup/popup-alert';
 import { useUpdateRoomProcedureMutation } from './store/put/service';
 
+import { Alert } from '@/components/popup/popup-alert';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 export default function RoomsProcedure() {
   const { data: dataProcedures, isLoading: loadingProcedures, refetch: refetchProcedures } = useGetProceduresQuery({ limit: 150, page: 0, filter: '' });
@@ -20,7 +20,7 @@ export default function RoomsProcedure() {
   // FORMATEO DE DATOS
   const [formattedData, setFormattedData] = useState<any[]>([]);
 
-  const [selectedProcedureId, setSelectedProcedureId] = useState<number>(1);
+  const [selectedProcedureId, setSelectedProcedureId] = useState<number>(0);
   const [selectedRooms, setSelectedRooms] = useState<number[]>([]);
   const [matchingRooms, setMatchingRooms] = useState<number[]>([]);
   const [selectedProcedureDetails, setSelectedProcedureDetails] = useState<any>(null);
@@ -38,6 +38,7 @@ export default function RoomsProcedure() {
 
     return () => clearTimeout(delayDebounceFn);
   }, [refetchProcedures]);
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       refetchInfraRoom();
@@ -254,52 +255,56 @@ export default function RoomsProcedure() {
           <ul className='p-4 flex flex-col'>
             <input className='outline-none border border-gray-200 rounded-md p-2 w-full' type='text' placeholder='Buscar...' />
             {/* {selectedProcedureId} */}
-            {formattedData.map((procedure: any, index: number) => (
-              <React.Fragment key={index}>
-                {procedure.id_procedimiento === selectedProcedureId && (
-                  <div>
-                    {Object.keys(procedure.data_sede).map((sede: string, i: number) => (
-                      <React.Fragment key={i}>
-                        <h3 className='border-b border-gray-400 mb-1 py-2'>{sede}</h3>
-                        <ul>
-                          {procedure.data_sede[sede].map((room: any, j: number) => (
-                            <li key={j} className='flex justify-end gap-2'>
-                              <span>Sala: {room.sala}</span>
-                              {/* <input
-                                type="checkbox"
-                                name="procedimiento_sala_detalle"
-                                value={room.idSala}
-                                checked={isChecked(room)}
-                                onChange={() => handleCheckboxChange(room.idSala)}
-                              /> */}
-                              <input
-                                type="checkbox"
-                                name="procedimiento_sala_detalle"
-                                value={room.idSala}
-                                checked={formik.values.procedimiento_sala_detalle.includes(room.idSala)}
-                                onChange={() => {
-                                  if (formik.values.procedimiento_sala_detalle.includes(room.idSala)) {
-                                    formik.setFieldValue(
-                                      'procedimiento_sala_detalle',
-                                      formik.values.procedimiento_sala_detalle.filter((id: number) => id !== room.idSala)
-                                    );
-                                  } else {
-                                    formik.setFieldValue(
-                                      'procedimiento_sala_detalle',
-                                      [...formik.values.procedimiento_sala_detalle, room.idSala]
-                                    );
-                                  }
-                                }}
-                              />
-                            </li>
-                          ))}
-                        </ul>
-                      </React.Fragment>
-                    ))}
-                  </div>
-                )}
-              </React.Fragment>
-            ))}
+            {selectedProcedureId === 0 ? (
+              <div className='flex items-center justify-center '>Seleccione un procedimiento</div>
+            ) : (
+              formattedData.map((procedure: any, index: number) => (
+                <React.Fragment key={index}>
+                  {procedure.id_procedimiento === selectedProcedureId && (
+                    <div>
+                      {Object.keys(procedure.data_sede).map((sede: string, i: number) => (
+                        <React.Fragment key={i}>
+                          <h3 className='border-b border-gray-400 mb-1 py-2'>{sede}</h3>
+                          <ul>
+                            {procedure.data_sede[sede].map((room: any, j: number) => (
+                              <li key={j} className='flex justify-end gap-2'>
+                                <span>Sala: {room.sala}</span>
+                                {/* <input
+                                  type="checkbox"
+                                  name="procedimiento_sala_detalle"
+                                  value={room.idSala}
+                                  checked={isChecked(room)}
+                                  onChange={() => handleCheckboxChange(room.idSala)}
+                                /> */}
+                                <input
+                                  type="checkbox"
+                                  name="procedimiento_sala_detalle"
+                                  value={room.idSala}
+                                  checked={formik.values.procedimiento_sala_detalle.includes(room.idSala)}
+                                  onChange={() => {
+                                    if (formik.values.procedimiento_sala_detalle.includes(room.idSala)) {
+                                      formik.setFieldValue(
+                                        'procedimiento_sala_detalle',
+                                        formik.values.procedimiento_sala_detalle.filter((id: number) => id !== room.idSala)
+                                      );
+                                    } else {
+                                      formik.setFieldValue(
+                                        'procedimiento_sala_detalle',
+                                        [...formik.values.procedimiento_sala_detalle, room.idSala]
+                                      );
+                                    }
+                                  }}
+                                />
+                              </li>
+                            ))}
+                          </ul>
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  )}
+                </React.Fragment>
+              ))
+            )}
           </ul>
         </section>
       </section>
