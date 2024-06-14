@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-import { Employee, EmployeeReponse } from "../../interface/create-employee.interface"
+// import { Employee, EmployeeReponse } from "../../interface/create-employee.interface"
 
 const baseUrl = `${process.env.API_DOCKER_JAVA_REST}/empleado`;
 
@@ -17,7 +17,7 @@ export const employeeCreateApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        addEmployee: builder.mutation<EmployeeReponse, Employee>({
+        addEmployee: builder.mutation({
             query: (newEmployee) => ({
                 url: '',
                 method: 'POST',

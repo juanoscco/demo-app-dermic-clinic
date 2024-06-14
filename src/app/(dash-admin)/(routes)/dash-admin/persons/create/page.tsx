@@ -37,18 +37,6 @@ export default function UserCreate() {
             correo: '',
             sede: {
                 id_sede: 1,
-                codigo: '',
-                nombres: '',
-                direccion: '',
-                telefono: '',
-                empresa: {
-                    id_empresa: 1,
-                    nro_documento: '20605571078',
-                    nombres: 'M & S CONSULTORES EN TECNOLOGIA S.A.C.',
-                    direccion: 'LT. 7 DPTO. 802 MZ. F ---- CIUDAD SOL DE COLLIQUE',
-                    estado: true,
-                },
-                estado: true,
             },
             titulo: {
                 id_cabecera: 3,
@@ -64,10 +52,6 @@ export default function UserCreate() {
             },
             empresa: {
                 id_empresa: 1,
-                nro_documento: '20605571078',
-                nombres: 'M & S CONSULTORES EN TECNOLOGIA S.A.C.',
-                direccion: 'LT. 7 DPTO. 802 MZ. F ---- CIUDAD SOL DE COLLIQUE',
-                estado: true,
             },
             usuario: {
                 username: '',
@@ -336,10 +320,8 @@ export default function UserCreate() {
                     </button>
 
                 </form>
-                {errorEmployee &&
-                    <div className='text-red-500 text-sm mt-2'>{'Error al crear empleado'}</div>}
                 {dataEmployee && <Alert type='success'>{dataEmployee.message}</Alert>}
-                {errorEmployee && <Alert type='error'>Estado {dataEmployee?.message}</Alert>}
+                {errorEmployee && <Alert type='error'>Error al crear empleado</Alert>}
             </section>
         </React.Fragment>
     )

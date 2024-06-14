@@ -26,7 +26,7 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
   const { data: dataRoom, isLoading, error, refetch } = useGetRoomsListQuery({ limit: 10, page: currentPage - 1, filter })
   const filteredRooms = dataRoom?.data?.content.filter((room: any) => room.sede.id_sede === id);
 
-  console.log(dataRoom)
+  // console.log(dataRoom)
   // 
   const togglePopup = () => {
     setShowPopup(!showPopup);

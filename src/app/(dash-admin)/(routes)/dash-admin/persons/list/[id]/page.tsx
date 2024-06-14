@@ -99,11 +99,11 @@ export default function DetailsUserEmployees({ params }: Props) {
           idPerson={dataEmployee?.id_empleado}
         />
 
-        {/* Espacios en blanco */}
         <AgendaPersonComponent
           dataPerson={dataEmployee}
           idPerson={dataEmployee?.id_empleado}
         />
+        
         <ExceptionPersonComponent
           dataPerson={dataEmployee}
           idPerson={dataEmployee?.id_empleado} />

@@ -16,10 +16,10 @@ today.setHours(0, 0, 0, 0); // Para ignorar la parte de la hora
 
 const validationSchema = Yup.object({
     fecha_ausente_desde: Yup.date()
-        .max(today, 'La fecha debe ser hoy o anterior')
+        // .max(today, 'La fecha debe ser hoy o anterior')
         .required('Required'),
     fecha_ausente_hasta: Yup.date()
-        .min(today, 'La fecha debe ser hoy o en el futuro')
+        // .min(today, 'La fecha debe ser hoy o en el futuro')
         .required('Required'),
     motivo: Yup.string().required('Required')
 });
