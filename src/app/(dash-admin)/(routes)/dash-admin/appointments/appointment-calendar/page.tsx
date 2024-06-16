@@ -53,6 +53,8 @@ export default function AppointmentCalendar() {
     // Hooks
     const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
 
+    
+
     const handleSedeChange = (event: any) => {
         setSelectedSedeId(parseInt(event.target.value, 10));
         // Aquí puedes realizar otras acciones según sea necesario al cambiar la sede seleccionada

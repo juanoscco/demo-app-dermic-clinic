@@ -15,7 +15,7 @@ export default function RoomsProcedure() {
   const procedures = dataProcedures?.data?.content;
 
   // POST    
-  const [addRoomProcedure, { data: dataRoomProcedure, isLoading: loadingRoom, error: errorRoom }] = useAddRoomProcedureMutation();
+  const [addRoomProcedure, { data: dataRoomProcedure, isLoading: loadingRoom, error: errorRoom}] = useAddRoomProcedureMutation();
   const { data: dataProceduresRoom, refetch: refetchRoomProcedures } = useGetRoomProcedureQuery({ limit: 200, page: 0, filter: '' });
   // FORMATEO DE DATOS
   const [formattedData, setFormattedData] = useState<any[]>([]);

@@ -1,6 +1,5 @@
 import { Section } from "@/app/(dash-admin)/models/aside/aside.models"
 
-// / Array de secciones con tipificación
 export const sections: Section[] = [
     {
       id: 'one',
