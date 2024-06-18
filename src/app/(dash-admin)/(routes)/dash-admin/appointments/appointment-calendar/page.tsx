@@ -124,7 +124,8 @@ export default function AppointmentCalendar() {
                     />
                     <select
                         name="location"
-                        value={selectedSedeId} onChange={handleSedeChange}
+                        value={selectedSedeId} 
+                        onChange={handleSedeChange}
                         className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         {sortedDataInfra?.map((infra: any, i: number) => (

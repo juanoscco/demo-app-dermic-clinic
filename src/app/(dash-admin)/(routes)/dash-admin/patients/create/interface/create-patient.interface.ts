@@ -28,6 +28,7 @@ interface EstadoAntiguedad {
 }
 
 export interface Patient {
+    id_paciente?: number;
     nombres: string;
     empresa: Empresa;
     usuario_registro: UsuarioRegistro;

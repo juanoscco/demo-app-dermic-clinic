@@ -1,17 +1,17 @@
-"use client"
-import React, { useEffect } from 'react';
-import { GetDniApiHook } from "@/config/hook-dni/";
-import { useAddPatientMutation } from "./store/service/";
+"use client";
+import { GetDniApiHook } from '@/config/hook-dni';
+import React, { useEffect } from 'react'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Alert } from '@/components/popup/popup-alert';
+interface Props {
+    addPatient?: any;
+    loadingPatient?: any;
+    // dataPatient?: any;
+    // error?: any
+}
 
-export default function PatientsCreate() {
+export default function CreatePatientComponent({ addPatient, loadingPatient }: Props) {
 
-    // 
-    const [addPatient, { isLoading: loadingPatient, data: dataPatient, error: errorPatient, isError }] = useAddPatientMutation();
-
-    //DNI 
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
 
     const formik = useFormik({
@@ -97,24 +97,24 @@ export default function PatientsCreate() {
     }, [dniData, formik.setFieldValue]);
 
 
-    if (loadingPatient) return (
-        <div className="space-y-4 p-4 border border-gray-200 rounded-md shadow-md">
-            <div className="h-6 bg-gray-200 rounded w-1/3"></div>
-            <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-            </div>
-            <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-            </div>
-            <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-            </div>
-            <div className="h-10 bg-gray-200 rounded w-1/4"></div>
-        </div>
-    )
+    // if (loadingPatient) return (
+    //     <div className="space-y-4 p-4 border border-gray-200 rounded-md shadow-md">
+    //         <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+    //         <div className="space-y-2">
+    //             <div className="h-4 bg-gray-200 rounded w-full"></div>
+    //             <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+    //         </div>
+    //         <div className="space-y-2">
+    //             <div className="h-4 bg-gray-200 rounded w-full"></div>
+    //             <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+    //         </div>
+    //         <div className="space-y-2">
+    //             <div className="h-4 bg-gray-200 rounded w-full"></div>
+    //             <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+    //         </div>
+    //         <div className="h-10 bg-gray-200 rounded w-1/4"></div>
+    //     </div>
+    // )
 
 
     return (
@@ -333,10 +333,11 @@ export default function PatientsCreate() {
                         ) : null}
                     </div>
 
-                    <button className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white' type='submit'>Enviar</button>
-                    {errorPatient && <Alert type='error'>Error en enviar el paciente</Alert>}
-                    {dataPatient && <Alert type='success'>Estado: {dataPatient.message}</Alert>}
-
+                    <button
+                        className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white'
+                        type='submit'>
+                        {loadingPatient ? 'Creando...' : 'Crear'}
+                    </button>
                 </form>
             </section>
         </React.Fragment>

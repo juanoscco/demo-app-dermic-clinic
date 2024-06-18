@@ -223,7 +223,7 @@ export default function Personal() {
               {selectedHeadBoardId === 0 ? (
                 <div className='flex items-center justify-center '>Seleccione una opción</div>
               ) : (
-                formattedData.map((itemboard: any, i: number) => (
+                formattedData?.map((itemboard: any, i: number) => (
                   <ul key={i} className='flex flex-col gap-2 mt-1'>
                     {itemboard.id_cabecera_detalle === selectedHeadBoardId && (
                       itemboard.data_procedures.map((item: any, i: number) => (

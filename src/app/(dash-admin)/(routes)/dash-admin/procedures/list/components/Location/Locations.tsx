@@ -230,7 +230,7 @@ export default function Sedes() {
               {selectedLocationId === 0 ? (
                 <div className='flex items-center justify-center '>Seleccione una sede</div>
               ) : (
-                formattedData.map((sede: any, i: number) => (
+                formattedData?.map((sede: any, i: number) => (
                   <ul key={i} className='flex flex-col gap-2 mt-1'>
                     {sede.id_sede === selectedLocationId && (
                       sede.data_procedures.map((item: any, i: number) => (

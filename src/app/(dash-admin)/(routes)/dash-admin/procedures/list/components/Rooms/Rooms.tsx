@@ -258,7 +258,7 @@ export default function RoomsProcedure() {
             {selectedProcedureId === 0 ? (
               <div className='flex items-center justify-center '>Seleccione un procedimiento</div>
             ) : (
-              formattedData.map((procedure: any, index: number) => (
+              formattedData?.map((procedure: any, index: number) => (
                 <React.Fragment key={index}>
                   {procedure.id_procedimiento === selectedProcedureId && (
                     <div>

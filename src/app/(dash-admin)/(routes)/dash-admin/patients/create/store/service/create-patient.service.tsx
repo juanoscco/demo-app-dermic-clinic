@@ -17,14 +17,14 @@ export const patientCreateApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        addPaciente: builder.mutation<PatientResponse, Patient>({
-            query: (newPaciente) => ({
+        addPatient: builder.mutation<PatientResponse, Patient>({
+            query: (newPatient) => ({
                 url: '',
                 method: 'POST',
-                body: newPaciente,
+                body: newPatient,
             }),
         }),
     }),
 });
 
-export const { useAddPacienteMutation } = patientCreateApi;
+export const { useAddPatientMutation } = patientCreateApi;
