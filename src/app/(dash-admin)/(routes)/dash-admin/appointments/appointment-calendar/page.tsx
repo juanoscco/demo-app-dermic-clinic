@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { useGetRoomsListQuery } from '../../infrastructure/list/[id]/infra-rooms/list/store/service';
-import { useGetEmployeesQuery } from '../../persons/list/store/service';
 import { CreateAppointmentComponent } from '../components/citas/create';
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
 
@@ -41,19 +40,28 @@ const hours = [
     { id_cabecera_detalle: 70, descripcion: "19:00 p.m.", valor: "" }
 ];
 
-
+const title_employe = [
+    {
+        id_cabecera_detalle: 5,
+        descripcion: "Cosmiatras",
+        valor: ""
+    },
+    {
+        id_cabecera_detalle: 6,
+        descripcion: "Doctores",
+        valor: ""
+    },
+]
 export default function AppointmentCalendar() {
 
+    // data rooms and infra
     const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0, filter: '' })
-    const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 10, page: 0, filter: '' })
-    const { data: dataEmployee, isLoading: loadEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 15000, page: 0, filter: '' })
+    const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 300, page: 0, filter: '' })
 
     const { data: dataAppointment, isLoading, refetch: refetchAppointments } = useGetAppointmentListQuery({ limit: 15000, page: 0, filter: '' })
 
     // Hooks
     const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
-
-    
 
     const handleSedeChange = (event: any) => {
         setSelectedSedeId(parseInt(event.target.value, 10));
@@ -63,6 +71,23 @@ export default function AppointmentCalendar() {
     // Filtrar los cuartos basados en el id_sede seleccionado
     const filteredRooms = dataRoom?.data?.content.filter((room: any) => room.sede.id_sede === parseInt(selectedSedeId));
 
+    // Filtrar por medio de la profesion
+    const [selectedProfessionId, setSelectedProfessionId] = useState<number | null>(6);
+    const [selectedProfessionName, setSelectedProfessionName] = useState<string>('');
+
+    const handleProfessionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const professionId = parseInt(event.target.value);
+        const selectedProfession = title_employe.find(prof => prof.id_cabecera_detalle === professionId);
+        if (selectedProfession) {
+            setSelectedProfessionId(professionId);
+            setSelectedProfessionName(selectedProfession.descripcion);
+            console.log(`Selected profession ID: ${professionId}, Name: ${selectedProfession.descripcion}`);
+        }
+    };
+
+    // const filteredRoomsByProfession = selectedProfessionId
+    //     ? filteredRooms.filter((room: any) => room.id_cabecera_detalle === selectedProfessionId)
+    //     : filteredRooms;
     // 
     const [popupVisible, setPopupVisible] = useState(false);
     const [selectedHour, setSelectedHour] = useState<any>(null);
@@ -124,7 +149,7 @@ export default function AppointmentCalendar() {
                     />
                     <select
                         name="location"
-                        value={selectedSedeId} 
+                        value={selectedSedeId}
                         onChange={handleSedeChange}
                         className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
@@ -136,12 +161,16 @@ export default function AppointmentCalendar() {
                     </select>
                     <select
                         name="profession"
-                        // value={selectedProfession}
-                        // onChange={handleProfessionChange}
+                        value={selectedProfessionId ?? ''}
+                        onChange={handleProfessionChange}
                         className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="doctor">Doctor</option>
-                        <option value="cosmetra">Cosmeatra</option>
+                        <option value="">Seleccione una profesión</option>
+                        {title_employe.map(prof => (
+                            <option key={prof.id_cabecera_detalle} value={prof.id_cabecera_detalle}>
+                                {prof.descripcion}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -186,7 +215,6 @@ export default function AppointmentCalendar() {
                             }
                         </tbody>
                     </table>
-
                 </section>
 
             </section>
@@ -195,8 +223,9 @@ export default function AppointmentCalendar() {
                     hour={selectedHour}
                     room={selectedRoom}
                     date={selectedDate}
-                    employee={dataEmployee}
+                    idTitle={selectedProfessionId}
                     closePopup={closePopup}
+                    refetch={refetchAppointments}
                 />
             )}
 

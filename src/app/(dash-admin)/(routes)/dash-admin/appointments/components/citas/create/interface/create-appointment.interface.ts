@@ -12,6 +12,7 @@ interface UsuarioRegistro {
 
 interface Paciente {
     id_paciente: number;
+    nombres?: string;
 }
 
 interface Sede {

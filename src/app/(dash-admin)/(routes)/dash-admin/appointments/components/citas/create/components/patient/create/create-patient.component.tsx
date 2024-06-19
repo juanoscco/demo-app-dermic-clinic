@@ -6,11 +6,13 @@ import * as Yup from 'yup';
 interface Props {
     addPatient?: any;
     loadingPatient?: any;
+    nextStep?: any;
+    refetch?:any;
     // dataPatient?: any;
     // error?: any
 }
 
-export default function CreatePatientComponent({ addPatient, loadingPatient }: Props) {
+export default function CreatePatientComponent({ addPatient, loadingPatient, nextStep, refetch }: Props) {
 
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
 
@@ -76,7 +78,9 @@ export default function CreatePatientComponent({ addPatient, loadingPatient }: P
         onSubmit: async (values, { resetForm }) => {
             // console.log(values);
             await addPatient(values);
+            refetch()
             resetForm();
+            nextStep();
         },
     });
     const estadosAntiguedad = [
@@ -95,27 +99,6 @@ export default function CreatePatientComponent({ addPatient, loadingPatient }: P
             formik.setFieldValue('nombres', dniData.nombre);
         }
     }, [dniData, formik.setFieldValue]);
-
-
-    // if (loadingPatient) return (
-    //     <div className="space-y-4 p-4 border border-gray-200 rounded-md shadow-md">
-    //         <div className="h-6 bg-gray-200 rounded w-1/3"></div>
-    //         <div className="space-y-2">
-    //             <div className="h-4 bg-gray-200 rounded w-full"></div>
-    //             <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-    //         </div>
-    //         <div className="space-y-2">
-    //             <div className="h-4 bg-gray-200 rounded w-full"></div>
-    //             <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-    //         </div>
-    //         <div className="space-y-2">
-    //             <div className="h-4 bg-gray-200 rounded w-full"></div>
-    //             <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-    //         </div>
-    //         <div className="h-10 bg-gray-200 rounded w-1/4"></div>
-    //     </div>
-    // )
-
 
     return (
         <React.Fragment>
@@ -336,7 +319,7 @@ export default function CreatePatientComponent({ addPatient, loadingPatient }: P
                     <button
                         className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white'
                         type='submit'>
-                        {loadingPatient ? 'Creando...' : 'Crear'}
+                        {loadingPatient ? 'Creando...' : 'Siguiente'}
                     </button>
                 </form>
             </section>

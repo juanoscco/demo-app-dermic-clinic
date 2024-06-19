@@ -23,6 +23,7 @@ export default function UserList() {
     if (error) return <div>Error loading patients</div>;
 
 
+    // console.log(data)
     const columns = [
         {
             title: 'Empleado',
@@ -41,7 +42,7 @@ export default function UserList() {
             field: 'telefono',
             render: (fieldValue: any, item: any) => (
                 <div>
-                    <h1>{item.usuario.rol.descripcion.toLowerCase()}</h1>
+                    <h1>{item.titulo.descripcion}</h1>
                     <span>{fieldValue}</span>
                 </div>
             )
