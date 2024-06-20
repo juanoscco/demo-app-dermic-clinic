@@ -8,8 +8,6 @@ interface Props {
     loadingPatient?: any;
     nextStep?: any;
     refetch?:any;
-    // dataPatient?: any;
-    // error?: any
 }
 
 export default function CreatePatientComponent({ addPatient, loadingPatient, nextStep, refetch }: Props) {

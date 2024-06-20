@@ -52,14 +52,24 @@ const title_employe = [
         valor: ""
     },
 ]
+// TODO: FALTA HACER LOS LOADING DE LAZY LOADING Y REFETCH PARA ACTUALIZAR LOS DATOS QUE VIENEN DE LAS OTRAS API REST
 export default function AppointmentCalendar() {
 
     // data rooms and infra
     const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0, filter: '' })
     const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 300, page: 0, filter: '' })
 
-    const { data: dataAppointment, isLoading, refetch: refetchAppointments } = useGetAppointmentListQuery({ limit: 15000, page: 0, filter: '' })
+    const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointmentRoom } = useGetAppointmentListQuery({ limit: 15000, page: 0, filter: '' })
 
+    const appointments = dataAppointment?.data?.content;
+    // console.log(appointments.procedimiento_sala.procedimiento)
+
+    // console.log(appointments?.map((item: any) => ({
+    //     id_hour: item.hora.id_cabecera_detalle,
+    //     detail: item.hora.descripcion
+    // })));
+
+    // console.log(appointments?.map((item: any) => item.sala_tratamiento.id_sala_tratamiento));
     // Hooks
     const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
 
@@ -73,25 +83,23 @@ export default function AppointmentCalendar() {
 
     // Filtrar por medio de la profesion
     const [selectedProfessionId, setSelectedProfessionId] = useState<number | null>(6);
-    const [selectedProfessionName, setSelectedProfessionName] = useState<string>('');
+    // const [selectedProfessionName, setSelectedProfessionName] = useState<string>('');
 
     const handleProfessionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const professionId = parseInt(event.target.value);
         const selectedProfession = title_employe.find(prof => prof.id_cabecera_detalle === professionId);
         if (selectedProfession) {
             setSelectedProfessionId(professionId);
-            setSelectedProfessionName(selectedProfession.descripcion);
-            console.log(`Selected profession ID: ${professionId}, Name: ${selectedProfession.descripcion}`);
+            // setSelectedProfessionName(selectedProfession.descripcion);
+            // console.log(`Selected profession ID: ${professionId}, Name: ${selectedProfession.descripcion}`);
         }
     };
 
-    // const filteredRoomsByProfession = selectedProfessionId
-    //     ? filteredRooms.filter((room: any) => room.id_cabecera_detalle === selectedProfessionId)
-    //     : filteredRooms;
-    // 
-    const [popupVisible, setPopupVisible] = useState(false);
+    // hooks para el selecionado!
+    const [popupVisible, setPopupVisible] = useState<boolean>(false);
     const [selectedHour, setSelectedHour] = useState<any>(null);
     const [selectedRoom, setSelectedRoom] = useState<any>(null);
+
 
     const handleCellClick = (hour: any, room: any) => {
         setSelectedHour(hour);
@@ -109,7 +117,7 @@ export default function AppointmentCalendar() {
     const getCurrentDate = () => {
         const today = new Date();
         const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
     };
@@ -121,20 +129,43 @@ export default function AppointmentCalendar() {
     };
 
 
-    const selectFirstSedeId = useCallback(() => {
-        if (dataInfra?.data?.content && dataInfra.data.content.length > 0 && selectedSedeId === null) {
-            setSelectedSedeId(dataInfra.data.content[0].id_sede);
-        }
-    }, [dataInfra, selectedSedeId]);
+    // const selectFirstSedeId = useCallback(() => {
+    //     if (dataInfra?.data?.content && dataInfra.data.content.length > 0 && selectedSedeId === null) {
+    //         setSelectedSedeId(dataInfra.data.content[0].id_sede);
+    //     }
+    // }, [dataInfra, selectedSedeId]);
 
-    useEffect(() => {
-        selectFirstSedeId();
-    }, [selectFirstSedeId]);
+    // useEffect(() => {
+    //     selectFirstSedeId();
+    // }, [selectFirstSedeId]);
 
     // Ordenar dataInfra por 'codigo' en orden ascendente
     const sortedDataInfra = dataInfra?.data?.content?.slice().sort((a: any, b: any) => {
         return a.codigo.localeCompare(b.codigo);
     });
+
+    const filteredAppointments = appointments?.map((item: any) => ({
+        id_hour: item.hora.id_cabecera_detalle,
+        hour_desc: item.hora.descripcion,
+        id_room: item.sala_tratamiento.id_sala_tratamiento,
+        id_location: item.sede.id_sede,
+        item_date: item.fecha_cita,
+        item_profession: item.empleado.titulo.id_cabecera_detalle,
+        item_procedure_name: item.procedimiento.nombres,
+        item_patient_name: item.paciente.nombres
+    }));
+
+    // console.log(filteredAppointments);
+
+    const filterAppointmentsByHourAndRoom = (hour: any, room: any, location: any, date: any, profession: any) => {
+        return filteredAppointments?.find((item: any) =>
+            item.id_hour === hour.id_cabecera_detalle &&
+            item.id_room === room.id_sala_tratamiento &&
+            item.id_location === location &&
+            item.item_date === date &&
+            item.item_profession === profession
+        );
+    };
 
     return (
         <React.Fragment>
@@ -165,7 +196,7 @@ export default function AppointmentCalendar() {
                         onChange={handleProfessionChange}
                         className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="">Seleccione una profesión</option>
+                        {/* <option value="">Seleccione una profesión</option> */}
                         {title_employe.map(prof => (
                             <option key={prof.id_cabecera_detalle} value={prof.id_cabecera_detalle}>
                                 {prof.descripcion}
@@ -176,56 +207,70 @@ export default function AppointmentCalendar() {
 
             </section>
 
-            <section className='w-full bg-white h-[40rem] overflow-x-auto mt-4'>
+            <section className='w-full bg-white h-[40rem] overflow-auto mt-4'>
                 <section className='w-full p-4'>
-                    <table className='w-full bg-white rounded-lg'>
+                    <table className='w-[80rem] md:w-full bg-white rounded-lg'>
                         <thead>
                             <tr>
-                                <th className='px-4 py-2 border'>Hora</th>
+                                <th className='px-4 py-2 border w-24'>Hora</th>
                                 {filteredRooms && filteredRooms.length > 0 ? (
                                     filteredRooms.map((room: any, i: number) => (
                                         <th key={i} className='px-4 py-2 border'>
                                             {room.nombres}
                                         </th>
                                     ))
-                                ) :
-                                    (
-                                        <th className='px-4 py-2 border'>No hay cuartos disponibles para esta sede</th>
-                                    )}
+                                ) : (
+                                    <th className='px-4 py-2 border'>No hay cuartos disponibles para esta sede</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                hours.map((hour: any, i: number) => (
-                                    <tr key={i}>
-                                        <td className=' border h-24 text-center w-32'>{hour.descripcion}</td>
-                                        {filteredRooms && filteredRooms.length > 0 ? (
-                                            filteredRooms.map((room: any, j: number) => (
+                            {hours.map((hour: any, i: number) => (
+                                <tr key={i}>
+                                    <td className='border h-24 text-center w-10'>{hour.descripcion}</td>
+                                    {filteredRooms && filteredRooms.length > 0 ? (
+                                        filteredRooms.map((room: any, j: number) => {
+                                            const filteredAppointment = filterAppointmentsByHourAndRoom(hour, room, selectedSedeId, selectedDate, selectedProfessionId);
+                                            return (
                                                 <td
                                                     key={j}
-                                                    className='px-4 py-2 border h-24 cursor-pointer'
-                                                    onClick={() => handleCellClick(hour, room)}
-                                                ></td>
-                                            ))
-                                        ) : (
-                                            <td className='px-4 py-2 border h-24 bg-gray-200'></td>
-                                        )}
-                                    </tr>
-                                ))
-                            }
+                                                    className={`p-2 border h-20 w-52 ${filteredAppointment ? '': 'cursor-pointer'}`}
+                                                    // onClick={() => handleCellClick(hour, room)}
+                                                    onClick={() => {
+                                                        if (!filteredAppointment) handleCellClick(hour, room);
+                                                    }}
+                                                >
+                                                    {/* Show the filtered appointment details */}
+                                                    {filteredAppointment ? (
+                                                        <React.Fragment>
+                                                            <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>
+                                                            <span className='text-xs'>{filteredAppointment.item_procedure_name}</span>
+                                                        </React.Fragment>
+                                                    ) : (
+                                                        <div></div>
+                                                    )}
+                                                </td>
+                                            );
+                                        })
+                                    ) : (
+                                        <td className=' border h-20 w-52 bg-gray-200 '></td>
+                                    )}
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </section>
-
             </section>
+
             {popupVisible && (
                 <CreateAppointmentComponent
                     hour={selectedHour}
                     room={selectedRoom}
                     date={selectedDate}
                     idTitle={selectedProfessionId}
+                    location={selectedSedeId}
                     closePopup={closePopup}
-                    refetch={refetchAppointments}
+                    refetch={refetchAppointmentRoom}
                 />
             )}
 

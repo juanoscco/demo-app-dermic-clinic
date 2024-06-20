@@ -1,6 +1,7 @@
 import { appointmentCreateMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/create/store/middleware";
 import { findIdAppointmentDetailMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/find-by-id/store/middleware";
 import { findDateAppointmentMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/find-date-appointment/store/middleware";
+import { appointmentRoomListMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/list-by-room-appointment/store/middleware";
 import { appointmentListMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/list/store/middleware";
 import { appointmentUpdateMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/update/store/middleware";
 import { extraAppointmentCreateMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/create/store/middleware";
@@ -15,6 +16,7 @@ export const appointmentsMiddleware = [
     appointmentListMiddleware,
     appointmentCreateMiddleware,
     appointmentUpdateMiddleware,
+    appointmentRoomListMiddleware,
     //Extra Appointments
     extraAppointmentUpdateMiddleware,
     extraAppointmentDetailMiddleware,

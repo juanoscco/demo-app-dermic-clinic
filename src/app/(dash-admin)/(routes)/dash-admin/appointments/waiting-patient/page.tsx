@@ -13,7 +13,7 @@ export default function AppointmentWaitingPatient() {
         </select>
       </section>
       <section className='flex flex-col-reverse lg:flex-row gap-3 w-full h-full mt-3'>
-        <section className='h-5/6 bg-white w-full lg:w-2/12 overflow-x-auto p-1'>
+        {/* <section className='h-5/6 bg-white w-full lg:w-2/12 overflow-x-auto p-1'>
           <table className='w-full border-b border-gray-300 border-collapse'>
             <thead>
               <tr>
@@ -22,14 +22,10 @@ export default function AppointmentWaitingPatient() {
                 <th className='px-4 py-2'>Tarde</th>
               </tr>
             </thead>
-            {/* <tbody>
-            <tr>
-              <td></td>
-            </tr>
-          </tbody> */}
+            
           </table>
-        </section>
-        <section className='w-full lg:w-10/12 bg-white h-5/6 overflow-x-auto'>
+        </section> */}
+        <section className='w-full  bg-white h-5/6 overflow-x-auto'>
           {/* TABLA CALENDARIO */}
           <section className='w-full p-4'>
             <table className='w-full bg-white rounded-lg'>

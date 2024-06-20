@@ -5,7 +5,6 @@ import { useGetAppointmentListQuery } from '../components/citas/list/store/servi
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 
 
-
 const formatDate = (date: string | Date) => {
   const d = new Date(date);
   let month = '' + (d.getMonth() + 1);
@@ -30,13 +29,13 @@ export default function AppointmentList() {
   const appointmentsData = useMemo(() => appointments?.data?.content || [], [appointments]);
 
   const [selectedDate, setSelectedDate] = useState(today);
-  const [selectedDistrict, setSelectedDistrict] = useState('Sede Los olivos');
+  const [selectedDistrict, setSelectedDistrict] = useState<number>(1);
   const [filteredAppointments, setFilteredAppointments] = useState<any>([]);
 
-  const filterAppointments = useCallback((date: string, district: string) => {
+  const filterAppointments = useCallback((date: string, district: number) => {
     return appointmentsData.filter((appointment: any) => {
       const appointmentDate = appointment.fecha_cita;
-      return appointmentDate === date && appointment.sede.nombres === district;
+      return appointmentDate === date && appointment.sede.id_sede === district;
     });
   }, [appointmentsData]);
 
@@ -81,7 +80,7 @@ export default function AppointmentList() {
     );
   }
 
-  console.log(filteredAppointments)
+  // console.log(filteredAppointments)
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Lista de Citas</h1>
@@ -95,13 +94,13 @@ export default function AppointmentList() {
           />
           <select
             className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
-            value={loadingInfra ? '......' : selectedDistrict}
-            onChange={(e) => setSelectedDistrict(e.target.value)}
+            value={selectedDistrict}
+            onChange={(e) => setSelectedDistrict(parseInt(e.target.value, 10))}
           >
 
             {infrastructure?.map((infra: any, i: number) => (
               <React.Fragment key={i}>
-                <option value={infra.nombres} className='capitalize'>{infra.nombres}</option>
+                <option value={infra.id_sede} className='capitalize'>{infra.nombres}</option>
                 {/* <option value="Sede san isidro">San Isidro</option> */}
               </React.Fragment>
             ))}
@@ -176,7 +175,9 @@ export default function AppointmentList() {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td className="px-4 py-2">Detalle</td>
+                <td className="px-4 py-2">
+                  <Link href={`list/${appointment.id_cita}`}>Detalle</Link>
+                </td>
               </tr>
             ))}
           </tbody>

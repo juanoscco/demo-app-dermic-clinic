@@ -6,20 +6,20 @@ import { useAddAppointmentMutation } from './store/service';
 import { Appointment } from './interface';
 import { useGetRoomProcedureQuery } from '../../../../procedures/list/components/Rooms/store/get/service';
 import { useAddPatientMutation } from '../../../../patients/create/store/service';
-import CreatePatientComponent from './components/patient/create/create-patient.component';
 import { useGetPatientsQuery } from '../../../../patients/list/store/service';
 import { DatatableComponent } from "@/components/datatable/";
 import { useGetEmployeesQuery } from '../../../../persons/list/store/service';
 import { useGetPersonalProcedureQuery } from '../../../../procedures/list/components/Personal/store/get/service';
+import CreatePatientComponent from './components/patient/create/create-patient.component';
 
 interface Props {
     hour?: any;
     room?: any;
     date?: any;
+    location?:any;
     closePopup?: any;
-    employee?: any;
     idTitle?: any;
-    refetch?:any;
+    refetch?: any;
 }
 
 const validationSchema = Yup.object({
@@ -48,7 +48,7 @@ const validationSchema = Yup.object({
     estado: Yup.boolean().required('Requerido')
 });
 export function CreateAppointmentComponent({
-    hour, room, date, closePopup, idTitle,refetch
+    hour, room, date, closePopup, idTitle, refetch, location
 }: Props) {
 
     // Hooks
@@ -57,16 +57,28 @@ export function CreateAppointmentComponent({
     // Tabview
     const [activeTab, setActiveTab] = useState(1);
 
-    // console.log(room)
+    console.log(location)
 
+    // console.log(idTitle)
     // employee
     const { data: dataEmployee, isLoading: loadEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 15000, page: 0, filter: '' })
     const employee = dataEmployee?.data?.content
 
+    // ***
+    // console.log(employee?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle).map((item: any) => item.nombres))
+
     const { data: dataHeadBoardProcedure, refetch: refetchDataHeadBoard } = useGetPersonalProcedureQuery({ limit: 300, page: 0, filter: '' })
 
-    const dataHeadBoardFilter = dataHeadBoardProcedure?.data?.content
-    
+    // ****
+    const dataHeadBoardFilter = dataHeadBoardProcedure?.data?.content;
+    // console.log(dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle));
+    // console.log(
+    //     dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle)
+    //         .map((item: any) => item.procedimiento_personales_detalle.filter((detail: any) => detail.procedimiento.id_procedimiento))
+    // );
+
+
+
     // Posts
     const [addAppointment, { isLoading: loadAddAppointment }] = useAddAppointmentMutation();
     const [addPatient, { isLoading: loadingAddPatient, data: dataAddPatient, error: errorAddPatient, isError }] = useAddPatientMutation();
@@ -74,88 +86,97 @@ export function CreateAppointmentComponent({
     // Get rooms and procedures!
     const { data: dataRoomProcedure, isLoading: loadRoomProcedures, refetch: refetchRoomProcedure } = useGetRoomProcedureQuery({ limit: 300, page: 0, filter: '' });
 
+    // *****
+    const roomProcedures = dataRoomProcedure?.data.content
+
+    // Objeto temporal para rastrear los id_procedimiento únicos
+    const uniqueProcedures: { [key: string]: any } = {};
+
+    // Filtrar procedimientos únicos de las salas y obtener id_procedimiento y nombre_proc
+    const filterRoomProcedures = roomProcedures
+        ?.filter((item: any) =>
+            item.procedimiento_sala_detalle.some((detail: any) =>
+                detail.sala_tratamiento.id_sala_tratamiento === room.id_sala_tratamiento
+            )
+        )
+        .reduce((uniqueItems: any[], item: any) => {
+            const id_procedimiento = item.procedimiento.id_procedimiento;
+            if (!uniqueProcedures[id_procedimiento]) {
+                uniqueProcedures[id_procedimiento] = true;
+                uniqueItems.push({
+                    id_procedimiento: id_procedimiento,
+                    nombre_proc: item.procedimiento.nombres
+                });
+            }
+            return uniqueItems;
+        }, []);
+
+    // console.log(filterRoomProcedures);
+
+    const filteredRoomProceduresWithMatch = dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle)
+        .map((item: any) => ({
+            ...item,
+            procedimiento_personales_detalle: item.procedimiento_personales_detalle.filter((detail: any) =>
+                filterRoomProcedures?.some((proc: any) =>
+                    proc.id_procedimiento === detail.procedimiento.id_procedimiento &&
+                    proc.nombre_proc === detail.procedimiento.nombres
+                )
+            )
+        }))
+    // console.log(filteredRoomProceduresWithMatch?.map((item: any) => item.procedimiento_personales_detalle.map((detail: any) => ({
+    //     id_proc: detail.procedimiento.id_procedimiento,
+    //     name: detail.procedimiento.nombres
+    // }))))
+
+
+
+
+
     // console.log(employee?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle).map((item: any) => item.id_empleado))
     // console.log(employee?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle).map((item: any) => item.nombres))
     // Get patients
+
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
 
     const [filter, setFilter] = useState('');
     const { data: dataPatient, error: errorPatient, isLoading: loadPatient, refetch: refetchPatient } = useGetPatientsQuery({ limit: perPage, page: currentPage - 1, filter });
 
-    // filtrado de datos
-    const [filteredData, setFilteredData] = useState([]);
 
+    // ****
+    // Filtrar dataHeadBoardFilter por idTitle
+    const filteredHeadBoard = dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle);
 
-    useEffect(() => {
-        // Filtrar empleados por sede
-        const filteredEmployees = employee?.filter((item: any) =>
-            item.sede.id_sede === room.sede.id_sede
-        );
+    // Obtener el id_cabecera_detalle del primer elemento filtrado (asumiendo que todos tienen el mismo idTitle)
+    const idTitulo = filteredHeadBoard?.length > 0 ? filteredHeadBoard[0]?.titulo.id_cabecera_detalle : null;
 
-        // Obtener el primer id_cabecera_detalle
-        // const idTitle = filteredEmployees?.length > 0 ? filteredEmployees[0].titulo.id_cabecera_detalle : null;
-
-        if (idTitle === null) {
-            console.log('No se encontró ningún empleado con la sede dada.');
-            return;
-        }
-
-        // Mostrar el idTitle en la consola
-        // console.log(idTitle);
-
-        // Filtrar empleados por id_cabecera_detalle y crear una lista de objetos doctorInfo
-        const doctorInfoList = employee
-            ?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle && item.id_empleado !== 1)
-            .map((item: any) => ({
-                id_empleado: item.id_empleado,
-                nombres: item.nombres
-            }));
-
-        // Mostrar los resultados en la consola
-        // console.log(doctorInfoList);
-
-        // Filtrar procedimientos personales del empleado por id_cabecera_detalle
-        const filteredProcedures = dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle)
-            .map((item: any) => item.procedimiento_personales_detalle.map((detail: any) => detail.procedimiento.id_procedimiento))
-            .flat();
-
-        // Mostrar el resultado del segundo filtro en la consola
-        // console.log(filteredProcedures);
-
-        // Filtrar los procedimientos de las salas de tratamiento
-        const firstFilter = dataRoomProcedure?.data?.content?.map((item: any) =>
-            item.procedimiento_sala_detalle.map((detail: any) => detail.sala_tratamiento.id_sala_tratamiento)
-        );
-
-        const secondFilter = dataRoomProcedure?.data?.content.map((item: any) => item.procedimiento.nombres);
-
-        const thirdFilter = dataRoomProcedure?.data?.content.map((item: any) => item.procedimiento.id_procedimiento);
-
-        const filtered = firstFilter?.map((item: any, index: number) => ({
-            nombres: secondFilter[index],
-            id_procedimiento: thirdFilter[index],
-            salas: item
-        })).filter((item: any) => item.salas.includes(room.id_sala_tratamiento));
-
-        // Combinar los doctores y sus procedimientos
-        const combinedData = filteredEmployees?.map((doctor: any) => ({
-            doctorId: doctor.titulo.id_cabecera_detalle,
-            doctorInfo: doctorInfoList,
-            procedures: filtered?.filter((proc: any) => filteredProcedures.includes(proc.id_procedimiento))
+    // Filtrar empleados por idTitle y obtener una lista de objetos con id_empleado y nombres
+    const doctorInfo = employee
+        ?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle && item.sede.id_sede === location)
+        .map((item: any) => ({
+            id_empleado: item.id_empleado,
+            nombres: item.nombres
         }));
 
-        // Remover duplicados de combinedData
-        const uniqueCombinedData = combinedData?.filter((value: any, index: number, self: any) =>
-            index === self.findIndex((t: any) => (
-                t.doctorId === value.doctorId
-            ))
-        );
+    // Obtener los procedimientos coincidentes con filterRoomProcedures
 
-        setFilteredData(uniqueCombinedData);
-    }, [dataEmployee, dataHeadBoardFilter, dataRoomProcedure, room.id_sala_tratamiento, room.sede.id_sede]);
+    // Formatear los datos en el objeto solicitado
+    const formattedData: any = {
+        id_titulo: idTitulo,
+        doctors: doctorInfo?.map((doctor: any) => ({
+            id_doctor: doctor.id_empleado,
+            name: doctor.nombres,
+        })),
+        procedures: filteredRoomProceduresWithMatch?.map((item: any) => (item.procedimiento_personales_detalle.map((detail: any) => ({
+            id_proc: detail.procedimiento.id_procedimiento,
+            name: detail.procedimiento.nombres
+        }))))
+    };
 
-    // console.log(filteredData);
+    // Mostrar los datos formateados por consola
+    // console.log(formattedData.procedures[0].map((item: any) => item.id_proc));
+
+    // *****
 
 
     useEffect(() => {
@@ -167,6 +188,62 @@ export function CreateAppointmentComponent({
     }, [filter, refetchPatient]);
 
 
+
+
+    const nextStep = () => {
+        setStep(step + 1);
+    };
+
+    const previousStep = () => {
+        setStep(step - 1);
+    };
+
+
+    const formik = useFormik<Appointment>({
+        initialValues: {
+            procedimiento: {
+                id_procedimiento: 0
+            },
+            sala_tratamiento: {
+                id_sala_tratamiento: room.id_sala_tratamiento
+            },
+            empresa: {
+                id_empresa: room?.sede?.empresa?.id_empresa
+            },
+            usuario_registro: {
+                id_usuario: 2
+            },
+            paciente: {
+                id_paciente: 0,
+                nombres: ''
+            },
+            sede: {
+                id_sede: room?.sede.id_sede
+            },
+            fecha_cita: date,
+            empleado: {
+                id_empleado: 0,
+            },
+            hora: {
+                id_cabecera: 10,
+                id_cabecera_detalle: hour?.id_cabecera_detalle,
+                descripcion: hour?.descripcion,
+                valor: ""
+            },
+            estado: true
+        },
+        validationSchema,
+        onSubmit: async (values) => {
+            // console.log('Form values:', values);
+            try {
+                await addAppointment(values);
+                refetch();
+                closePopup();
+            } catch (error) {
+                console.error(error)
+            }
+        },
+    });
     const columns = [
         {
             title: 'Paciente',
@@ -190,54 +267,6 @@ export function CreateAppointmentComponent({
             ),
         },
     ];
-
-    const nextStep = () => {
-        setStep(step + 1);
-    };
-
-    const previousStep = () => {
-        setStep(step - 1);
-    };
-
-
-    const formik = useFormik<Appointment>({
-        initialValues: {
-            procedimiento: {
-                id_procedimiento: 0
-            },
-            empresa: {
-                id_empresa: room?.sede?.empresa?.id_empresa
-            },
-            usuario_registro: {
-                id_usuario: 2
-            },
-            paciente: {
-                id_paciente: 0,
-                nombres: ''
-            },
-            sede: {
-                id_sede: room?.sede.id_sede
-            },
-            fecha_cita: date,
-            empleado: {
-                id_empleado: 2,
-            },
-            hora: {
-                id_cabecera: 10,
-                id_cabecera_detalle: hour?.id_cabecera_detalle,
-                descripcion: hour?.descripcion,
-                valor: ""
-            },
-            estado: true
-        },
-        validationSchema,
-        onSubmit: async (values) => {
-            // console.log('Form values:', values);
-            await addAppointment(values);
-            refetch();
-            closePopup();
-        },
-    });
 
     const handleSelect = (idPatient: number, name: string) => {
         formik.setValues((prevValues) => ({
@@ -385,13 +414,12 @@ export function CreateAppointmentComponent({
                                     className="border border-gray-300 rounded-md p-2 w-full"
                                 >
                                     <option value="">Select a procedure</option>
-                                    {filteredData?.map((item: any) =>
-                                        item.procedures?.map((procedure: any) => (
-                                            <option key={procedure.id_procedimiento} value={procedure.id_procedimiento}>
-                                                {procedure.nombres}
-                                            </option>
-                                        ))
-                                    )}
+                                    {formattedData.procedures[0].map((item: any) => (
+                                        <option key={item.id_proc} value={item.id_proc}>
+                                            {item.name}
+                                        </option>
+                                    ))}
+
 
                                 </select>
                                 {formik.touched.procedimiento?.id_procedimiento && formik.errors.procedimiento?.id_procedimiento ? (
@@ -443,13 +471,17 @@ export function CreateAppointmentComponent({
                                     className="border border-gray-300 rounded-md p-2 w-full"
                                 >
                                     <option value="">Selecciona un especialista</option>
-                                    {filteredData?.map((item: any) => (
-                                        item.doctorInfo?.map((doctor: any) => (
-                                            <option key={doctor.id_empleado} value={doctor.id_empleado}>
-                                                {doctor.nombres}
-                                            </option>
+                                    {/* <option value="1">1</option> */}
+                                    {
+                                        formattedData.doctors?.map((doctor: any) => (
+                                            doctor.id_doctor !== 1 && (
+                                                <option key={doctor.id_doctor} value={doctor.id_doctor}>
+                                                    {doctor.name}
+                                                </option>
+                                            )
                                         ))
-                                    ))}
+
+                                    }
                                 </select>
                                 {formik.touched.empleado?.id_empleado && formik.errors.empleado?.id_empleado ? (
                                     <div className="text-red-600">{formik.errors.empleado.id_empleado}</div>

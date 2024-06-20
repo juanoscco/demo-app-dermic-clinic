@@ -29,9 +29,13 @@ interface Hora {
     descripcion: string;
     valor: string;
 }
+interface Room {
+    id_sala_tratamiento: number;
+}
 
 export interface Appointment {
     procedimiento: Procedimiento;
+    sala_tratamiento?: Room;
     empresa: Empresa;
     usuario_registro: UsuarioRegistro;
     paciente: Paciente;
