@@ -16,7 +16,7 @@ interface Props {
     hour?: any;
     room?: any;
     date?: any;
-    location?:any;
+    location?: any;
     closePopup?: any;
     idTitle?: any;
     refetch?: any;
@@ -57,36 +57,52 @@ export function CreateAppointmentComponent({
     // Tabview
     const [activeTab, setActiveTab] = useState(1);
 
-    console.log(location)
-
-    // console.log(idTitle)
     // employee
     const { data: dataEmployee, isLoading: loadEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 15000, page: 0, filter: '' })
     const employee = dataEmployee?.data?.content
 
-    // ***
-    // console.log(employee?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle).map((item: any) => item.nombres))
-
     const { data: dataHeadBoardProcedure, refetch: refetchDataHeadBoard } = useGetPersonalProcedureQuery({ limit: 300, page: 0, filter: '' })
 
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            refetchEmployee();
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [refetchEmployee]);
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            refetchDataHeadBoard();
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [refetchDataHeadBoard]);
     // ****
     const dataHeadBoardFilter = dataHeadBoardProcedure?.data?.content;
-    // console.log(dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle));
-    // console.log(
-    //     dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle)
-    //         .map((item: any) => item.procedimiento_personales_detalle.filter((detail: any) => detail.procedimiento.id_procedimiento))
-    // );
-
-
 
     // Posts
     const [addAppointment, { isLoading: loadAddAppointment }] = useAddAppointmentMutation();
-    const [addPatient, { isLoading: loadingAddPatient, data: dataAddPatient, error: errorAddPatient, isError }] = useAddPatientMutation();
+    const [addPatient, { isLoading: loadingAddPatient, data: dataAddPatient, error: errorAddPatient }] = useAddPatientMutation();
 
     // Get rooms and procedures!
     const { data: dataRoomProcedure, isLoading: loadRoomProcedures, refetch: refetchRoomProcedure } = useGetRoomProcedureQuery({ limit: 300, page: 0, filter: '' });
 
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            refetchRoomProcedure();
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [refetchRoomProcedure]);
+
     // *****
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const [filter, setFilter] = useState('');
+    const { data: dataPatient, error: errorPatient, isLoading: loadPatient, refetch: refetchPatient } = useGetPatientsQuery({ limit: perPage, page: currentPage - 1, filter });
+
+    // ****
     const roomProcedures = dataRoomProcedure?.data.content
 
     // Objeto temporal para rastrear los id_procedimiento únicos
@@ -111,8 +127,6 @@ export function CreateAppointmentComponent({
             return uniqueItems;
         }, []);
 
-    // console.log(filterRoomProcedures);
-
     const filteredRoomProceduresWithMatch = dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle)
         .map((item: any) => ({
             ...item,
@@ -123,27 +137,7 @@ export function CreateAppointmentComponent({
                 )
             )
         }))
-    // console.log(filteredRoomProceduresWithMatch?.map((item: any) => item.procedimiento_personales_detalle.map((detail: any) => ({
-    //     id_proc: detail.procedimiento.id_procedimiento,
-    //     name: detail.procedimiento.nombres
-    // }))))
 
-
-
-
-
-    // console.log(employee?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle).map((item: any) => item.id_empleado))
-    // console.log(employee?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle).map((item: any) => item.nombres))
-    // Get patients
-
-    const [perPage, setPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const [filter, setFilter] = useState('');
-    const { data: dataPatient, error: errorPatient, isLoading: loadPatient, refetch: refetchPatient } = useGetPatientsQuery({ limit: perPage, page: currentPage - 1, filter });
-
-
-    // ****
     // Filtrar dataHeadBoardFilter por idTitle
     const filteredHeadBoard = dataHeadBoardFilter?.filter((item: any) => item.titulo.id_cabecera_detalle === idTitle);
 
@@ -172,12 +166,7 @@ export function CreateAppointmentComponent({
             name: detail.procedimiento.nombres
         }))))
     };
-
-    // Mostrar los datos formateados por consola
-    // console.log(formattedData.procedures[0].map((item: any) => item.id_proc));
-
     // *****
-
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -187,9 +176,6 @@ export function CreateAppointmentComponent({
         return () => clearTimeout(delayDebounceFn);
     }, [filter, refetchPatient]);
 
-
-
-
     const nextStep = () => {
         setStep(step + 1);
     };
@@ -197,7 +183,6 @@ export function CreateAppointmentComponent({
     const previousStep = () => {
         setStep(step - 1);
     };
-
 
     const formik = useFormik<Appointment>({
         initialValues: {

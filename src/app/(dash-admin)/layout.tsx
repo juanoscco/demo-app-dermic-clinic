@@ -11,7 +11,6 @@ export default function DashboardLayout({
 }) {
 
   const { handleBurgerClick, isNavActive, handleNavItemClick } = AsideSidebarHook()
-
   return (
     <main className='min-h-screen flex min-w-full'>
       <AsideComponent isNavActive={isNavActive} handleNavItemClick={handleNavItemClick}/>

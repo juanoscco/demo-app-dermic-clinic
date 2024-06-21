@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import React, { useEffect } from 'react'
 // import { FormLoginProps } from "../../models/login.interface"
 // import LoginHooks from "../../hooks/login.hooks"
+
 import { useLoginMutation } from '@/app/(auth)/store/service/';
 
 import { useRouter } from 'next/navigation';
@@ -11,17 +12,17 @@ import * as Yup from 'yup';
 import { LoginFormValues } from "@/app/(auth)/models/login.interface"
 
 
+
 // TODO: ORDERING THIS CODE BECAUSE I WANNA REUSE
 export default function FormLogin() {
 
   const [login, { isLoading, data, error }] = useLoginMutation();
-
   const router = useRouter();
 
   const formik = useFormik<LoginFormValues>({
     initialValues: {
-      username: '',
-      password: '',
+      username: 'administrador',
+      password: 'clave123',
     },
     validationSchema: Yup.object({
       username: Yup.string().required('Requerido'),
@@ -29,6 +30,8 @@ export default function FormLogin() {
     }),
     onSubmit: async (values) => {
       try {
+        // const result = await login(values);
+        // console.log('Login result:', result);
         await login(values);
         // setSubmitting(false);
 
@@ -39,13 +42,72 @@ export default function FormLogin() {
     },
   });
 
+  // useEffect(() => {
+  //   if (data) {
+  //     Cookies.set("token", data.jwt);
+  //     router.push('/dash-admin/home');
+  //   }
+  // }, [data, router]);
+
+  // useEffect(() => {
+  //   if (data) {
+  //     console.log('Data received:', data);
+  //     if (data.jwt) {
+  //       Cookies.set("jwt", data.jwt);
+  //       router.push('/dash-admin/home');
+  //     } else {
+  //       console.error('No JWT token in data');
+  //     }
+  //   }
+  // }, [data, router]);
+
+  // console.log(Cookies.get("jwt"))
+
+  // if (isLoading) {
+  //   return (
+  //     <div>Cargando....</div>
+  //   );
+  // }
+
+  // useEffect(() => {
+  //   if (data) {
+  //     console.log('Data received:', data.jwt);
+  //     if (data.jwt) {
+  //       Cookies.set("jwt", String(data.jwt));
+  //       console.log('JWT token set in cookie:', Cookies.get("jwt")); // Verificar si la cookie se ha establecido
+  //       router.push('/dash-admin/home');
+  //     } else {
+  //       console.error('No JWT token in data');
+  //     }
+  //   }
+  // }, [data, router]);
+
+  // useEffect(() => {
+  //   console.log('Current JWT cookie:', Cookies.get()); // Mover esto a otro useEffect para asegurarse de que se ejecuta después de que el token se establece
+  // }, []);
+
+  // if (isLoading) {
+  //   return (
+  //     <div>Cargando....</div>
+  //   );
+  // }
+
   useEffect(() => {
     if (data) {
-      Cookies.set("token", data.jwt);
-      router.push('/dash-admin/home');
+      console.log('Data received:', data.jwt);
+      if (data.jwt) {
+        localStorage.setItem('token', data.jwt); // Guardar token en localStorage
+        console.log('JWT token set in localStorage:', localStorage.getItem('token')); // Verificar si el token se ha establecido
+        router.push('/dash-admin/home');
+      } else {
+        console.error('No JWT token in data');
+      }
     }
   }, [data, router]);
 
+  useEffect(() => {
+    console.log('Current JWT token:', localStorage.getItem('token')); // Mover esto a otro useEffect para asegurarse de que se ejecuta después de que el token se establece
+  }, []);
 
   if (isLoading) {
     return (

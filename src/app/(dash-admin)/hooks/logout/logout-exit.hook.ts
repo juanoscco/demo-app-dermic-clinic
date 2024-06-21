@@ -7,7 +7,7 @@ export default function LogoutExitHook() {
   const router = useRouter();
   const handleLogout = async () => {
     // await logout()
-    Cookies.remove('token');
+    Cookies.remove('jwt');
     router.push('/')
   }
  

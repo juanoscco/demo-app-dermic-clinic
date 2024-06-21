@@ -67,20 +67,19 @@ export default function AppointmentList() {
 
 
 
-  if (loadingAppointments) {
-    return (
-      <div className="p-4 bg-white">
-        {/* Puedes agregar un esqueleto o un indicador de carga aquí */}
-        <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-gray-200 rounded"></div>
-          <div className="h-4 bg-gray-200 rounded"></div>
-          <div className="h-4 bg-gray-200 rounded"></div>
-        </div>
-      </div>
-    );
-  }
+  // if (loadingAppointments) {
+  //   return (
+  //     <div className="p-4 bg-white">
+  //       {/* Puedes agregar un esqueleto o un indicador de carga aquí */}
+  //       <div className="animate-pulse space-y-4">
+  //         <div className="h-4 bg-gray-200 rounded"></div>
+  //         <div className="h-4 bg-gray-200 rounded"></div>
+  //         <div className="h-4 bg-gray-200 rounded"></div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  // console.log(filteredAppointments)
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Lista de Citas</h1>

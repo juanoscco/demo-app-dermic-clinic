@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import { useGetPatientByIdQuery } from './store/service/list-detail-patient'
+import { useGetPatientByIdQuery } from './store/service'
 import PatientUpdateComponent from './patient-update/patient-update.component'
 
 interface Props {

@@ -6,6 +6,7 @@ import { Props } from "@/app/(dash-admin)/models/navbar/navbar.models"
 export default function NavbarComponent({ handleBurgerClick, isNavActive }: Props) {
 
     const { handleLogout } = LogoutExitHook()
+    // console.log(localStorage.getItem('token'))
 
     return (
         <nav className='flex justify-between py-5 border-b-2 border-gray-200'>

@@ -2,6 +2,7 @@
 import React from 'react'
 import { PopupUpdate } from "@/components/popup/popup-update/"
 import { useUpdatePatientMutation } from "./store/service/patient-update.service";
+
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Alert } from '@/components/popup/popup-alert';
@@ -86,7 +87,7 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
     }),
     onSubmit: async (values) => {
       try {
-        await updatePatient({ pacienteId: values.id_paciente, pacienteData: values }).unwrap().then(() => (
+        await updatePatient({ patientId: values.id_paciente, patientData: values }).unwrap().then(() => (
           update(),          
           onClose()
         ));

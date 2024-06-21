@@ -62,20 +62,12 @@ export default function AppointmentCalendar() {
     const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointmentRoom } = useGetAppointmentListQuery({ limit: 15000, page: 0, filter: '' })
 
     const appointments = dataAppointment?.data?.content;
-    // console.log(appointments.procedimiento_sala.procedimiento)
-
-    // console.log(appointments?.map((item: any) => ({
-    //     id_hour: item.hora.id_cabecera_detalle,
-    //     detail: item.hora.descripcion
-    // })));
-
-    // console.log(appointments?.map((item: any) => item.sala_tratamiento.id_sala_tratamiento));
+   
     // Hooks
     const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
 
     const handleSedeChange = (event: any) => {
         setSelectedSedeId(parseInt(event.target.value, 10));
-        // Aquí puedes realizar otras acciones según sea necesario al cambiar la sede seleccionada
     };
 
     // Filtrar los cuartos basados en el id_sede seleccionado
@@ -90,8 +82,6 @@ export default function AppointmentCalendar() {
         const selectedProfession = title_employe.find(prof => prof.id_cabecera_detalle === professionId);
         if (selectedProfession) {
             setSelectedProfessionId(professionId);
-            // setSelectedProfessionName(selectedProfession.descripcion);
-            // console.log(`Selected profession ID: ${professionId}, Name: ${selectedProfession.descripcion}`);
         }
     };
 
@@ -129,15 +119,6 @@ export default function AppointmentCalendar() {
     };
 
 
-    // const selectFirstSedeId = useCallback(() => {
-    //     if (dataInfra?.data?.content && dataInfra.data.content.length > 0 && selectedSedeId === null) {
-    //         setSelectedSedeId(dataInfra.data.content[0].id_sede);
-    //     }
-    // }, [dataInfra, selectedSedeId]);
-
-    // useEffect(() => {
-    //     selectFirstSedeId();
-    // }, [selectFirstSedeId]);
 
     // Ordenar dataInfra por 'codigo' en orden ascendente
     const sortedDataInfra = dataInfra?.data?.content?.slice().sort((a: any, b: any) => {

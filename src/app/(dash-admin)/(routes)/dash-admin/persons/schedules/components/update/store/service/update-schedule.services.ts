@@ -1,6 +1,7 @@
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
+import { prepareHeaders } from '@/app/(dash-admin)/utils/';
 
 const baseUrl = `${process.env.API_DOCKER_JAVA_REST}`;
 
@@ -8,11 +9,7 @@ export const scheduleUpdateApi = createApi({
   reducerPath: 'scheduleUpdateApi',
   baseQuery: fetchBaseQuery({
     baseUrl,
-    prepareHeaders: (headers) => {
-      const token = Cookies.get('token');
-      headers.set('Authorization', `Bearer ${token}`);
-      return headers;
-    },
+    prepareHeaders
   }),
   endpoints: (builder) => ({
     updateSchedule: builder.mutation({

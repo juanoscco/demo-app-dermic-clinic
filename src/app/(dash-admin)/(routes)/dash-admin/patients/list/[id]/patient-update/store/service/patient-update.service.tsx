@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import Cookies from 'js-cookie';
+import { prepareHeaders } from '@/app/(dash-admin)/utils/';
 
 const baseUrl = `${process.env.API_DOCKER_JAVA_REST}`;
 
@@ -7,18 +7,14 @@ export const patientUpdateApi = createApi({
   reducerPath: 'patientUpdateApi',
   baseQuery: fetchBaseQuery({
     baseUrl,
-    prepareHeaders: (headers) => {
-      const token = Cookies.get('token');
-      headers.set('Authorization', `Bearer ${token}`);
-      return headers;
-    },
+    prepareHeaders
   }),
   endpoints: (builder) => ({
     updatePatient: builder.mutation({
-      query: ({ pacienteId, pacienteData }) => ({
-        url: `paciente/${pacienteId}`,
+      query: ({ patientId, patientData }) => ({
+        url: `paciente/${patientId}`,
         method: 'PUT',
-        body: pacienteData,
+        body: patientData,
       }),
     }),
   }),

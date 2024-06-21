@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
 import { Appointment, ResponseAppointment } from "../../interface/"
+import { prepareHeaders } from '@/app/(dash-admin)/utils/';
 
 const baseUrl = `${process.env.API_DOCKER_JAVA_REST}/cita`;
 
@@ -8,13 +9,7 @@ export const appointmentCreateApi = createApi({
     reducerPath: 'appointmentCreateApi',
     baseQuery: fetchBaseQuery({
         baseUrl,
-        prepareHeaders: (headers) => {
-            const token = Cookies.get('token');
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`);
-            }
-            return headers;
-        },
+        prepareHeaders
     }),
     endpoints: (builder) => ({
         addAppointment: builder.mutation<ResponseAppointment, Appointment>({

@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 const alertStyles = {
     success: 'bg-green-100 border-green-400 text-green-700',
@@ -11,7 +11,7 @@ const alertStyles = {
 
 interface Props {
     type: 'success' | 'update' | 'delete' | 'error';
-    children: React.ReactNode
+    children?: React.ReactNode
 }
 
 export const Alert = ({ type, children }: Props) => {
@@ -34,7 +34,7 @@ export const Alert = ({ type, children }: Props) => {
     )
 }
 
-Alert.propTypes = {
-    type: PropTypes.oneOf(['success', 'update', 'delete', 'error']).isRequired,
-    children: PropTypes.node.isRequired,
-};
+// Alert.propTypes = {
+//     type: PropTypes.oneOf(['success', 'update', 'delete', 'error']).isRequired,
+//     children: PropTypes.node.isRequired,
+// };
