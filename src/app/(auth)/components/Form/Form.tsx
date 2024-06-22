@@ -94,10 +94,10 @@ export default function FormLogin() {
 
   useEffect(() => {
     if (data) {
-      console.log('Data received:', data.jwt);
+      // console.log('Data received:', data.jwt);
       if (data.jwt) {
         localStorage.setItem('token', data.jwt); // Guardar token en localStorage
-        console.log('JWT token set in localStorage:', localStorage.getItem('token')); // Verificar si el token se ha establecido
+        // console.log('JWT token set in localStorage:', localStorage.getItem('token')); // Verificar si el token se ha establecido
         router.push('/dash-admin/home');
       } else {
         console.error('No JWT token in data');
@@ -105,9 +105,9 @@ export default function FormLogin() {
     }
   }, [data, router]);
 
-  useEffect(() => {
-    console.log('Current JWT token:', localStorage.getItem('token')); // Mover esto a otro useEffect para asegurarse de que se ejecuta después de que el token se establece
-  }, []);
+  // useEffect(() => {
+  //   console.log('Current JWT token:', localStorage.getItem('token')); // Mover esto a otro useEffect para asegurarse de que se ejecuta después de que el token se establece
+  // }, []);
 
   if (isLoading) {
     return (

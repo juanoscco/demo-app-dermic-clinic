@@ -103,7 +103,7 @@ export function CreateAppointmentComponent({
     const { data: dataPatient, error: errorPatient, isLoading: loadPatient, refetch: refetchPatient } = useGetPatientsQuery({ limit: perPage, page: currentPage - 1, filter });
 
     // ****
-    const roomProcedures = dataRoomProcedure?.data.content
+    const roomProcedures = dataRoomProcedure?.data?.content
 
     // Objeto temporal para rastrear los id_procedimiento únicos
     const uniqueProcedures: { [key: string]: any } = {};
@@ -341,37 +341,6 @@ export function CreateAppointmentComponent({
                     )}
                     {step === 2 && (
                         <form onSubmit={formik.handleSubmit} className="space-y-4">
-                            {/* <div>
-                                <label htmlFor="procedimiento.id_procedimiento">Procedimiento ID</label>
-                                <input
-                                    id="procedimiento.id_procedimiento"
-                                    name="procedimiento.id_procedimiento"
-                                    type="number"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.procedimiento.id_procedimiento}
-                                    className="border border-gray-300 rounded-md p-2 w-full"
-                                />
-                                {formik.touched.procedimiento?.id_procedimiento && formik.errors.procedimiento?.id_procedimiento ? (
-                                    <div className="text-red-600">{formik.errors.procedimiento.id_procedimiento}</div>
-                                ) : null}
-                            </div> */}
-                            {/* <div>
-                                <label htmlFor="paciente.id_paciente">Paciente ID</label>
-                                <input
-                                    id="paciente.id_paciente"
-                                    name="paciente.id_paciente"
-                                    type="number"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.paciente.id_paciente === 0 ? 'Seleccione o cree un paciente' : formik.values.paciente.id_paciente}
-                                    className="border border-gray-300 rounded-md p-2 w-full"
-                                    disabled
-                                />
-                                {formik.touched.paciente?.id_paciente && formik.errors.paciente?.id_paciente ? (
-                                    <div className="text-red-600">{formik.errors.paciente.id_paciente}</div>
-                                ) : null}
-                            </div> */}
                             <div>
                                 <label htmlFor="paciente.id_paciente">Nombre paciente</label>
                                 <input
@@ -411,40 +380,6 @@ export function CreateAppointmentComponent({
                                     <div className="text-red-600">{formik.errors.procedimiento.id_procedimiento}</div>
                                 ) : null}
                             </div>
-                            {/* <div>
-                        <label htmlFor="usuario_registro.id_usuario">Doctor</label>
-                        <input
-                            id="usuario_registro.id_usuario"
-                            name="usuario_registro.id_usuario"
-                            type="number"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.usuario_registro.id_usuario}
-                            className="border border-gray-300 rounded-md p-2 w-full"
-                        />
-                        {formik.touched.usuario_registro?.id_usuario && formik.errors.usuario_registro?.id_usuario ? (
-                            <div className="text-red-600">{formik.errors.usuario_registro.id_usuario}</div>
-                        ) : null}
-                    </div> */}
-
-
-
-                            {/* <div>
-                                <label htmlFor="empleado.id_empleado">Especialista</label>
-                                <input
-                                    id="empleado.id_empleado"
-                                    name="empleado.id_empleado"
-                                    type="number"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.empleado.id_empleado}
-                                    className="border border-gray-300 rounded-md p-2 w-full"
-                                />
-                                {formik.touched.empleado?.id_empleado && formik.errors.empleado?.id_empleado ? (
-                                    <div className="text-red-600">{formik.errors.empleado.id_empleado}</div>
-                                ) : null}
-                            </div> */}
-
                             <div>
                                 <label htmlFor="empleado.id_empleado">Especialista</label>
                                 <select

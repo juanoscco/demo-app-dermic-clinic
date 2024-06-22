@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 export default function Home() {
@@ -33,8 +34,8 @@ export default function Home() {
         </section>
       </section>
       <section className='flex justify-end mt-3 gap-3'>
-        <button className='p-2 bg-[#82b440] rounded-md text-white'>Agendar una cita</button>
-        <button className='p-2 bg-[#82b440] rounded-md text-white'>Busqueda de paciente</button>
+        <Link className='p-2 bg-[#82b440] rounded-md text-white' href="./appointments/appointment-calendar">Agendar una cita</Link>
+        <Link className='p-2 bg-[#82b440] rounded-md text-white' href={`./patients/list`}>Busqueda de paciente</Link>
       </section>
 
     </React.Fragment>

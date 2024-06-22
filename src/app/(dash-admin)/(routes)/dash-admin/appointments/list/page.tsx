@@ -67,18 +67,7 @@ export default function AppointmentList() {
 
 
 
-  // if (loadingAppointments) {
-  //   return (
-  //     <div className="p-4 bg-white">
-  //       {/* Puedes agregar un esqueleto o un indicador de carga aquí */}
-  //       <div className="animate-pulse space-y-4">
-  //         <div className="h-4 bg-gray-200 rounded"></div>
-  //         <div className="h-4 bg-gray-200 rounded"></div>
-  //         <div className="h-4 bg-gray-200 rounded"></div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+
 
   return (
     <React.Fragment>

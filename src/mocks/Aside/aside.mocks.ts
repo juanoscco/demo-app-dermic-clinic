@@ -19,20 +19,9 @@ export const sections: Section[] = [
         { href: '/dash-admin/persons/schedules', text: 'Horarios' }
       ],
     },
+    
     {
       id: 'three',
-      title: 'Citas',
-      icon: 'icon-appointments',
-      links: [
-        { href: '/dash-admin/appointments/list', text: 'Ver citas' },
-        { href: '/dash-admin/appointments/waiting-patient', text: 'Paciente en espera' },
-        { href: '/dash-admin/appointments/appointment-reports', text: 'Reporte de citas' },
-        { href: '/dash-admin/appointments/appointment-calendar', text: 'Calendario de citas' },
-        { href: '/dash-admin/appointments/appointment-extras', text: 'Calendario de extras' },
-      ],
-    },
-    {
-      id: 'four',
       title: 'Pacientes',
       icon: 'icon-person-circle',
       // link: '/dash-admin/patients/list'
@@ -42,7 +31,7 @@ export const sections: Section[] = [
       ]
     },
     {
-      id: 'five',
+      id: 'four',
       title: 'Infraestructura',
       icon: 'icon-infrastructure',
       links: [
@@ -51,12 +40,24 @@ export const sections: Section[] = [
       ],
     },
     {
-      id: 'six',
+      id: 'five',
       title: 'Procedimientos',
       icon: 'icon-procedures',
       links: [
         { href: '/dash-admin/procedures/create', text: 'Crear procedimientos' },
         { href: '/dash-admin/procedures/list', text: 'Ver procedimientos' },
+      ],
+    },
+    {
+      id: 'six',
+      title: 'Citas',
+      icon: 'icon-appointments',
+      links: [
+        { href: '/dash-admin/appointments/list', text: 'Ver citas' },
+        { href: '/dash-admin/appointments/waiting-patient', text: 'Paciente en espera' },
+        { href: '/dash-admin/appointments/appointment-reports', text: 'Reporte de citas' },
+        { href: '/dash-admin/appointments/appointment-calendar', text: 'Calendario de citas' },
+        { href: '/dash-admin/appointments/appointment-extras', text: 'Calendario de extras' },
       ],
     },
   ];

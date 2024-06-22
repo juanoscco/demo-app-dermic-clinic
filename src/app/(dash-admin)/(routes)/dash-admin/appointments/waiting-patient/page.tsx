@@ -1,16 +1,18 @@
-import React from 'react'
+"use client";
+import React, { useState } from 'react';
 
 export default function AppointmentWaitingPatient() {
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Pacientes en espera</h1>
       <section className='p-3 bg-white rounded-md mt-3 flex gap-3 items-center'>
-        <span>Fecha: </span>
         <input type="date" />
+
         <select name="" id="">
           <option value="">Los Olivos</option>
           <option value="">San Isidro</option>
         </select>
+
       </section>
       <section className='flex flex-col-reverse lg:flex-row gap-3 w-full h-full mt-3'>
         {/* <section className='h-5/6 bg-white w-full lg:w-2/12 overflow-x-auto p-1'>

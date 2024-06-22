@@ -4,6 +4,8 @@ import { useGetInfrastructureQuery } from '../../infrastructure/list/store/servi
 import { useGetRoomsListQuery } from '../../infrastructure/list/[id]/infra-rooms/list/store/service';
 import { CreateAppointmentComponent } from '../components/citas/create';
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
+import DetailpopupAppointmentComponent from '../components/citas/find-by-id/detail-popup-appointment.component';
+import Link from 'next/link';
 
 // TODO: TRAER ROOMS 
 const hours = [
@@ -59,10 +61,10 @@ export default function AppointmentCalendar() {
     const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0, filter: '' })
     const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 300, page: 0, filter: '' })
 
-    const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointmentRoom } = useGetAppointmentListQuery({ limit: 15000, page: 0, filter: '' })
+    const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' })
 
     const appointments = dataAppointment?.data?.content;
-   
+
     // Hooks
     const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
 
@@ -90,6 +92,9 @@ export default function AppointmentCalendar() {
     const [selectedHour, setSelectedHour] = useState<any>(null);
     const [selectedRoom, setSelectedRoom] = useState<any>(null);
 
+    // hooks details
+    const [popupDetailVisible, setPopupDetailVisible] = useState<boolean>(false);
+    const [selectedIdAppointment, setSelectedIdAppointment] = useState<number | null | any>(null);
 
     const handleCellClick = (hour: any, room: any) => {
         setSelectedHour(hour);
@@ -103,6 +108,13 @@ export default function AppointmentCalendar() {
         setSelectedRoom(null);
     };
 
+    const handleDetailAppointmentClick = (id: number) => {
+        setPopupDetailVisible(true);
+        setSelectedIdAppointment(id);
+    }
+    const closeDetailAppointmentClick = () => {
+        setPopupDetailVisible(false);
+    }
 
     const getCurrentDate = () => {
         const today = new Date();
@@ -118,22 +130,25 @@ export default function AppointmentCalendar() {
         setSelectedDate(event.target.value);
     };
 
-
-
-    // Ordenar dataInfra por 'codigo' en orden ascendente
     const sortedDataInfra = dataInfra?.data?.content?.slice().sort((a: any, b: any) => {
         return a.codigo.localeCompare(b.codigo);
     });
 
     const filteredAppointments = appointments?.map((item: any) => ({
-        id_hour: item.hora.id_cabecera_detalle,
-        hour_desc: item.hora.descripcion,
+        id_appointment: item.id_cita,
+        id_hour: item.horario.id_cabecera_detalle,
+        hour_desc: item.horario.descripcion,
         id_room: item.sala_tratamiento.id_sala_tratamiento,
         id_location: item.sede.id_sede,
         item_date: item.fecha_cita,
         item_profession: item.empleado.titulo.id_cabecera_detalle,
         item_procedure_name: item.procedimiento.nombres,
-        item_patient_name: item.paciente.nombres
+        item_patient_name: item.paciente.nombres,
+        item_color: item.color,
+        item_entrace: item.cita_info.hora_entrada,
+        item_atention: item.cita_info.hora_atencion,
+        item_exit: item.cita_info.hora_salida,
+        item_id_state_time: item.paciente.estado_antiguedad.id_cabecera_detalle,
     }));
 
     // console.log(filteredAppointments);
@@ -147,7 +162,6 @@ export default function AppointmentCalendar() {
             item.item_profession === profession
         );
     };
-
     return (
         <React.Fragment>
             <h1 className='text-2xl'>Calendario de citas medicas</h1>
@@ -212,21 +226,48 @@ export default function AppointmentCalendar() {
                                     {filteredRooms && filteredRooms.length > 0 ? (
                                         filteredRooms.map((room: any, j: number) => {
                                             const filteredAppointment = filterAppointmentsByHourAndRoom(hour, room, selectedSedeId, selectedDate, selectedProfessionId);
+
                                             return (
                                                 <td
                                                     key={j}
-                                                    className={`p-2 border h-20 w-52 ${filteredAppointment ? '': 'cursor-pointer'}`}
+                                                    className={`border h-20 w-52 ${filteredAppointment ? '' : 'cursor-pointer'}`}
                                                     // onClick={() => handleCellClick(hour, room)}
                                                     onClick={() => {
                                                         if (!filteredAppointment) handleCellClick(hour, room);
                                                     }}
                                                 >
-                                                    {/* Show the filtered appointment details */}
                                                     {filteredAppointment ? (
-                                                        <React.Fragment>
-                                                            <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>
-                                                            <span className='text-xs'>{filteredAppointment.item_procedure_name}</span>
-                                                        </React.Fragment>
+                                                        // item_color
+                                                        <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredAppointment.item_color === 'Orange' ? 'bg-blue-300':'bg-orange-300'}`}>
+                                                            <div className='flex flex-wrap items-center justify-between'>
+                                                                <div className='flex flex-col '>
+                                                                    <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>
+                                                                    <span className='text-xs underline'>{filteredAppointment.item_procedure_name}</span>
+
+                                                                </div>
+
+                                                                <div className='flex gap-2'>
+                                                                    <Link href={`list/${filteredAppointment.id_appointment}`} className='text-xs bg-yellow-400 p-1 rounded-md' >Detalle</Link>
+                                                                    <button className='text-xs bg-gray-200 p-1 rounded-md' onClick={() => handleDetailAppointmentClick(filteredAppointment.id_appointment)}>Atencion</button>
+
+                                                                </div>                                                            </div>
+                                                            <div className='flex justify-between'>
+                                                                <div className='flex gap-2'>
+                                                                    <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>
+                                                                        {filteredAppointment.item_id_state_time === 35 ? 'N' : filteredAppointment.item_id_state_time === 36 ? 'A' : ''}
+                                                                    </div>
+                                                                    <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>R</div>
+                                                                </div>
+                                                                <div
+                                                                    className={
+                                                                        `w-12 h-4 rounded-sm ${filteredAppointment.item_entrace && filteredAppointment.item_atention === null && filteredAppointment.item_exit === null ? 'bg-green-500' :
+                                                                            filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit === null ? 'bg-yellow-300' :
+                                                                                filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit ? 'bg-blue-500' : 'bg-white'}`}
+                                                                >
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     ) : (
                                                         <div></div>
                                                     )}
@@ -251,10 +292,17 @@ export default function AppointmentCalendar() {
                     idTitle={selectedProfessionId}
                     location={selectedSedeId}
                     closePopup={closePopup}
-                    refetch={refetchAppointmentRoom}
+                    refetch={refetchAppointment}
                 />
             )}
 
+            {popupDetailVisible && (
+                <DetailpopupAppointmentComponent
+                    id={selectedIdAppointment}
+                    close={closeDetailAppointmentClick}
+                    refetchAppointemnt={refetchAppointment}
+                />
+            )}
 
         </React.Fragment>
     )
