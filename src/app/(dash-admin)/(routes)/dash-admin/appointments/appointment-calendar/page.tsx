@@ -58,8 +58,25 @@ const title_employe = [
 export default function AppointmentCalendar() {
 
     // data rooms and infra
-    const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0, filter: '' })
-    const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 300, page: 0, filter: '' })
+    const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 20, page: 0, filter: '' })
+    const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 3000, page: 0, filter: '' })
+
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            refetchRooms();
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [refetchRooms]);
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            refetchInfra();
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [refetchInfra]);
 
     const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' })
 
@@ -199,12 +216,11 @@ export default function AppointmentCalendar() {
                         ))}
                     </select>
                 </div>
-
             </section>
 
             <section className='w-full bg-white h-[40rem] overflow-auto mt-4'>
                 <section className='w-full p-4'>
-                    <table className='w-[80rem] md:w-full bg-white rounded-lg'>
+                    <table className='w-[40rem] md:w-full bg-white rounded-lg'>
                         <thead>
                             <tr>
                                 <th className='px-4 py-2 border w-24'>Hora</th>
@@ -238,7 +254,7 @@ export default function AppointmentCalendar() {
                                                 >
                                                     {filteredAppointment ? (
                                                         // item_color
-                                                        <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredAppointment.item_color === 'Orange' ? 'bg-blue-300':'bg-orange-300'}`}>
+                                                        <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredAppointment.item_color === 'Orange' ? 'bg-blue-300' : 'bg-orange-300'}`}>
                                                             <div className='flex flex-wrap items-center justify-between'>
                                                                 <div className='flex flex-col '>
                                                                     <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>
@@ -248,7 +264,12 @@ export default function AppointmentCalendar() {
 
                                                                 <div className='flex gap-2'>
                                                                     <Link href={`list/${filteredAppointment.id_appointment}`} className='text-xs bg-yellow-400 p-1 rounded-md' >Detalle</Link>
-                                                                    <button className='text-xs bg-gray-200 p-1 rounded-md' onClick={() => handleDetailAppointmentClick(filteredAppointment.id_appointment)}>Atencion</button>
+                                                                    <button
+                                                                        className='text-xs bg-gray-200 p-1 rounded-md'
+                                                                        onClick={() => handleDetailAppointmentClick(filteredAppointment.id_appointment)}
+                                                                    >
+                                                                        Atencion
+                                                                    </button>
 
                                                                 </div>                                                            </div>
                                                             <div className='flex justify-between'>

@@ -1,7 +1,15 @@
 import React from 'react'
 
-export default function DetailAppointmentsExtras() {
+interface Props {
+  params: {
+    id: string;
+  }
+}
+
+export default function DetailAppointmentsExtras({ params }: Props) {
+
+
   return (
-    <div>DetailAppointmentsExtras</div>
+    <div>{params.id}</div>
   )
 }
