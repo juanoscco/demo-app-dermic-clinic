@@ -1,17 +1,13 @@
 "use client"
-import React, { useState } from 'react'
+import React from 'react'
 import { useGetAppointmentByIdQuery } from '../../components/citas/find-by-id/store/service'
 import { TabPanel } from '@/components/TabPanel/TabPanel.component'
 import { Tab } from "@/components/TabPanel/interface/TabPanel.model"
 
-import { useFormik } from 'formik';
-// import * as Yup from 'yup';
-import { useUpdateAppointmentMutation } from '../../components/citas/update/store/service'
 import PatientComponent from './components/patient/patient.component'
 import DoctorComponent from './components/doctor/doctor.component'
 import DetailComponent from './components/detail/detail.component'
 import CalendarComponent from './components/calendar/calendar.component'
-import { useRouter } from 'next/navigation'
 
 interface Props {
     params: {

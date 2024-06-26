@@ -331,7 +331,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
     };
     const validationSchema = Yup.object({
         fecha_cita: Yup.date()
-            .min(new Date(), 'La fecha de cita debe de ser una fecha futura o presente'),
+            // .min(new Date(), 'La fecha de cita debe de ser una fecha futura o presente'),
     });
 
 
@@ -451,7 +451,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                                 <p className="text-gray-600">{dataDetailAppointmentById.procedimiento.nombres}</p>
                             )}
                             <button
-                                className={`mt-4 p-2 rounded-md ${isEditable ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-500 text-gray-300'}`}
+                                className={`mt-4 p-2 rounded-md ${isEditable ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-gray-500 text-gray-300'}`}
                                 type="button"
                                 onClick={handleToggleEdit}
                             >
@@ -460,7 +460,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                         </div>
                     </div>
                 </div>
-                <button type='submit'>
+                <button className='bg-blue-500 hover:bg-blue-600 mt-4 p-2 rounded-md text-white' type='submit'>
                     {appointmentLoad ? 'Guardando...' : 'Guardar'}
                 </button>
             </form>
@@ -533,7 +533,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                                                         className={`border h-20 w-52 cursor-pointer ${selectedCell && selectedCell.hour === hour && selectedCell.room === room ? 'bg-gray-200' : ''}`}
                                                         onClick={() => {
                                                             handleCellClick(hour, room);
-                                                            handleSelectRoomHourAndDate(selectedHour, room, selectedDate, selectedSedeId);
+                                                            handleSelectRoomHourAndDate(hour, room, selectedDate, selectedSedeId);
                                                         }}
                                                     >
                                                         {filteredAppointment ? (
