@@ -24,17 +24,16 @@ const validationSchema = Yup.object({
 export  function CreateAgendaComponent({ id, data, onClose, update }: Props) {
     const [addAgenda, { isLoading }] = useAddAgendaMutation()
 
-    // console.log(data);
     const formik = useFormik<AgendaOpening>({
         initialValues: {
             usuario_registro: {
-                id_usuario: id + 1,
+                id_usuario: id,
             },
             empleado: {
                 id_empleado: id,
             },
             empresa: {
-                id_empresa: data.empresa.id_empresa
+                id_empresa: 1
             },
             fecha_apertura: "",
             hora_inicio: "",
@@ -44,7 +43,7 @@ export  function CreateAgendaComponent({ id, data, onClose, update }: Props) {
         validationSchema,
         onSubmit: async (values) => {
             try {
-                // console.log(values)
+                console.log(values)
                 await addAgenda(values)
                 update()
                 onClose()
