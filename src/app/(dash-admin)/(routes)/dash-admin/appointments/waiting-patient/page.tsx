@@ -176,7 +176,7 @@ export default function AppointmentWaitingPatient() {
                           >
                             {filteredAppointment ? (
                               // item_color
-                              <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredAppointment.item_color === 'Orange' ? 'bg-blue-300' : 'bg-orange-300'}`}>
+                              <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredAppointment.item_color === 'Blue' ? 'bg-blue-300' : 'bg-orange-300'}`}>
                                 <div className='flex flex-wrap items-center justify-between'>
                                   <div className='flex flex-col '>
                                     <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>

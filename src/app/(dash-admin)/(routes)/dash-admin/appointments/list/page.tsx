@@ -68,7 +68,6 @@ export default function AppointmentList() {
 
 
 
-
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Lista de Citas</h1>
@@ -138,7 +137,7 @@ export default function AppointmentList() {
               {/* <th className="px-4 py-2 text-left">A/N</th> */}
               {/* <th className="px-4 py-2 text-left">MD</th> */}
               {/* <th className="px-4 py-2 text-left">Notas</th> */}
-              <th className="px-4 py-2 text-left">Estado</th>
+              {/* <th className="px-4 py-2 text-left">Estado</th> */}
               <th className="px-4 py-2 text-left">Acciones</th>
 
             </tr>
@@ -148,21 +147,21 @@ export default function AppointmentList() {
 
 
             {filteredAppointments.map((appointment: any) => (
-              <tr key={appointment.id_cita} className='border-b'>
+              <tr key={appointment?.id_cita} className='border-b'>
                 <td className="px-4 py-2">
-                  <p>{appointment.paciente.nombres}</p>
-                  <p>{appointment.paciente.numero_documento_identidad}</p>
+                  <p>{appointment?.paciente.nombres}</p>
+                  <p>{appointment?.paciente.numero_documento_identidad}</p>
                 </td>
                 <td className="px-4 py-2">
-                  -
+                  {appointment?.sala_tratamiento.nombres}
                 </td>
                 <td className="px-4 py-2">
-                  {appointment.hora.descripcion}
+                  {appointment?.horario.descripcion}
                 </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{appointment?.cita_info.hora_entrada}</td>
+                <td>{appointment?.cita_info.hora_atencion}</td>
+                <td>{appointment?.cita_info.hora_salida}</td>
+                {/* <td></td> */}
                 <td className="px-4 py-2">
                   <Link href={`list/${appointment.id_cita}`}>Detalle</Link>
                 </td>

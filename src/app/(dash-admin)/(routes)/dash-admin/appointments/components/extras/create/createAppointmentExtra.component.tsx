@@ -1,16 +1,16 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { useAddAppointmentMutation } from './store/service';
-import { Appointment } from './interface';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useAddExtraAppointmentMutation } from './store/service';
+import { ExtraAppointment } from './interface';
 import { useGetRoomProcedureQuery } from '../../../../procedures/list/components/Rooms/store/get/service';
 import { useAddPatientMutation } from '../../../../patients/create/store/service';
 import { useGetPatientsQuery } from '../../../../patients/list/store/service';
 import { DatatableComponent } from "@/components/datatable/";
 import { useGetEmployeesQuery } from '../../../../persons/list/store/service';
 import { useGetPersonalProcedureQuery } from '../../../../procedures/list/components/Personal/store/get/service';
-import CreatePatientComponent from './components/patient/create/create-patient.component';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import CreatePatientComponent from '../../citas/create/components/patient/create/create-patient.component';
 
 interface Props {
     hour?: any;
@@ -47,7 +47,7 @@ const validationSchema = Yup.object({
     }),
     estado: Yup.boolean().required('Requerido')
 });
-export function CreateAppointmentComponent({
+export function CreateAppointmentExtraComponent({
     hour, room, date, closePopup, idTitle, refetch, location
 }: Props) {
 
@@ -70,7 +70,6 @@ export function CreateAppointmentComponent({
 
         return () => clearTimeout(delayDebounceFn);
     }, [refetchEmployee]);
-
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             refetchDataHeadBoard();
@@ -78,12 +77,11 @@ export function CreateAppointmentComponent({
 
         return () => clearTimeout(delayDebounceFn);
     }, [refetchDataHeadBoard]);
-
     // ****
     const dataHeadBoardFilter = dataHeadBoardProcedure?.data?.content;
 
     // Posts
-    const [addAppointment, { isLoading: loadAddAppointment }] = useAddAppointmentMutation();
+    const [addAppointment, { isLoading: loadAddAppointment }] = useAddExtraAppointmentMutation();
     const [addPatient, { isLoading: loadingAddPatient, data: dataAddPatient, error: errorAddPatient }] = useAddPatientMutation();
 
     // Get rooms and procedures!
@@ -186,7 +184,7 @@ export function CreateAppointmentComponent({
         setStep(step - 1);
     };
 
-    const formik = useFormik<Appointment>({
+    const formik = useFormik<ExtraAppointment>({
         initialValues: {
             procedimiento: {
                 id_procedimiento: 0
@@ -278,7 +276,6 @@ export function CreateAppointmentComponent({
         }
     }, [dataAddPatient, formik.setFieldValue]);
 
-    console.log(employee);
 
     return (
         <div

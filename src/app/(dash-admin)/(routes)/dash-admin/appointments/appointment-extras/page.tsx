@@ -4,6 +4,8 @@ import { useGetInfrastructureQuery } from '../../infrastructure/list/store/servi
 import { useGetRoomsListQuery } from '../../infrastructure/list/[id]/infra-rooms/list/store/service';
 import { useGetExtraAppointmentsQuery } from '../components/extras/list/store/service';
 import Link from 'next/link';
+import { CreateAppointmentExtraComponent } from '../components/extras/create/createAppointmentExtra.component';
+import DetailpopupExtraAppointmentComponent from '../components/extras/find-by-id/detail-popup-extra-appointment-component';
 
 
 const hours = [
@@ -130,34 +132,33 @@ export default function ApointmentExtras() {
     return a.codigo.localeCompare(b.codigo);
   });
 
-  const filteredAppointments = extraAppointments?.map((item: any) => ({
-    id_appointment: item.id_cita,
-    id_hour: item.horario.id_cabecera_detalle,
-    hour_desc: item.horario.descripcion,
-    id_room: item.sala_tratamiento.id_sala_tratamiento,
-    id_location: item.sede.id_sede,
-    item_date: item.fecha_cita,
-    item_profession: item.empleado.titulo.id_cabecera_detalle,
-    item_procedure_name: item.procedimiento.nombres,
-    item_patient_name: item.paciente.nombres,
-    item_color: item.color,
-    item_entrace: item.cita_info.hora_entrada,
-    item_atention: item.cita_info.hora_atencion,
-    item_exit: item.cita_info.hora_salida,
-    item_id_state_time: item.paciente.estado_antiguedad.id_cabecera_detalle,
-  }));
+  // const filteredAppointments = extraAppointments?.map((item: any) => ({
+  //   id_appointment: item.id_cita,
+  //   id_hour: item.horario.id_cabecera_detalle,
+  //   hour_desc: item.horario.descripcion,
+  //   id_room: item.sala_tratamiento.id_sala_tratamiento,
+  //   id_location: item.sede.id_sede,
+  //   item_date: item.fecha_cita,
+  //   item_profession: item.empleado.titulo.id_cabecera_detalle,
+  //   item_procedure_name: item.procedimiento.nombres,
+  //   item_patient_name: item.paciente.nombres,
+  //   item_color: item.color,
+  //   item_entrace: item.cita_info.hora_entrada,
+  //   item_atention: item.cita_info.hora_atencion,
+  //   item_exit: item.cita_info.hora_salida,
+  //   item_id_state_time: item.paciente.estado_antiguedad.id_cabecera_detalle,
+  // }));
 
-  // console.log(filteredAppointments);
 
-  const filterExtraAppointmentsByHourAndRoom = (hour: any, room: any, location: any, date: any, profession: any) => {
-    return filteredAppointments?.find((item: any) =>
-      item.id_hour === hour.id_cabecera_detalle &&
-      item.id_room === room.id_sala_tratamiento &&
-      item.id_location === location &&
-      item.item_date === date &&
-      item.item_profession === profession
-    );
-  };
+  // const filterExtraAppointmentsByHourAndRoom = (hour: any, room: any, location: any, date: any, profession: any) => {
+  //   return filteredAppointments?.find((item: any) =>
+  //     item.id_hour === hour.id_cabecera_detalle &&
+  //     item.id_room === room.id_sala_tratamiento &&
+  //     item.id_location === location &&
+  //     item.item_date === date &&
+  //     item.item_profession === profession
+  //   );
+  // };
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -231,7 +232,7 @@ export default function ApointmentExtras() {
                 )}
               </tr>
             </thead>
-            <tbody>
+            {/* <tbody>
               {hours.map((hour: any, i: number) => (
                 <tr key={i}>
                   <td className='border h-24 text-center w-10'>{hour.descripcion}</td>
@@ -243,13 +244,11 @@ export default function ApointmentExtras() {
                         <td
                           key={j}
                           className={`border h-20 w-52 ${filteredExtraAppointment ? '' : 'cursor-pointer'}`}
-                          // onClick={() => handleCellClick(hour, room)}
                           onClick={() => {
                             if (!filteredExtraAppointment) handleCellClick(hour, room);
                           }}
                         >
                           {filteredExtraAppointment ? (
-                            // item_color
                             <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredExtraAppointment.item_color === 'Orange' ? 'bg-blue-300' : 'bg-orange-300'}`}>
                               <div className='flex flex-wrap items-center justify-between'>
                                 <div className='flex flex-col '>
@@ -267,7 +266,8 @@ export default function ApointmentExtras() {
                                     Atencion
                                   </button>
 
-                                </div>                                                            </div>
+                                </div>
+                              </div>
                               <div className='flex justify-between'>
                                 <div className='flex gap-2'>
                                   <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>
@@ -281,7 +281,6 @@ export default function ApointmentExtras() {
                                       filteredExtraAppointment.item_entrace && filteredExtraAppointment.item_atention && filteredExtraAppointment.item_exit === null ? 'bg-yellow-300' :
                                         filteredExtraAppointment.item_entrace && filteredExtraAppointment.item_atention && filteredExtraAppointment.item_exit ? 'bg-blue-500' : 'bg-white'}`}
                                 >
-
                                 </div>
                               </div>
                             </div>
@@ -296,10 +295,29 @@ export default function ApointmentExtras() {
                   )}
                 </tr>
               ))}
-            </tbody>
+            </tbody> */}
           </table>
         </section>
       </section>
+      {popupVisible && (
+        <CreateAppointmentExtraComponent
+          hour={selectedHour}
+          room={selectedRoom}
+          date={selectedDate}
+          idTitle={selectedProfessionId}
+          location={selectedSedeId}
+          closePopup={closePopup}
+          refetch={refetchExtraAppointment}
+        />
+      )}
+
+      {popupDetailVisible && (
+        <DetailpopupExtraAppointmentComponent
+          id={selectedIdAppointment}
+          close={closeDetailAppointmentClick}
+          refetchAppointemnt={refetchExtraAppointment}
+        />
+      )}
     </React.Fragment>
   )
 }

@@ -61,7 +61,6 @@ export default function AppointmentCalendar() {
     const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 20, page: 0, filter: '' })
     const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 3000, page: 0, filter: '' })
 
-
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             refetchRooms();
@@ -226,7 +225,7 @@ export default function AppointmentCalendar() {
                                 <th className='px-4 py-2 border w-24'>Hora</th>
                                 {filteredRooms && filteredRooms.length > 0 ? (
                                     filteredRooms.map((room: any, i: number) => (
-                                        <th key={i} className='px-4 py-2 border'>
+                                        <th key={room.id_sala_tratamiento} className='px-4 py-2 border'>
                                             {room.nombres}
                                         </th>
                                     ))
@@ -243,6 +242,7 @@ export default function AppointmentCalendar() {
                                         filteredRooms.map((room: any, j: number) => {
                                             const filteredAppointment = filterAppointmentsByHourAndRoom(hour, room, selectedSedeId, selectedDate, selectedProfessionId);
 
+                                            // console.log(filteredAppointment);
                                             return (
                                                 <td
                                                     key={j}
@@ -254,7 +254,7 @@ export default function AppointmentCalendar() {
                                                 >
                                                     {filteredAppointment ? (
                                                         // item_color
-                                                        <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredAppointment.item_color === 'Orange' ? 'bg-blue-300' : 'bg-orange-300'}`}>
+                                                        <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredAppointment.item_color === 'Blue' ? 'bg-blue-300' : 'bg-orange-300'}`}>
                                                             <div className='flex flex-wrap items-center justify-between'>
                                                                 <div className='flex flex-col '>
                                                                     <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>

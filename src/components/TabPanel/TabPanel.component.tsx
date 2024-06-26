@@ -8,7 +8,7 @@ export const TabPanel = ({ tabs }: { tabs: Tab[] }) => {
 
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth <= 1200);
+            setIsMobile(window.innerWidth <= 875);
         };
         window.addEventListener('resize', handleResize);
         handleResize();

@@ -12,7 +12,7 @@ export const extraAppointmentCreateApi = createApi({
         prepareHeaders
     }),
     endpoints: (builder) => ({
-        addPaciente: builder.mutation<ResponseExtraAppointment, ExtraAppointment>({
+        addExtraAppointment: builder.mutation<ResponseExtraAppointment, ExtraAppointment>({
             query: (newExtraAppointment) => ({
                 url: '',
                 method: 'POST',
@@ -22,4 +22,4 @@ export const extraAppointmentCreateApi = createApi({
     }),
 });
 
-export const { useAddPacienteMutation } = extraAppointmentCreateApi;
+export const { useAddExtraAppointmentMutation } = extraAppointmentCreateApi;

@@ -8,6 +8,7 @@ import { appointmentUpdateReducer } from "@/app/(dash-admin)/(routes)/dash-admin
 import { extraAppointmentCreateReducers } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/create/store/reducer";
 import { extraAppointmentDetailReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/find-by-id/store/reducer";
 import { extraAppointmentListReducers } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/list/store/reducer";
+import { appointmentExtraScheduleUpdateReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/update-schedule-extra-appointment/store/reducers";
 import { extraAppointmentUpdateReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/update/store/reducer";
 
 export const appointmentsReducer = {
@@ -24,6 +25,7 @@ export const appointmentsReducer = {
     ...extraAppointmentListReducers,
     ...extraAppointmentCreateReducers,
 
+    ...appointmentScheduleUpdateReducers,
     // 
-    ...appointmentScheduleUpdateReducers
+    ...appointmentExtraScheduleUpdateReducer
 }

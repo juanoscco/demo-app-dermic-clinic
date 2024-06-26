@@ -8,6 +8,7 @@ import { appointmentUpdateMiddleware } from "@/app/(dash-admin)/(routes)/dash-ad
 import { extraAppointmentCreateMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/create/store/middleware";
 import { extraAppointmentDetailMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/find-by-id/store/middleware";
 import { extraAppointmentListMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/list/store/middleware";
+import { appointmentExtraScheduleUpdateMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/update-schedule-extra-appointment/store/middleware";
 import { extraAppointmentUpdateMiddleware } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/update/store/middleware";
 
 export const appointmentsMiddleware = [
@@ -23,5 +24,6 @@ export const appointmentsMiddleware = [
     extraAppointmentDetailMiddleware,
     extraAppointmentListMiddleware,
     extraAppointmentCreateMiddleware,
-    appointmentScheduleUpdateMiddleware
+    appointmentScheduleUpdateMiddleware,
+    appointmentExtraScheduleUpdateMiddleware
 ]
