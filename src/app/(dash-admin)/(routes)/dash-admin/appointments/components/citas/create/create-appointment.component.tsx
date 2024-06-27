@@ -278,7 +278,7 @@ export function CreateAppointmentComponent({
         }
     }, [dataAddPatient, formik.setFieldValue]);
 
-    console.log(employee);
+    // console.log(employee);
 
     return (
         <div

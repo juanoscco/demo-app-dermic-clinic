@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { useGetRoomsListQuery } from '../../infrastructure/list/[id]/infra-rooms/list/store/service';
 import { useGetExtraAppointmentsQuery } from '../components/extras/list/store/service';
@@ -54,270 +54,188 @@ const title_employe = [
     valor: ""
   },
 ]
+const formatDate = (date: string | Date) => {
+  const d = new Date(date);
+  let month = '' + (d.getMonth() + 1);
+  let day = '' + d.getDate();
+  const year = d.getFullYear();
 
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [year, month, day].join('-');
+};
 export default function ApointmentExtras() {
+  const { data: dataExtraAppointment, isLoading: dataExtraAppointmentLoad, refetch: refetchExtraAppointment } = useGetExtraAppointmentsQuery({ limit: 150000, page: 0, filter: '' })
+  const { data: dataInfra, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' })
 
-  // data rooms and infra
-  const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 20, page: 0, filter: '' })
-  const { data: dataRoom, isLoading: loadRoom, refetch: refetchRooms } = useGetRoomsListQuery({ limit: 3000, page: 0, filter: '' })
+  const infrastructure = dataInfra?.data?.content
 
-  const { data: dataExtraAppointment, refetch: refetchExtraAppointment } = useGetExtraAppointmentsQuery({ limit: 150000, page: 0, filter: '' })
 
-  const extraAppointments = dataExtraAppointment?.data?.content;
+  const today = formatDate(new Date());
 
-  // Hooks
-  const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
+  const appointmentsData = dataExtraAppointment?.data?.content;
 
-  const handleSedeChange = (event: any) => {
-    setSelectedSedeId(parseInt(event.target.value, 10));
+  const [selectedDate, setSelectedDate] = useState(today);
+  const [selectedDistrict, setSelectedDistrict] = useState<number>(1);
+  // const [filteredAppointments, setFilteredAppointments] = useState<any>([]);
+
+  // const filterAppointments = useCallback((date: string, district: number) => {
+  //   return appointmentsData?.filter((appointment: any) => {
+  //     const appointmentDate = appointment.fecha_cita;
+  //     return appointmentDate === date && appointment.sede.id_sede === district;
+  //   });
+  // }, [appointmentsData]);
+
+  const filteredAppointments = appointmentsData?.filter((appointment: any) => {
+    const appointmentDate = appointment.fecha_cita;
+    return appointmentDate === selectedDate && appointment.sede.id_sede === selectedDistrict;
+  })
+  console.log(appointmentsData);
+
+  // useEffect(() => {
+  //   const delayDebounceFn = setTimeout(() => {
+  //     refetchExtraAppointment();
+  //   }, 300);
+
+  //   return () => clearTimeout(delayDebounceFn);
+  // }, [refetchExtraAppointment]);
+
+  // useEffect(() => {
+  //   const delayDebounceFn = setTimeout(() => {
+  //     refetchInfra();
+  //   }, 300);
+
+  //   return () => clearTimeout(delayDebounceFn);
+  // }, [refetchInfra]);
+
+  // useEffect(() => {
+  //   const result = filterAppointments(today, selectedDistrict);
+  //   setFilteredAppointments(result);
+  // }, [today, selectedDistrict, filterAppointments]);
+
+  // useEffect(() => {
+  //   const result = filterAppointments(selectedDate, selectedDistrict);
+  //   setFilteredAppointments(result);
+  // }, [selectedDate, selectedDistrict, appointmentsData, filterAppointments]);
+
+
+  const [showPopup, setShowPopup] = useState(false);
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
   };
-
-  // Filtrar los cuartos basados en el id_sede seleccionado
-  const filteredRooms = dataRoom?.data?.content.filter((room: any) => room.sede.id_sede === parseInt(selectedSedeId));
-  // Filtrar por medio de la profesion
-  const [selectedProfessionId, setSelectedProfessionId] = useState<number | null>(6);
-
-  const handleProfessionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const professionId = parseInt(event.target.value);
-    const selectedProfession = title_employe.find(prof => prof.id_cabecera_detalle === professionId);
-    if (selectedProfession) {
-      setSelectedProfessionId(professionId);
-    }
-  };
-
-  // hooks para el selecionado!
-  const [popupVisible, setPopupVisible] = useState<boolean>(false);
-  const [selectedHour, setSelectedHour] = useState<any>(null);
-  const [selectedRoom, setSelectedRoom] = useState<any>(null);
-
-  // hooks details
-  const [popupDetailVisible, setPopupDetailVisible] = useState<boolean>(false);
-  const [selectedIdAppointment, setSelectedIdAppointment] = useState<number | null | any>(null);
-
-  const handleCellClick = (hour: any, room: any) => {
-    setSelectedHour(hour);
-    setSelectedRoom(room);
-    setPopupVisible(true);
-  };
-
-  const closePopup = () => {
-    setPopupVisible(false);
-    setSelectedHour(null);
-    setSelectedRoom(null);
-  };
-
-  const handleDetailAppointmentClick = (id: number) => {
-    setPopupDetailVisible(true);
-    setSelectedIdAppointment(id);
-  }
-  const closeDetailAppointmentClick = () => {
-    setPopupDetailVisible(false);
-  }
-
-  const getCurrentDate = () => {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  };
-
-  const [selectedDate, setSelectedDate] = useState(getCurrentDate());
-
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value);
-  };
-
-  const sortedDataInfra = dataInfra?.data?.content?.slice().sort((a: any, b: any) => {
-    return a.codigo.localeCompare(b.codigo);
-  });
-
-  // const filteredAppointments = extraAppointments?.map((item: any) => ({
-  //   id_appointment: item.id_cita,
-  //   id_hour: item.horario.id_cabecera_detalle,
-  //   hour_desc: item.horario.descripcion,
-  //   id_room: item.sala_tratamiento.id_sala_tratamiento,
-  //   id_location: item.sede.id_sede,
-  //   item_date: item.fecha_cita,
-  //   item_profession: item.empleado.titulo.id_cabecera_detalle,
-  //   item_procedure_name: item.procedimiento.nombres,
-  //   item_patient_name: item.paciente.nombres,
-  //   item_color: item.color,
-  //   item_entrace: item.cita_info.hora_entrada,
-  //   item_atention: item.cita_info.hora_atencion,
-  //   item_exit: item.cita_info.hora_salida,
-  //   item_id_state_time: item.paciente.estado_antiguedad.id_cabecera_detalle,
-  // }));
-
-
-  // const filterExtraAppointmentsByHourAndRoom = (hour: any, room: any, location: any, date: any, profession: any) => {
-  //   return filteredAppointments?.find((item: any) =>
-  //     item.id_hour === hour.id_cabecera_detalle &&
-  //     item.id_room === room.id_sala_tratamiento &&
-  //     item.id_location === location &&
-  //     item.item_date === date &&
-  //     item.item_profession === profession
-  //   );
-  // };
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      refetchRooms();
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [refetchRooms]);
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      refetchInfra();
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [refetchInfra]);
-
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Calendario de Extras</h1>
-      <section className="bg-white p-4 mt-3 border rounded-md flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+
+      <section className='flex gap-3 flex-col xl:flex-row mt-5 xl:justify-between bg-white rounded-md p-4'>
+        <section className='flex gap-3 flex-col xl:flex-row'>
           <input
             type="date"
+            className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
             value={selectedDate}
-            onChange={handleDateChange}
-            className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setSelectedDate(e.target.value)}
           />
           <select
-            name="location"
-            value={selectedSedeId}
-            onChange={handleSedeChange}
-            className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
+            value={selectedDistrict}
+            onChange={(e) => setSelectedDistrict(parseInt(e.target.value, 10))}
           >
-            {sortedDataInfra?.map((infra: any, i: number) => (
-              <option key={i} value={infra.id_sede}>
-                {infra.nombres}
-              </option>
+
+            {infrastructure?.map((infra: any, i: number) => (
+              <React.Fragment key={i}>
+                <option value={infra.id_sede} className='capitalize'>{infra.nombres}</option>
+                {/* <option value="Sede san isidro">San Isidro</option> */}
+              </React.Fragment>
             ))}
+
           </select>
-          <select
-            name="profession"
-            value={selectedProfessionId ?? ''}
-            onChange={handleProfessionChange}
-            className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {/* <option value="">Seleccione una profesión</option> */}
-            {title_employe.map(prof => (
-              <option key={prof.id_cabecera_detalle} value={prof.id_cabecera_detalle}>
-                {prof.descripcion}
-              </option>
-            ))}
-          </select>
-        </div>
-
-      </section>
-      <section className='w-full bg-white h-[40rem] overflow-x-auto mt-4'>
-        <section className='w-full p-4'>
-          <table className='w-[40rem] md:w-full bg-white rounded-lg'>
-            <thead>
-              <tr>
-                <th className='px-4 py-2 border w-24'>Hora</th>
-                {filteredRooms && filteredRooms.length > 0 ? (
-                  filteredRooms.map((room: any, i: number) => (
-                    <th key={i} className='px-4 py-2 border'>
-                      {room.nombres}
-                    </th>
-                  ))
-                ) : (
-                  <th className='px-4 py-2 border'>No hay cuartos disponibles para esta sede</th>
-                )}
-              </tr>
-            </thead>
-            {/* <tbody>
-              {hours.map((hour: any, i: number) => (
-                <tr key={i}>
-                  <td className='border h-24 text-center w-10'>{hour.descripcion}</td>
-                  {filteredRooms && filteredRooms.length > 0 ? (
-                    filteredRooms.map((room: any, j: number) => {
-                      const filteredExtraAppointment = filterExtraAppointmentsByHourAndRoom(hour, room, selectedSedeId, selectedDate, selectedProfessionId);
-
-                      return (
-                        <td
-                          key={j}
-                          className={`border h-20 w-52 ${filteredExtraAppointment ? '' : 'cursor-pointer'}`}
-                          onClick={() => {
-                            if (!filteredExtraAppointment) handleCellClick(hour, room);
-                          }}
-                        >
-                          {filteredExtraAppointment ? (
-                            <div className={`flex flex-col justify-between h-5/6 p-2 mx-1  ${filteredExtraAppointment.item_color === 'Orange' ? 'bg-blue-300' : 'bg-orange-300'}`}>
-                              <div className='flex flex-wrap items-center justify-between'>
-                                <div className='flex flex-col '>
-                                  <h3 className='capitalize text-xs font-bold'>{filteredExtraAppointment.item_patient_name.toLowerCase()}</h3>
-                                  <span className='text-xs underline'>{filteredExtraAppointment.item_procedure_name}</span>
-
-                                </div>
-
-                                <div className='flex gap-2'>
-                                  <Link href={`list/${filteredExtraAppointment.id_appointment}`} className='text-xs bg-yellow-400 p-1 rounded-md' >Detalle</Link>
-                                  <button
-                                    className='text-xs bg-gray-200 p-1 rounded-md'
-                                    onClick={() => handleDetailAppointmentClick(filteredExtraAppointment.id_appointment)}
-                                  >
-                                    Atencion
-                                  </button>
-
-                                </div>
-                              </div>
-                              <div className='flex justify-between'>
-                                <div className='flex gap-2'>
-                                  <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>
-                                    {filteredExtraAppointment.item_id_state_time === 35 ? 'N' : filteredExtraAppointment.item_id_state_time === 36 ? 'A' : ''}
-                                  </div>
-                                  <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>R</div>
-                                </div>
-                                <div
-                                  className={
-                                    `w-12 h-4 rounded-sm ${filteredExtraAppointment.item_entrace && filteredExtraAppointment.item_atention === null && filteredExtraAppointment.item_exit === null ? 'bg-green-500' :
-                                      filteredExtraAppointment.item_entrace && filteredExtraAppointment.item_atention && filteredExtraAppointment.item_exit === null ? 'bg-yellow-300' :
-                                        filteredExtraAppointment.item_entrace && filteredExtraAppointment.item_atention && filteredExtraAppointment.item_exit ? 'bg-blue-500' : 'bg-white'}`}
-                                >
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <div></div>
-                          )}
-                        </td>
-                      );
-                    })
-                  ) : (
-                    <td className=' border h-20 w-52 bg-gray-200 '></td>
-                  )}
-                </tr>
-              ))}
-            </tbody> */}
-          </table>
         </section>
-      </section>
-      {popupVisible && (
-        <CreateAppointmentExtraComponent
-          hour={selectedHour}
-          room={selectedRoom}
-          date={selectedDate}
-          idTitle={selectedProfessionId}
-          location={selectedSedeId}
-          closePopup={closePopup}
-          refetch={refetchExtraAppointment}
-        />
-      )}
 
-      {popupDetailVisible && (
+      </section>
+      <section
+        className='flex xl:justify-between flex-col xl:flex-row mt-5 gap-3 bg-white rounded-md p-3'
+      >
+        <input
+          type="text"
+          placeholder="Buscar..."
+          className="p-2 border border-gray-300 rounded-md mb-2 outline-none w-full md:w-auto"
+        />
+        <div className="flex flex-col xl:flex-row items-center gap-3 ">
+          <button
+            className="p-2 bg-blue-500 rounded-md text-white w-full md:w-auto"
+            onClick={togglePopup}
+          >
+            Agregar
+          </button>
+          <button className="p-2 bg-green-500 rounded-md text-white w-full md:w-auto">
+            Excel
+          </button>
+          <button className="p-2 bg-gray-500 text-white rounded-md mt-2 xl:mt-0 w-full md:w-auto">
+            Imprimir
+          </button>
+        </div>
+      </section>
+      <section className='bg-white p-2 rounded-md w-full xl:h-[35rem] h-full overflow-x-auto'>
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b border-gray-200">
+
+
+              <th className="px-4 py-2 text-left">Paciente</th>
+              <th className="px-4 py-2 text-left">Medico</th>
+              <th className="px-4 py-2 text-left">Sala</th>
+              <th className="px-4 py-2 text-left">Hora</th>
+              <th className="px-4 py-2 text-left">Llegada</th>
+              <th className="px-4 py-2 text-left">Entrada</th>
+              <th className="px-4 py-2 text-left">Salida</th>
+              <th className="px-4 py-2 text-left">Acciones</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            {filteredAppointments?.map((appointment: any) => (
+              <tr key={appointment?.id_cita_extra} className='border-b'>
+                <td className="px-4 py-2">
+                  <p>{appointment?.paciente.nombres}</p>
+                  <p>{appointment?.paciente.numero_documento_identidad}</p>
+                </td>
+                <td className="px-4 py-2">
+                  <p>{appointment?.empleado.nombres}</p>
+                  <p>{appointment?.empleado.numero}</p>
+                </td>
+                <td className="px-4 py-2">
+                  {appointment?.sala_tratamiento.nombres}
+                </td>
+                <td className="px-4 py-2">
+                  {/* {appointment?.horario.descripcion} */}
+                </td>
+                <td>{appointment?.cita_extra_info.hora_entrada}</td>
+                <td>{appointment?.cita_extra_info.hora_atencion}</td>
+                <td>{appointment?.cita_extra_info.hora_salida}</td>
+                {/* <td></td> */}
+                <td className="px-4 py-2 flex gap-3">
+                  <button>Marcar estado</button>
+                  <button>Eliminar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+      {showPopup && <CreateAppointmentExtraComponent
+        close={togglePopup}
+        location={selectedDistrict}
+        refetch={refetchExtraAppointment}
+        date={selectedDate}
+      />}
+      {/* {popupDetailVisible && (
         <DetailpopupExtraAppointmentComponent
           id={selectedIdAppointment}
           close={closeDetailAppointmentClick}
           refetchAppointemnt={refetchExtraAppointment}
         />
-      )}
+      )} */}
     </React.Fragment>
   )
 }

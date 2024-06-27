@@ -19,7 +19,7 @@ const formatDate = (date: string | Date) => {
 
 export default function AppointmentList() {
 
-  const { data: appointments, isLoading: loadingAppointments, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150, page: 0, filter: '' });
+  const { data: appointments, isLoading: loadingAppointments, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
   const { data: dataInfra, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' })
 
   const infrastructure = dataInfra?.data?.content

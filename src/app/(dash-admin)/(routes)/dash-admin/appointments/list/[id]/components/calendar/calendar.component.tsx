@@ -219,9 +219,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
         );
     };
 
-
     // ********
-
     const roomProcedures = dataRoomProcedure?.data?.content
     const employee = dataEmployee?.data?.content
 

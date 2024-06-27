@@ -104,7 +104,8 @@ export default function CreatePatientComponent({ addPatient, loadingPatient, nex
             <section className='mt-4 p-4 bg-white'>
                 <form
                     onSubmit={formik.handleSubmit}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    className="grid grid-cols-1 md:grid-cols-2 gap-5"
+                    >
                     <div className='border border-gray-300 text-left p-2'>
                         <label className='text-font-777 text-sm' htmlFor="numero_documento_identidad">DNI  <span className="text-red-500">*</span></label>
                         <div className='flex gap-3'>
