@@ -52,20 +52,27 @@ export default function ApointmentExtras() {
   const [selectedDistrict, setSelectedDistrict] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Nuevo estado para los elementos por página
-
+  const [searchTerm, setSearchTerm] = useState(''); // Nuevo estado para el término de búsqueda
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reiniciar a la primera página cuando cambia el término de búsqueda
+  };
   const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setItemsPerPage(Number(event.target.value));
     setCurrentPage(1); // Reiniciar a la primera página cuando cambia la cantidad de elementos por página
   };
-
   const filteredAppointments = useCallback(() => {
     if (dataExtraAppointmentLoad || loadingInfra || !appointmentsData) return [];
 
     return appointmentsData.filter((appointment: any) => {
       const appointmentDate = appointment.fecha_cita;
-      return appointmentDate === selectedDate && appointment.sede.id_sede === selectedDistrict;
+      const matchesSearchTerm = (
+        appointment.paciente?.nombres?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        appointment.paciente?.numero_documento_identidad?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      return appointmentDate === selectedDate && appointment.sede.id_sede === selectedDistrict && matchesSearchTerm;
     });
-  }, [appointmentsData, selectedDate, selectedDistrict, dataExtraAppointmentLoad, loadingInfra]);
+  }, [appointmentsData, selectedDate, selectedDistrict, searchTerm, dataExtraAppointmentLoad, loadingInfra]);
 
   const paginatedAppointments = useCallback(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -138,6 +145,8 @@ export default function ApointmentExtras() {
         <input
           type="text"
           placeholder="Buscar..."
+          value={searchTerm}
+          onChange={handleSearchChange}
           className="p-2 border border-gray-300 rounded-md mb-2 outline-none w-full md:w-auto"
         />
         <div className="flex flex-col xl:flex-row items-center gap-3 ">
