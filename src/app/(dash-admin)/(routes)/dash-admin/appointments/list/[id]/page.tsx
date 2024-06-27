@@ -15,17 +15,17 @@ interface Props {
     }
 }
 
-
-
 export default function DetailsAppointment({ params }: Props) {
 
     const { data, isLoading, error, refetch } = useGetAppointmentByIdQuery(params.id);
-    
+
     const dataDetailAppointment = data?.data;
 
 
     // TODO: PARA LA NUEVA VERSION PASAR A STEPS
-    
+
+    if (error) (<div>Error en carga de datos</div>)
+    if(isLoading) (<div>Cargando....</div>)
 
     const tabs: Tab[] = [
         {
@@ -38,7 +38,7 @@ export default function DetailsAppointment({ params }: Props) {
             title: 'Paciente',
             content: <PatientComponent
                 dataDetailAppointmentById={dataDetailAppointment}
-                
+
             />,
         },
         {
@@ -55,7 +55,7 @@ export default function DetailsAppointment({ params }: Props) {
                 refetch={refetch}
             />,
         }
-      
+
     ];
 
 

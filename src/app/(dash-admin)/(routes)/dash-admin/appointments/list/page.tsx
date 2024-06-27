@@ -16,54 +16,82 @@ const formatDate = (date: string | Date) => {
 
   return [year, month, day].join('-');
 };
+const formatTime = (timeString: string) => {
+  if (!timeString) return "";
 
+  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  const date = new Date();
+  date.setHours(hours, minutes, seconds);
+
+  let formattedHours = date.getHours();
+  const formattedMinutes = date.getMinutes();
+  const period = formattedHours >= 12 ? 'PM' : 'AM';
+
+  // Convertir a formato de 12 horas
+  formattedHours = formattedHours % 12;
+  formattedHours = formattedHours ? formattedHours : 12; // La hora '0' debe mostrarse como '12'
+
+  return `${formattedHours}:${formattedMinutes < 10 ? '0' + formattedMinutes : formattedMinutes} ${period}`;
+};
 export default function AppointmentList() {
 
   const { data: appointments, isLoading: loadingAppointments, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
   const { data: dataInfra, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' })
 
-  const infrastructure = dataInfra?.data?.content
+  const infrastructure = dataInfra?.data?.content;
 
   const today = formatDate(new Date());
 
-  const appointmentsData = useMemo(() => appointments?.data?.content || [], [appointments]);
+  const appointmentsData = appointments?.data?.content;
 
+  // **********
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedDistrict, setSelectedDistrict] = useState<number>(1);
-  const [filteredAppointments, setFilteredAppointments] = useState<any>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Nuevo estado para los elementos por página
+  const [searchTerm, setSearchTerm] = useState(''); // Nuevo estado para el término de búsqueda
 
-  const filterAppointments = useCallback((date: string, district: number) => {
+  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1); // Reiniciar a la primera página cuando cambia la cantidad de elementos por página
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reiniciar a la primera página cuando cambia el término de búsqueda
+  };
+
+  const filteredAppointments = useCallback(() => {
+    if (loadingAppointments || loadingInfra || !appointmentsData) return [];
+
     return appointmentsData.filter((appointment: any) => {
       const appointmentDate = appointment.fecha_cita;
-      return appointmentDate === date && appointment.sede.id_sede === district;
+      const matchesSearchTerm = (
+        appointment.paciente?.nombres?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        appointment.paciente?.numero_documento_identidad?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      return appointmentDate === selectedDate && appointment.sede.id_sede === selectedDistrict && matchesSearchTerm;
     });
-  }, [appointmentsData]);
+  }, [appointmentsData, selectedDate, selectedDistrict, searchTerm, loadingAppointments, loadingInfra]);
+
+  const paginatedAppointments = useCallback(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredAppointments().slice(startIndex, endIndex);
+  }, [filteredAppointments, currentPage, itemsPerPage]);
+
+  const totalItems = filteredAppointments().length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      refetchAppointment();
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [refetchAppointment]);
+    refetchAppointment();
+    refetchInfra();
+  }, [selectedDate, selectedDistrict, refetchAppointment, refetchInfra]);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      refetchInfra();
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [refetchInfra]);
-
-  useEffect(() => {
-    const result = filterAppointments(today, selectedDistrict);
-    setFilteredAppointments(result);
-  }, [today, selectedDistrict, filterAppointments]);
-
-  useEffect(() => {
-    const result = filterAppointments(selectedDate, selectedDistrict);
-    setFilteredAppointments(result);
-  }, [selectedDate, selectedDistrict, appointmentsData, filterAppointments]);
+    // Reset page to 1 when filters change
+    setCurrentPage(1);
+  }, [selectedDate, selectedDistrict]);
 
 
 
@@ -102,6 +130,8 @@ export default function AppointmentList() {
         <input
           type="text"
           placeholder="Buscar..."
+          value={searchTerm}
+          onChange={handleSearchChange}
           className="p-2 border border-gray-300 rounded-md mb-2 outline-none w-full md:w-auto"
         />
         <div className="flex flex-col xl:flex-row items-center gap-3 ">
@@ -143,10 +173,7 @@ export default function AppointmentList() {
             </tr>
           </thead>
           <tbody>
-
-
-
-            {filteredAppointments.map((appointment: any) => (
+            {paginatedAppointments()?.map((appointment: any) => (
               <tr key={appointment?.id_cita} className='border-b'>
                 <td className="px-4 py-2">
                   <p>{appointment?.paciente.nombres}</p>
@@ -158,9 +185,9 @@ export default function AppointmentList() {
                 <td className="px-4 py-2">
                   {appointment?.horario.descripcion}
                 </td>
-                <td>{appointment?.cita_info.hora_entrada}</td>
-                <td>{appointment?.cita_info.hora_atencion}</td>
-                <td>{appointment?.cita_info.hora_salida}</td>
+                <td>{formatTime(appointment?.cita_info.hora_entrada)}</td>
+                <td>{formatTime(appointment?.cita_info.hora_atencion)}</td>
+                <td>{formatTime(appointment?.cita_info.hora_salida)}</td>
                 {/* <td></td> */}
                 <td className="px-4 py-2">
                   <Link href={`list/${appointment.id_cita}`}>Detalle</Link>
@@ -170,6 +197,44 @@ export default function AppointmentList() {
           </tbody>
         </table>
       </section>
+
+      <div className='bg-white p-3 flex justify-between items-center  rounded-lg'>
+        <div className='flex gap-3 items-center'>
+          <div className='flex gap-2 items-center'>
+            <label htmlFor="itemsPerPage" className='text-gray-700'>Items per page:</label>
+            <select
+              id="itemsPerPage"
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+              className='border border-gray-300 rounded-md p-1'
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={30}>30</option>
+              <option value={40}>40</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+          <span className='text-gray-600'>Total items: {totalItems}</span>
+        </div>
+        <div className='flex gap-3 items-center'>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-gray-300 text-gray-500' : 'bg-blue-500 text-white'} `}
+          >
+            Previous
+          </button>
+          <span className='text-gray-700'>Page {currentPage} of {totalPages}</span>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-gray-300 text-gray-500' : 'bg-blue-500 text-white'} `}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </React.Fragment>
   )
 }

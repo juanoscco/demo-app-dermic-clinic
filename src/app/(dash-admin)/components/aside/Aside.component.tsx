@@ -4,11 +4,11 @@ import Link from "next/link"
 import { user_admin } from '@/assets/'
 import TabsOpensHook from "../../hooks/tabs/tabs-opens.hook";
 // 
-import { sections } from "@/mocks/Aside/aside.mocks"
+import { sections } from "@/app/(dash-admin)/components/aside/mock/aside.mocks"
 import { Props } from "@/app/(dash-admin)/models/aside/aside.models"
 // 
 
-export default function AsideComponent({ isNavActive, handleNavItemClick }: Props) {
+export function AsideComponent({ isNavActive, handleNavItemClick }: Props) {
 
   const {
     openSections, toggleAccordion

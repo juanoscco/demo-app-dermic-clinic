@@ -1,8 +1,8 @@
 "use client"
 import React from 'react';
-import AsideComponent from './components/aside/Aside.component';
+import { AsideComponent } from './components/aside/';
 import NavbarComponent from './components/nav/Navbar.component';
-import AsideSidebarHook from './hooks/aside/aside-sidebar.hook';
+import AsideSidebarHook from './components/aside/hook/aside-sidebar.hook';
 
 export default function DashboardLayout({
   children
@@ -13,7 +13,7 @@ export default function DashboardLayout({
   const { handleBurgerClick, isNavActive, handleNavItemClick } = AsideSidebarHook()
   return (
     <main className='min-h-screen flex min-w-full'>
-      <AsideComponent isNavActive={isNavActive} handleNavItemClick={handleNavItemClick}/>
+      <AsideComponent isNavActive={isNavActive} handleNavItemClick={handleNavItemClick} />
       <section className='w-full px-5 flex flex-col gap-5 bg-[#fafafa] '>
         <NavbarComponent handleBurgerClick={handleBurgerClick} isNavActive={isNavActive} />
         <section className="h-5/6">

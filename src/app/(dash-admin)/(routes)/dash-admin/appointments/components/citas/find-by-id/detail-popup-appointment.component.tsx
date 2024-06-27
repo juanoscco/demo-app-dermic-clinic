@@ -88,6 +88,7 @@ export default function DetailpopupAppointmentComponent({ id, close, refetchAppo
                     {/* <span className="block text-gray-700 text-lg font-semibold mb-2">ID: <span className="font-normal">{id}</span></span> */}
 
                     <p className="capitalize text-gray-700 text-lg font-semibold mb-2">Paciente: <span className="font-normal">{appointmentData?.paciente.nombres.toLowerCase()}</span></p>
+                    <p className="text-gray-700 text-lg font-semibold mb-2">DNI: <span className="font-normal">{appointmentData?.paciente.telefono}</span></p>
                     <p className="text-gray-700 text-lg font-semibold mb-2">DNI: <span className="font-normal">{appointmentData?.paciente.numero_documento_identidad}</span></p>
                     <p className="text-gray-700 text-lg font-semibold mb-2">Sala: <span className="font-normal">{appointmentData?.sala_tratamiento.nombres}</span></p>
                     <span className="block text-gray-700 text-lg font-semibold mb-2">Procedimiento: <span className="font-normal">{appointmentData?.procedimiento.nombres}</span></span>

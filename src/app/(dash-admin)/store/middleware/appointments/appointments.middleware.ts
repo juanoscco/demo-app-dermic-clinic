@@ -19,11 +19,12 @@ export const appointmentsMiddleware = [
     appointmentCreateMiddleware,
     appointmentUpdateMiddleware,
     appointmentRoomListMiddleware,
+    appointmentScheduleUpdateMiddleware,
     //Extra Appointments
     extraAppointmentUpdateMiddleware,
     extraAppointmentDetailMiddleware,
     extraAppointmentListMiddleware,
     extraAppointmentCreateMiddleware,
-    appointmentScheduleUpdateMiddleware,
+    
     appointmentExtraScheduleUpdateMiddleware
 ]

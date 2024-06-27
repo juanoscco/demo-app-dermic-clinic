@@ -41,7 +41,7 @@ export default function DetailpopupExtraAppointmentComponent({ id, close, refetc
         let appointmentScheduleId;
         switch (buttonNumber) {
             case 1:
-                appointmentScheduleId = appointmentExtraData?.cita_info?.id_cita_info;
+                appointmentScheduleId = appointmentExtraData?.cita_extra_info?.id_cita_extra_info;
                 if (appointmentScheduleId && !button1Disabled) {
                     setButton1Disabled(true);
                     updateScheduleExtraAppointment({ appointmentScheduleId }).then(() => {
@@ -51,7 +51,7 @@ export default function DetailpopupExtraAppointmentComponent({ id, close, refetc
                 }
                 break;
             case 2:
-                appointmentScheduleId = appointmentExtraData?.cita_info?.id_cita_info;
+                appointmentScheduleId = appointmentExtraData?.cita_extra_info?.id_cita_extra_info;
                 if (appointmentScheduleId && !button2Disabled) {
                     setButton2Disabled(true);
                     updateScheduleExtraAppointment({ appointmentScheduleId }).then(() => {
@@ -61,7 +61,7 @@ export default function DetailpopupExtraAppointmentComponent({ id, close, refetc
                 }
                 break;
             case 3:
-                appointmentScheduleId = appointmentExtraData?.cita_info?.id_cita_info;
+                appointmentScheduleId = appointmentExtraData?.cita_extra_info?.id_cita_extra_info;
                 if (appointmentScheduleId && !button3Disabled) {
                     setButton3Disabled(true);
                     updateScheduleExtraAppointment({ appointmentScheduleId }).then(() => {
@@ -88,6 +88,8 @@ export default function DetailpopupExtraAppointmentComponent({ id, close, refetc
                     {/* <span className="block text-gray-700 text-lg font-semibold mb-2">ID: <span className="font-normal">{id}</span></span> */}
 
                     <p className="capitalize text-gray-700 text-lg font-semibold mb-2">Paciente: <span className="font-normal">{appointmentExtraData?.paciente.nombres.toLowerCase()}</span></p>
+                    <p className="text-gray-700 text-lg font-semibold mb-2">Telefono: <span className="font-normal">{appointmentExtraData?.paciente.telefono}</span></p>
+
                     <p className="text-gray-700 text-lg font-semibold mb-2">DNI: <span className="font-normal">{appointmentExtraData?.paciente.numero_documento_identidad}</span></p>
                     <p className="text-gray-700 text-lg font-semibold mb-2">Sala: <span className="font-normal">{appointmentExtraData?.sala_tratamiento.nombres}</span></p>
                     <span className="block text-gray-700 text-lg font-semibold mb-2">Procedimiento: <span className="font-normal">{appointmentExtraData?.procedimiento.nombres}</span></span>

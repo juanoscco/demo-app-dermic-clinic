@@ -16,8 +16,8 @@ import * as Yup from 'yup';
 interface Props {
     close?: any
     location?: any
-    refetch?:any
-    date?:any
+    refetch?: any
+    date?: any
 }
 const validationSchema = Yup.object({
     procedimiento: Yup.object().shape({
@@ -59,6 +59,10 @@ export function CreateAppointmentExtraComponent({
     const employees = getEmployees?.data?.content;
     const roomProcedures = getRoomProcedures?.data?.content;
 
+    useEffect(() => {
+        refetchEmployess();
+        refetchRoomProcedures();
+    }, [refetchEmployess, refetchRoomProcedures])
 
     // const filteredEmployee = employees?.filter((employee: any) => employee.sede.id_sede === location)
     // const dataEmployeeFiltered = filteredEmployee?.map((item:any) => ({
@@ -247,13 +251,11 @@ export function CreateAppointmentExtraComponent({
     };
     return (
         <PopupUpdate>
-            <div className='flex justify-between'>
-                <h1>Agregar calendario extra</h1>
-                <button onClick={close}>X</button>
+            <div className='flex justify-between py-4'>
+                <h1 className='font-bold text-xl'>Agregar cita Extra</h1>
+                <button onClick={close} className='text-xl'>x</button>
             </div>
-            <div>
-                <p className='font-bold'>{location}</p>
-            </div>
+
             {step === 1 &&
                 (
                     <div>
@@ -364,7 +366,7 @@ export function CreateAppointmentExtraComponent({
                         ) : null}
                     </div>
 
-   
+
                     <div className='border border-gray-300 text-left p-2'>
                         <label>Fecha Cita</label>
                         <input

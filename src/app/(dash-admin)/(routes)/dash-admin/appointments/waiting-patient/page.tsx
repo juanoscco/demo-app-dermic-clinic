@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { useGetEmployeesQuery } from '../../persons/list/store/service';
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
@@ -49,7 +49,21 @@ export default function AppointmentWaitingPatient() {
 
   const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      refetchInfra();
+    }, 300);
 
+    return () => clearTimeout(delayDebounceFn);
+  }, [refetchInfra]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      refetchEmployee();
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [refetchEmployee]);
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -148,14 +162,14 @@ export default function AppointmentWaitingPatient() {
                 <th className='px-4 py-2 border w-24'>Hora</th>
                 {filteredEmployee && filteredEmployee.length > 0 ? (
                   filteredEmployee
-                    .filter((employee: any) => employee.id_empleado !== 1)
+                    // .filter((employee: any) => employee.id_empleado !== 1)
                     .map((employee: any, i: number) => (
                       <th key={employee.id_empleado} className='px-4 py-2 border'>
                         {employee.nombres}
                       </th>
                     ))
                 ) : (
-                  <th className='px-4 py-2 border'>No hay cuartos disponibles para esta sede</th>
+                  <th className='px-4 py-2 border'>No hay doctores disponibles para esta sede</th>
                 )}
               </tr>
             </thead>

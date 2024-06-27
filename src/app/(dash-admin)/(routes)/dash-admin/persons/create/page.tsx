@@ -8,6 +8,7 @@ import { useGetInfrastructureQuery } from '../../infrastructure/list/store/servi
 import { Alert } from '@/components/popup/popup-alert';
 
 export default function UserCreate() {
+
     const [selectedSede, setSelectedSede] = useState(null);
 
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
@@ -40,14 +41,14 @@ export default function UserCreate() {
             },
             titulo: {
                 id_cabecera: 3,
-                id_cabecera_detalle: 6,
-                descripcion: 'Doctores',
+                id_cabecera_detalle: 0,
+                descripcion: '',
                 valor: '',
             },
             dia_sin_refriguerio: {
                 id_cabecera: 4,
-                id_cabecera_detalle: 11,
-                descripcion: 'Jueves',
+                id_cabecera_detalle: 0,
+                descripcion: '',
                 valor: '',
             },
             empresa: {
@@ -70,23 +71,7 @@ export default function UserCreate() {
             numero: Yup.string().required('Requerido'),
             nombres: Yup.string().required('Requerido'),
             telefono: Yup.string().required('Requerido'),
-            correo: Yup.string().email('Email inválido').required('Requerido'),
-            dia_sin_refriguerio: Yup.object({
-                id_cabecera_detalle: Yup.number().required('Requerido'),
-                descripcion: Yup.string().required('Requerido'),
-            }),
-            titulo: Yup.object({
-                id_cabecera_detalle: Yup.number().required('Requerido'),
-                descripcion: Yup.string().required('Requerido'),
-            }),
-            usuario: Yup.object({
-                username: Yup.string().required('Requerido'),
-                password: Yup.string().required('Requerido'),
-                rol: Yup.object({
-                    id_rol: Yup.string().required('Requerido'),
-                })
-            }),
-            estado: Yup.boolean().required('Requerido'),
+            correo: Yup.string().email('Email inválido'),
         }),
         onSubmit: async (values, { resetForm }) => {
             // console.log(values)
@@ -191,6 +176,7 @@ export default function UserCreate() {
                             onBlur={formik.handleBlur}
                             className='w-full py-2 outline-none px-1'
                         >
+                            <option value={0}>Seleccione</option>
                             <option value={8}>Lunes</option>
                             <option value={9}>Martes</option>
                             <option value={10}>Miércoles</option>
@@ -217,7 +203,7 @@ export default function UserCreate() {
                             className='w-full py-2 outline-none px-1'
 
                         >
-                            {/* <option value=""></option> */}
+                            <option value={0}>Seleccione</option>
                             <option value={5}>Cosmiatras</option>
                             <option value={6}>Doctores</option>
                             <option value={7}>Secretarias</option>

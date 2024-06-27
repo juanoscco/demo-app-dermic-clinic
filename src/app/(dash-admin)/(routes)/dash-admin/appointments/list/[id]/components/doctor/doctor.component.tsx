@@ -6,9 +6,9 @@ interface Props {
 
 export default function DoctorComponent({ dataAppointment }: Props) {
     return (
-        <section>
+        <>
             {/* datos */}
-            <section className=" p-6 rounded-lg shadow-md">
+            <section className=" p-6 rounded-lg ">
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4'>
                     <div className="border-b border-gray-300 pb-2">
                         <p className="text-gray-600 text-sm">Correo:</p>
@@ -39,6 +39,6 @@ export default function DoctorComponent({ dataAppointment }: Props) {
 
 
 
-        </section>
+        </>
     )
 }

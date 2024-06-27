@@ -21,6 +21,7 @@ interface Sede {
 
 interface Empleado {
     id_empleado: number;
+    nombres?:string
 }
 
 interface Hora {
