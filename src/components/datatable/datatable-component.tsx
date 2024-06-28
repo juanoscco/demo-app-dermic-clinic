@@ -1,5 +1,6 @@
 "use client"
 import React from 'react'
+
 interface Column {
   title: string;
   displayName?: string;
@@ -88,7 +89,9 @@ export function DatatableComponent(
               </tr>
             </thead>
             <tbody>
-              {data.content.map((item: any, rowIndex: number) => (
+              {data.content
+              .filter((item:any) => item.estado)
+              .map((item: any, rowIndex: number) => (
                 <tr key={rowIndex} className='border-t border-gray-200'>
                   {columns.map((column, colIndex) => (
                     <td key={colIndex} className='px-4 py-2 capitalize'>

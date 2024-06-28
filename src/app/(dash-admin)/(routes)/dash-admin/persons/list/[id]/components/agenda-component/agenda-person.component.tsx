@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { CreateAgendaComponent } from './components/create/';
 import { UpdateAgendaComponent } from './components/update'
 import { useGetAgendaQuery } from '../../../../agenda-opening/components/list/store/service';
+import { DeleteAgendaComponent } from './components/delete/delete-agenda.component';
 
 interface Props {
     idPerson?: number;
@@ -20,11 +21,15 @@ export default function AgendaPersonComponent({ dataPerson, idPerson }: Props) {
     const [selectedAgendaId, setSelectedAgendaId] = useState<number | null>(null);
     // end to update
 
+    // Eliminar
+    const [showPopupDelete, setShowPopupDelete] = useState(false);
+    const [selectedAgendaIdDelete, setSelectedAgendaIdDelete] = useState<number | null>(null);
+
     // Get datatable    const [filter, setFilter] = useState('');
     const { data, isLoading, refetch } = useGetAgendaQuery({ limit: 50000, perPage: 0, filter: '' })
     const [currentPage, setCurrentPage] = useState(1);
-    const dataAgenda = data?.data?.content?.filter((agenda: any) => (agenda.empleado.id_empleado === idPerson))
-    const pageSize = 10; // Número de elementos por página
+    const dataAgenda = data?.data?.content?.filter((agenda: any) => (agenda.empleado.id_empleado === idPerson && agenda.estado))
+    const pageSize = 5; // Número de elementos por página
     // end to hooks
 
     // Calcular los datos para la página actual
@@ -65,8 +70,19 @@ export default function AgendaPersonComponent({ dataPerson, idPerson }: Props) {
         setShowPopupUpdate(!showPopupUpdate)
     }
     // end to update
+
+    const togglePopupIdDelete = (id?: number) => {
+        if (id) {
+            setSelectedAgendaIdDelete(id)
+        }
+        setShowPopupDelete(!showPopupDelete)
+    }
     const selectedAgendaUpdate = selectedAgendaId !== null
         ? paginatedData.find((proc: any) => proc.id_agenda === selectedAgendaId)
+        : null;
+
+    const selectedAgendaDelete = selectedAgendaIdDelete !== null
+        ? paginatedData.find((proc: any) => proc.id_agenda === selectedAgendaIdDelete)
         : null;
     return (
         <div className="bg-white p-4 rounded-lg">
@@ -96,20 +112,25 @@ export default function AgendaPersonComponent({ dataPerson, idPerson }: Props) {
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {paginatedData && paginatedData.length > 0 ? (
-                                    paginatedData.map((agenda: any, index: number) => (
-                                        <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.fecha_apertura}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.hora_inicio}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.hora_final}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm  flex flex-wrap gap-1">
-                                                <button
-                                                    className='text-yellow-500'
-                                                    onClick={() => togglePopupId(agenda.id_agenda)}
-                                                >Editar</button>
-                                                <button className='text-red-500'>Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    ))
+                                    paginatedData
+                                        .filter((agenda: any) => agenda.estado)
+                                        .map((agenda: any, index: number) => (
+                                            <tr key={index}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.fecha_apertura}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.hora_inicio}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.hora_final}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm  flex flex-wrap gap-1">
+                                                    <button
+                                                        className='text-yellow-500'
+                                                        onClick={() => togglePopupId(agenda.id_agenda)}
+                                                    >Editar</button>
+                                                    <button
+                                                        className='text-red-500'
+                                                        onClick={() => togglePopupIdDelete(agenda.id_agenda)}
+                                                    >Eliminar</button>
+                                                </td>
+                                            </tr>
+                                        ))
                                 ) : (
                                     <tr>
                                         <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
@@ -155,6 +176,12 @@ export default function AgendaPersonComponent({ dataPerson, idPerson }: Props) {
                     idAgendaUpdate={selectedAgendaUpdate?.id_agenda}
                     dataAgendaUpdate={selectedAgendaUpdate}
                     onClose={togglePopupId}
+                    update={refetch}
+                />
+            )}
+            {showPopupDelete && selectedAgendaIdDelete && (
+                <DeleteAgendaComponent id={selectedAgendaDelete?.id_agenda}
+                    onClose={togglePopupIdDelete}
                     update={refetch}
                 />
             )}

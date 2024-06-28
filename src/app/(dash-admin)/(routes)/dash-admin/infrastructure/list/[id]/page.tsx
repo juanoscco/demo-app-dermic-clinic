@@ -4,6 +4,7 @@ import { useGetInfrastructureByIdQuery } from "./store/service";
 import InfraUpdateComponent from './infra-update/infra-update.component';
 import InfraRoomsComponent from './infra-rooms/list/infra-rooms.component';
 import Link from 'next/link';
+import { InfraDeleteComponent } from './infra-delete/components';
 
 interface Props {
   params: {
@@ -12,15 +13,24 @@ interface Props {
 }
 
 export default function DetailsInfraestructure({ params }: Props) {
+  // Update
   const [showPopup, setShowPopup] = useState(false);
 
+  // Delete
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const { data, error, isLoading, refetch } = useGetInfrastructureByIdQuery(params.id)
 
   const dataInfrastructure = data?.data;
 
+  // Update
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
+
+  // Delete
+  const togglewPopUpDelete = () => {
+    setShowDeletePopup(!showDeletePopup);
+  }
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error en la carga de infraestructura</div>;
@@ -46,12 +56,20 @@ export default function DetailsInfraestructure({ params }: Props) {
           </div>
         </div>
 
-        <button
-          className="text-yellow-500  px-4 py-2 rounded shadow hover:text-yellow-600 transition-all duration-200"
-          onClick={togglePopup}
-        >
-          Editar
-        </button>
+        <div className='flex gap-3'>
+          <button
+            className="text-yellow-500  px-4 py-2 rounded shadow hover:text-yellow-600 transition-all duration-200"
+            onClick={togglePopup}
+          >
+            Editar
+          </button>
+          <button
+            className="text-red-500  px-4 py-2 rounded shadow hover:text-red-600 transition-all duration-200"
+            onClick={togglewPopUpDelete}
+          >
+            Eliminar
+          </button>
+        </div>
       </div>
       {showPopup &&
         <InfraUpdateComponent
@@ -61,6 +79,11 @@ export default function DetailsInfraestructure({ params }: Props) {
           update={refetch}
         />
       }
+      {showDeletePopup && <InfraDeleteComponent
+        onClose={togglewPopUpDelete}
+        id={dataInfrastructure.id_sede}
+        update={refetch}
+      />}
 
       <InfraRoomsComponent
         id={dataInfrastructure.id_sede}

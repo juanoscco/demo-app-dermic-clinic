@@ -99,7 +99,7 @@ export default function RoomsProcedure() {
 
     procedures?.forEach((procedure: any) => {
       const match = dataProceduresRoom?.data?.content.find((data: any) =>
-        data.procedimiento.id_procedimiento === procedure.id_procedimiento
+        data.procedimiento.id_procedimiento === procedure.id_procedimiento 
       );
 
       const procedureData: any = {
@@ -121,7 +121,7 @@ export default function RoomsProcedure() {
 
         infraRoom.procedimiento_sala_detalle.forEach((room: any) => {
           const roomMatch = match && match.procedimiento_sala_detalle.some((detail: any) =>
-            detail.sala_tratamiento.id_sala_tratamiento === Number(room.id_sala_tratamiento)
+            detail.sala_tratamiento.id_sala_tratamiento === Number(room.id_sala_tratamiento) 
           );
 
           if (roomMatch) {

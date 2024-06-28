@@ -7,6 +7,7 @@ import ExceptionPersonComponent from './components/exception-component/exception
 import { useGetEmployeeByIdQuery } from './store/service';
 
 import Link from 'next/link';
+import { DeleteEmployeeComponent } from './employee-delete/components';
 
 interface Props {
   params: {
@@ -16,14 +17,23 @@ interface Props {
 
 export default function DetailsUserEmployees({ params }: Props) {
 
-  const [showPopup, setShowPopup] = useState(false);
+  // Actualizar
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [showPopupDelete, setShowPopupDelete] = useState<boolean>(false)
 
   const { data, error, isLoading, refetch } = useGetEmployeeByIdQuery(params.id);
 
   const dataEmployee = data?.data;
 
+  // Actualizar
   const togglePopup = () => {
     setShowPopup(!showPopup);
+  };
+
+
+  // Eliminar
+  const togglePopupDelete = () => {
+    setShowPopupDelete(!showPopupDelete);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -88,9 +98,19 @@ export default function DetailsUserEmployees({ params }: Props) {
                 update={refetch}
               />
             }
-            <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              onClick={togglePopupDelete}
+            >
               Eliminar
             </button>
+            {showPopupDelete && (
+              <DeleteEmployeeComponent
+                onClose={togglePopupDelete}
+                id={dataEmployee?.id_empleado}
+                update={refetch}
+              />
+            )}
           </div>
         </div>
 
@@ -103,7 +123,7 @@ export default function DetailsUserEmployees({ params }: Props) {
           dataPerson={dataEmployee}
           idPerson={dataEmployee?.id_empleado}
         />
-        
+
         <ExceptionPersonComponent
           dataPerson={dataEmployee}
           idPerson={dataEmployee?.id_empleado} />

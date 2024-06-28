@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { CreateExceptionComponents } from "./components/create"
 import { UpdateExceptionComponent } from "./components/update"
 import { useGetExceptionsQuery } from '../../../../exceptions/components/list/store/service';
+import { DeleteExceptionComponent } from './components/delete/';
+
 interface Props {
     dataPerson: any;
     idPerson: number
 }
+
 export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props) {
     // Create
     const [showPopup, setShowPopup] = useState(false);
@@ -16,20 +19,23 @@ export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props
     const [selectedExceptionId, setSelectedExceptionId] = useState<number | null>(null);
     // end to update
 
+    // Delete
+    const [showPopupDelete, setShowPopupDelete] = useState(false);
+    const [selectedExceptionIdDelete, setSelectedExceptionIdDelete] = useState<number | null>(null);
+
     // Data
     const [currentPage, setCurrentPage] = useState(1);
     const { data, isLoading, refetch } = useGetExceptionsQuery({ page: 0, limit: 30000, filter: '' })
 
-    const dataException = data?.data?.content.filter((exception: any) => exception.empleado.id_empleado === idPerson);
-    const pageSize = 10;
+    const dataException = data?.data?.content.filter((exception: any) => exception.empleado.id_empleado === idPerson && exception.estado);
+    const pageSize = 5;
 
-    // Calcular los datos para la página actual
+    // Calcular los datos para la página actual`
     const paginatedData = dataException?.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     // Calcular el número total de páginas
     const totalPages = Math.ceil(dataException?.length / pageSize);
     // End of data
-
 
     // Refetch
     useEffect(() => {
@@ -49,6 +55,14 @@ export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props
         setShowPopupUpdate(!showPopupUpdate)
     }
     // end to update
+
+    // delete
+    const togglePopupIdDelete = (id?: number) => {
+        if (id) {
+            setSelectedExceptionIdDelete(id)
+        }
+        setShowPopupDelete(!showPopupDelete)
+    }
 
     // Función para manejar el avance de página
     const goToNextPage = () => {
@@ -72,8 +86,12 @@ export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props
         : null;
     // end selected exception
 
+    const selectedExceptionDelete = selectedExceptionIdDelete !== null
+    ? paginatedData.find((proc: any) => proc.id_excepcion === selectedExceptionIdDelete)
+    : null;
+
     return (
-        <div className="bg-white p-6 rounded-lg ">
+        <div className="bg-white p-4 rounded-lg ">
             <div className='flex flex-col sm:flex-row justify-between items-center mb-3'>
                 <h1
                     className="text-lg font-semibold text-gray-800 mb-2 sm:mb-0"
@@ -94,16 +112,16 @@ export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props
                             <thead>
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Motivo</th>
-
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desde</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hasta</th>
-
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {paginatedData && paginatedData.length > 0 ? (
-                                    paginatedData.map((exception: any, index: number) => (
+                                    paginatedData
+                                    .filter((exception:any) => exception.estado)
+                                    .map((exception: any, index: number) => (
                                         <tr key={index}>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
                                                 {exception.motivo}
@@ -122,8 +140,15 @@ export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props
                                                 <button
                                                     className='text-yellow-500'
                                                     onClick={() => togglePopupId(exception.id_excepcion)}
-                                                >Editar</button>
-                                                <button className='text-red-500'>Eliminar</button>
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    className='text-red-500'
+                                                    onClick={() => togglePopupIdDelete(exception.id_excepcion)}
+                                                >
+                                                    Eliminar
+                                                </button>
                                             </td>
                                         </tr>
                                     ))
@@ -176,6 +201,14 @@ export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props
                         update={refetch}
                     />
                 )}
+            
+            {showPopupDelete && selectedExceptionIdDelete && (
+                <DeleteExceptionComponent
+                    id={selectedExceptionDelete?.id_excepcion}
+                    update={refetch}
+                    onClose={togglePopupIdDelete}
+                />
+            )}
         </div>
     )
 }

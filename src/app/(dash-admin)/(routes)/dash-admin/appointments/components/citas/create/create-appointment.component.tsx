@@ -57,11 +57,11 @@ export function CreateAppointmentComponent({
     const [activeTab, setActiveTab] = useState(1);
 
     // ****
-    console.log(employee);
+    // console.log(employee);
     // Posts
     const [addAppointment, { isLoading: loadAddAppointment }] = useAddAppointmentMutation();
     const [addPatient, { isLoading: loadingAddPatient, data: dataAddPatient, error: errorAddPatient }] = useAddPatientMutation();
-    
+
     // *******
     const { data: dataRoomProcedure, isLoading: loadRoomProcedures, refetch: refetchRoomProcedure } = useGetRoomProcedureQuery({ limit: 300, page: 0, filter: '' });
 
@@ -327,7 +327,7 @@ export function CreateAppointmentComponent({
                                 <label htmlFor="">Especialista</label>
                                 <input
                                     className='w-full py-2 outline-none px-1'
-
+                                    readOnly
                                     type="text" value={employee.nombres} />
                             </div>
 

@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
-// import { useGetRoomsListQuery } from '../../infrastructure/list/[id]/infra-rooms/list/store/service';
 import { CreateAppointmentComponent } from '../components/citas/create';
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
 import { useGetEmployeesQuery } from '../../persons/list/store/service';

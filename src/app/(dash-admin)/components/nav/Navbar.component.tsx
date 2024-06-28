@@ -2,7 +2,6 @@ import React from 'react'
 import LogoutExitHook from '../../hooks/logout/logout-exit.hook'
 import { Props } from "@/app/(dash-admin)/models/navbar/navbar.models"
 
-
 export default function NavbarComponent({ handleBurgerClick, isNavActive }: Props) {
 
     const { handleLogout } = LogoutExitHook()
@@ -20,9 +19,10 @@ export default function NavbarComponent({ handleBurgerClick, isNavActive }: Prop
                 <input type="text" placeholder='Buscar...' className='px-2 outline-none text-md bg-transparent w-full' />
             </div>
             <ul className='flex gap-5'>
-                <li>Crear</li>
-                <li className='flex items-center '>
-                    <i className='icon-power-off cursor-pointer' onClick={handleLogout}></i>
+                {/* <li>Crear</li> */}
+                <li className='flex items-center gap-2 py-3 px-1' onClick={handleLogout}>
+                    <span className=''>Cerrar Sesion</span>
+                    <i className='icon-power-off cursor-pointer'></i>
                 </li>
             </ul>
         </nav>

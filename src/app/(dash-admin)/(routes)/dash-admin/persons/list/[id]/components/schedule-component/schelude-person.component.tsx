@@ -15,37 +15,30 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
     // Actualizar
     const [showPopupUpdate, setShowPopupUpdate] = useState(false);
     const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null)
-    // 
+
+    // Eliminar
+    const [selectedScheduleDeleteId, setSelectedScheduleDeleteId] = useState<number | null>(null)
+    const [showPopupDelete, setShowPopupDelete] = useState(false);
+
 
     const { data: dataSchedule, isLoading, refetch } = useGetScheludesQuery({ page: 0, limit: 5, filter: '' })
 
     const filteredSchedules = dataSchedule?.data?.content.filter((schedule: any) => schedule?.empleado?.id_empleado === idPerson)
 
-    // console.log(filteredSchedules)
 
-    // 
+    // Crear
     const togglePopup = () => {
         setShowPopup(!showPopup);
     };
     // 
 
-    // 
+    // Actualizar
     const togglePopupUpdateId = (id?: number) => {
         if (id) {
             setSelectedScheduleId(id)
         }
         setShowPopupUpdate(!showPopupUpdate);
     }
-
-
-    const dayOrder: any = {
-        'Lunes': 1,
-        'Martes': 2,
-        'Miércoles': 3,
-        'Jueves': 4,
-        'Viernes': 5,
-        'Sábado': 6
-    };
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -67,10 +60,15 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
 
                     <React.Fragment>
                         <h2 className="text-xl font-bold mb-4">{filteredSchedules[0].nombre_horario}</h2>
-                        <button
-                            className='text-yellow-400 hover:text-yellow-500'
+                        <div className='flex gap-2'>
+                            <button
+                                className='text-yellow-400 hover:text-yellow-500'
 
-                            onClick={() => togglePopupUpdateId(filteredSchedules[0].id_horario_trabajo)}>Editar</button>
+                                onClick={() => togglePopupUpdateId(filteredSchedules[0].id_horario_trabajo)}>
+                                Editar
+                            </button>
+                            
+                        </div>
                     </React.Fragment>
                 ) : (
                     <React.Fragment>
@@ -93,7 +91,7 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
                     </thead>
                     <tbody>
                         {filteredSchedules[0].horario_trabajo_detalle
-                            .filter((detalle: any) => detalle.estado) // Filtra los elementos con estado true
+                            .filter((detalle: any) => detalle.estado)
                             .map((detalle: any, i: number) => (
                                 <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-100"}>
                                     <td className="border px-4 py-2">{detalle.semana.descripcion}</td>
@@ -106,10 +104,8 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
                                 </tr>
                             ))}
                     </tbody>
-
-
-
-                </table>) : (
+                </table>
+                ) : (
                 <div className='flex justify-center items-center h-full'>
                     Horario vacio, crea un horario
                 </div>
@@ -133,6 +129,7 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
                     update={refetch}
                 />
             )}
+            
         </div>
 
     )

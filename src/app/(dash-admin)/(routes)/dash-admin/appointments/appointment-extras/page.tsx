@@ -4,6 +4,7 @@ import { useGetInfrastructureQuery } from '../../infrastructure/list/store/servi
 import { useGetExtraAppointmentsQuery } from '../components/extras/list/store/service';
 import { CreateAppointmentExtraComponent } from '../components/extras/create/createAppointmentExtra.component';
 import DetailpopupExtraAppointmentComponent from '../components/extras/find-by-id/detail-popup-extra-appointment-component';
+import { formatTime } from '@/utils/formatTime';
 
 
 
@@ -19,23 +20,7 @@ const formatDate = (date: string | Date) => {
   return [year, month, day].join('-');
 };
 
-const formatTime = (timeString: string) => {
-  if (!timeString) return "";
 
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
-  const date = new Date();
-  date.setHours(hours, minutes, seconds);
-
-  let formattedHours = date.getHours();
-  const formattedMinutes = date.getMinutes();
-  const period = formattedHours >= 12 ? 'PM' : 'AM';
-
-  // Convertir a formato de 12 horas
-  formattedHours = formattedHours % 12;
-  formattedHours = formattedHours ? formattedHours : 12; // La hora '0' debe mostrarse como '12'
-
-  return `${formattedHours}:${formattedMinutes < 10 ? '0' + formattedMinutes : formattedMinutes} ${period}`;
-};
 
 export default function ApointmentExtras() {
   const { data: dataExtraAppointment, isLoading: dataExtraAppointmentLoad, refetch: refetchExtraAppointment } = useGetExtraAppointmentsQuery({ limit: 150000, page: 0, filter: '' });

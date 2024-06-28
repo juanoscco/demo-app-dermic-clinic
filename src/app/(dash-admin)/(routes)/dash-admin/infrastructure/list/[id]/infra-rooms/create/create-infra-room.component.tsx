@@ -43,7 +43,7 @@ export default function CreateInfraRoomComponent({ id, dataInfra, update, onClos
         id_usuario: 1,
       },
       empresa: {
-        id_empresa: dataInfra?.empresa.id_empresa,
+        id_empresa: 1,
       },
       nombres: '',
       piso:  '',
@@ -52,6 +52,7 @@ export default function CreateInfraRoomComponent({ id, dataInfra, update, onClos
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        console.log(values);
         await addRoom(values);
         update();
         alert("Creado correctamente");

@@ -12,7 +12,7 @@ export default function InfrastructureCreate() {
             direccion: '',
             telefono: '',
             empresa: {
-                id_empresa: 1, 
+                id_empresa: 1,
             },
             estado: true,
         },
@@ -25,9 +25,10 @@ export default function InfrastructureCreate() {
             }),
             // estado: Yup.boolean().required('Requerido'),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values, { resetForm }) => {
             // console.log(values)
             await addInfrastructure(values);
+            resetForm();
         },
     });
     return (

@@ -114,6 +114,7 @@ export default function Sedes() {
           infraData.data_procedures.push({
             proc: proc.nombres,
             id_proc: proc.id_procedimiento,
+            // proc_state: proc.estado,
             checked: true
           });
           matchingProcedures.push(proc.id_procedimiento);
@@ -121,6 +122,7 @@ export default function Sedes() {
           infraData.data_procedures.push({
             proc: proc.nombres,
             id_proc: proc.id_procedimiento,
+            // proc_state: proc.estado,
             checked: false
           });
         }
@@ -133,7 +135,7 @@ export default function Sedes() {
       formattedData.push(infraData);
     });
 
-    // console.log("Formatted Data:", formattedData);
+    console.log("Formatted Data:", formattedData);
 
     setFormattedData(formattedData);
   }, [infrastructure, dataProcLocation, dataProcLocationById]);
@@ -211,7 +213,8 @@ export default function Sedes() {
               {loadingInfra ? (
                 <div>Cargando...</div>
               ) : (
-                infrastructure?.map((infra: any) => (
+                infrastructure?.filter((infra:any) => infra.estado)
+                .map((infra: any) => (
                   <li
                     key={infra.id_sede}
                     // className='px-2 py-1 mt-1 border-b hover:bg-gray-200 cursor-pointer border-gray-200'

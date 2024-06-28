@@ -1,0 +1,1 @@
+export * from "./delete-infra-rooms.services"

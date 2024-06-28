@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useGetProceduresQuery } from './store/service'
 import { DatatableComponent } from '@/components/datatable';
 import UpdateProceduresComponents from './update-procedures/update-procedures.components';
+import { DeleteProceduresComponent } from './delete-procedures/components';
 
 
 export default function Procedures() {
@@ -12,6 +13,12 @@ export default function Procedures() {
     const [showPopup, setShowPopup] = useState(false);
     const [selectedProcedureId, setSelectedProcedureId] = useState<number | null>(null);
     // End update
+
+    // Delete
+
+    const [showPopupDelete, setShowPopupDelete] = useState(false);
+    const [selectedProcedureIdDelete, setSelectedProcedureIdDelete] = useState<number | null>(null)
+    // End delete
 
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
@@ -27,6 +34,16 @@ export default function Procedures() {
         setShowPopup(!showPopup);
     };
     //  end update
+
+    // Delete
+    const togglePopupDelete = (id?: number) => {
+        if (id) {
+            setSelectedProcedureIdDelete(id)
+        }
+        setShowPopupDelete(!showPopupDelete)
+    }
+    // end delete
+
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             refetch();
@@ -40,6 +57,11 @@ export default function Procedures() {
 
     const selectedProcedure = selectedProcedureId !== null
         ? data.data.content.find((proc: any) => proc.id_procedimiento === selectedProcedureId)
+        : null;
+
+
+    const selectedDeleteProcedure = selectedProcedureIdDelete !== null
+        ? data.data.content.find((proc: any) => proc.id_procedimiento === selectedProcedureIdDelete)
         : null;
 
     const columns = [
@@ -90,7 +112,7 @@ export default function Procedures() {
             render: (fieldValue: any) => (
                 <div className='flex gap-2'>
                     <button className='text-yellow-500 hover:text-yellow-600' onClick={() => togglePopup(fieldValue)}>Editar</button>
-                    <button className='text-red-500 hover:text-red-700'>Eliminar</button>
+                    <button className='text-red-500 hover:text-red-700' onClick={() => togglePopupDelete(fieldValue)}>Eliminar</button>
                 </div>
             )
         }
@@ -119,8 +141,15 @@ export default function Procedures() {
                     data={selectedProcedure}
                     update={refetch}
                 />
-
             }
+            {showPopupDelete && selectedDeleteProcedure && (
+                <DeleteProceduresComponent
+                    id={selectedDeleteProcedure.id_procedimiento}
+                    // data={selectedDeleteProcedure}
+                    onClose={togglePopupDelete}
+                    update={refetch}
+                />
+            )}
         </React.Fragment>
     )
 }

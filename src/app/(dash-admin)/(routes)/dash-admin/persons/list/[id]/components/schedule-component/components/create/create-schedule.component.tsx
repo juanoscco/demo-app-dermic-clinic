@@ -16,7 +16,6 @@ interface Props {
 export default function CreateScheduleComponent({ idPerson, dataPerson, onClose, update }: Props) {
     const [addSchelude, { isLoading }] = useAddScheduleMutation()
 
-    console.log(dataPerson)
     const formik = useFormik<Schedule>({
         initialValues: {
             nombre_horario: '',
@@ -275,13 +274,6 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                                             ))}
                                         </select>
                                     </div>
-                                    {/* <button
-                                        type="button"
-                                        onClick={() => handleActivationToggle(index, false)}
-                                        className={`w-5/6 h-9 p-1 ${!detalle.estado ? 'bg-gray-300 cursor-default' : 'bg-red-500 text-white'} rounded`}
-                                    >
-                                        Desactivar
-                                    </button> */}
                                 </div>
                                 <>
                                     <button
