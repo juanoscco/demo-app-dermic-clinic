@@ -508,7 +508,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                                     <th className='px-4 py-2 border w-24'>Hora</th>
                                     {filteredEmployee && filteredEmployee.length > 0 ? (
                                         filteredEmployee
-                                            // .filter((employee: any) => employee.id_empleado !== 1)
+                                            .filter((employee: any) => employee.estado)
                                             .map((employee: any) => (
                                                 <th key={employee.id_empleado} className='px-4 py-2 border'>
                                                     {employee.nombres}
@@ -525,7 +525,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                                         <td className='border h-24 text-center w-10'>{hour.descripcion}</td>
                                         {filteredEmployee && filteredEmployee.length > 0 ? (
                                             filteredEmployee
-                                                // .filter((employee: any) => employee.id_empleado !== 1)
+                                                .filter((employee: any) => employee.estado)
                                                 .map((employee: any, j: number) => {
                                                     const filteredAppointment = filterAppointmentsByHourAndEmployee(hour, employee, selectedSedeId, selectedDate, selectedProfessionId);
 
