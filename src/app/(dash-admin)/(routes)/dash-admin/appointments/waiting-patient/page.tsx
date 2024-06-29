@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { useGetEmployeesQuery } from '../../persons/list/store/service';
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
@@ -41,30 +41,6 @@ const hours = [
 ];
 
 
-
-export default function AppointmentWaitingPatient() {
-  const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 20, page: 0, filter: '' });
-
-  const { data: dataEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 20000, page: 0, filter: '' });
-
-  const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      refetchInfra();
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [refetchInfra]);
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      refetchEmployee();
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [refetchEmployee]);
-
   const getCurrentDate = () => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -73,13 +49,18 @@ export default function AppointmentWaitingPatient() {
     return `${yyyy}-${mm}-${dd}`;
   };
 
-  // ***
+export default function AppointmentWaitingPatient() {
+  const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 20, page: 0, filter: '' });
+  const { data: dataEmployee, isLoading: loadEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 20000, page: 0, filter: '' });
+  const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
+
   const [selectedDate, setSelectedDate] = useState(getCurrentDate());
   const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
-
   const [popupDetailVisible, setPopupDetailVisible] = useState<boolean>(false);
   const [selectedIdAppointment, setSelectedIdAppointment] = useState<number | null | any>(null);
-  // ****
+
+  const isLoading = loadInfra || loadEmployee || loadAppointmentRoom;
+
   const handleSedeChange = (event: any) => {
     setSelectedSedeId(parseInt(event.target.value, 10));
   };
@@ -88,20 +69,37 @@ export default function AppointmentWaitingPatient() {
     setPopupDetailVisible(true);
     setSelectedIdAppointment(id);
   }
+
   const closeDetailAppointmentClick = () => {
     setPopupDetailVisible(false);
   }
 
-  // ***
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value);
   };
+
+  const fetchAllData = useCallback(() => {
+    if (!isLoading) {
+      refetchInfra();
+      refetchEmployee();
+      refetchAppointment();
+    }
+  }, [isLoading, refetchInfra, refetchEmployee, refetchAppointment]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      fetchAllData();
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [fetchAllData]);
+
   const sortedDataInfra = dataInfra?.data?.content?.slice().sort((a: any, b: any) => {
     return a.codigo.localeCompare(b.codigo);
   });
 
-  const filteredEmployee = dataEmployee?.data?.content.filter((item: any) => item.sede.id_sede === parseInt(selectedSedeId));
-  const appointments = dataAppointment?.data?.content;
+  const filteredEmployee = dataEmployee?.data?.content.filter((item: any) => item.sede.id_sede === parseInt(selectedSedeId) && item.estado);
+  const appointments = dataAppointment?.data?.content?.filter((item: any) => item.estado);
 
   const filteredAppointments = appointments?.map((item: any) => ({
     id_appointment: item.id_cita,
@@ -128,6 +126,7 @@ export default function AppointmentWaitingPatient() {
       item.item_date === date
     );
   };
+
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Pacientes en espera</h1>
@@ -162,7 +161,7 @@ export default function AppointmentWaitingPatient() {
                 <th className='px-4 py-2 border w-24'>Hora</th>
                 {filteredEmployee && filteredEmployee.length > 0 ? (
                   filteredEmployee
-                    // .filter((employee: any) => employee.id_empleado !== 1)
+                    // .filter((employee: any) => employee.estado)
                     .map((employee: any, i: number) => (
                       <th key={employee.id_empleado} className='px-4 py-2 border'>
                         {employee.nombres}
@@ -179,7 +178,7 @@ export default function AppointmentWaitingPatient() {
                   <td className='border h-24 text-center w-10'>{hour.descripcion}</td>
                   {filteredEmployee && filteredEmployee.length > 0 ? (
                     filteredEmployee
-                      .filter((employee: any) => employee.id_empleado !== 1)
+                      // .filter((employee: any) => employee.id_empleado !== 1)
                       .map((employee: any, j: number) => {
                         const filteredAppointment = filterAppointmentsByHourAndEmployee(hour, employee, selectedSedeId, selectedDate);
 

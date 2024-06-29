@@ -70,7 +70,7 @@ export default function AppointmentList() {
         appointment.paciente?.nombres?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         appointment.paciente?.numero_documento_identidad?.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      return appointmentDate === selectedDate && appointment.sede.id_sede === selectedDistrict && matchesSearchTerm;
+      return appointmentDate === selectedDate && appointment.sede.id_sede === selectedDistrict && matchesSearchTerm && appointment.estado;
     });
   }, [appointmentsData, selectedDate, selectedDistrict, searchTerm, loadingAppointments, loadingInfra]);
 

@@ -18,10 +18,10 @@ export default function NavbarComponent({ handleBurgerClick, isNavActive }: Prop
                 </button>
                 <input type="text" placeholder='Buscar...' className='px-2 outline-none text-md bg-transparent w-full' />
             </div>
-            <ul className='flex gap-5'>
+            <ul className='flex items-center gap-5'>
                 {/* <li>Crear</li> */}
-                <li className='flex items-center gap-2 py-3 px-1' onClick={handleLogout}>
-                    <span className=''>Cerrar Sesion</span>
+                <li className='flex items-center gap-2 cursor-pointer' onClick={handleLogout}>
+                    <span>Cerrar Sesion</span>
                     <i className='icon-power-off cursor-pointer'></i>
                 </li>
             </ul>

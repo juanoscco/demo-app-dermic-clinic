@@ -2,14 +2,13 @@
 import React, { useState, useEffect } from 'react'
 import { useGetAppointmentListQuery } from '../../../../components/citas/list/store/service';
 import { useGetInfrastructureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/infrastructure/list/store/service';
-import { useGetRoomsListQuery } from '@/app/(dash-admin)/(routes)/dash-admin/infrastructure/list/[id]/infra-rooms/list/store/service';
 import { useGetRoomProcedureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/procedures/list/components/Rooms/store/get/service';
 import { useGetEmployeesQuery } from '@/app/(dash-admin)/(routes)/dash-admin/persons/list/store/service';
-import { useGetPersonalProcedureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/procedures/list/components/Personal/store/get/service';
 import { useRouter } from 'next/navigation'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useUpdateAppointmentMutation } from '../../../../components/citas/update/store/service';
+import { DeleteAppointmentComponents } from '../../../../components/citas/delete/components';
 
 interface Props {
     dataDetailAppointmentById?: any;
@@ -112,8 +111,6 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
 
     const roomProcedures = dataRoomProcedure?.data?.content
     // ********
-
-
     const [selectedDate, setSelectedDate] = useState(getCurrentDate());
     const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
     const [selectedProfessionId, setSelectedProfessionId] = useState<number | null>(6);
@@ -185,7 +182,6 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
     }, [refetchEmployee]);
 
     // ******
-
     const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
     const [selectedProcedure, setSelectedProcedure] = useState<number | null>(null);
     const [updateAppointment, { isLoading: appointmentLoad }] = useUpdateAppointmentMutation();
@@ -294,7 +290,6 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
 
 
     // ****
-
     type FormattedProcedure = {
         id_proc: number;
         name_proc: string;
@@ -340,12 +335,27 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
         }
     }, [formik.values.procedimiento.id_procedimiento, filteredProcedure]);
 
+    /**
+     * 
+     * DELETE APPOINTMENT
+     */
+    const [showPopupDelete, setShowPopupDelete] = useState(false);
+
+    const togglePopupDelete = () => {
+        
+        setShowPopupDelete(!showPopupDelete)
+    }
+    /**
+     * 
+     * END DELETE APPOINTMENT
+     */
+
     return (
         <section className='grid grid-cols-1 md:grid-cols-2 gap-2'>
             {/*  */}
             <form onSubmit={formik.handleSubmit} className=" p-6 border-b-2 md:border-r-2">
                 <div className="flex flex-col gap-5">
-                    <div className=''>
+                    <div >
                         <h1 className="text-gray-700 font-bold mb-1 text-xl">Informacion Actual</h1>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
@@ -428,11 +438,25 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                                 {isEditable ? 'Volver' : 'Cambiar'}
                             </button>
                             <button
+                                className='w-full bg-red-500  shadow-xl p-3 rounded-sm text-white'
+                                onClick={() => togglePopupDelete()}
+                            >
+                                Eliminar
+                            </button>
+
+                            <button
                                 className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white'
                                 type='submit'>
                                 {appointmentLoad ? 'Guardando...' : 'Guardar'}
                             </button>
                         </div>
+                        {showPopupDelete && (
+                            <DeleteAppointmentComponents
+                                id={dataDetailAppointmentById.id_cita}
+                                onClose={togglePopupDelete}
+                                update={refetchAppointment}
+                            />
+                        )}
                     </div>
                 </div>
 

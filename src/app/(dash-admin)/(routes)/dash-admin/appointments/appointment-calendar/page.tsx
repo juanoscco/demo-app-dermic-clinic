@@ -95,8 +95,8 @@ export default function AppointmentCalendar() {
         return a.codigo.localeCompare(b.codigo);
     });
 
-    const filteredEmployee = dataEmployee?.data?.content.filter((item: any) => item.sede.id_sede === parseInt(selectedSedeId) && item.titulo.id_cabecera_detalle === selectedProfessionId);
-    const appointments = dataAppointment?.data?.content;
+    const filteredEmployee = dataEmployee?.data?.content.filter((item: any) => item.sede.id_sede === parseInt(selectedSedeId) && item.titulo.id_cabecera_detalle === selectedProfessionId && item.estado);
+    const appointments = dataAppointment?.data?.content?.filter((item: any) => item.estado);
 
     const filteredAppointments = appointments?.map((item: any) => ({
         id_appointment: item.id_cita,
@@ -141,7 +141,7 @@ export default function AppointmentCalendar() {
         return () => clearTimeout(delayDebounceFn);
     }, [refetchEmployee]);
 
-    // hooks para el selecionado!
+    //*** hooks para el selecionado!
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
     const [selectedHour, setSelectedHour] = useState<any>(null);
     const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
@@ -157,7 +157,7 @@ export default function AppointmentCalendar() {
         setSelectedHour(null);
         setSelectedEmployee(null);
     };
-    
+
     // ****
     const [popupDetailVisible, setPopupDetailVisible] = useState<boolean>(false);
     const [selectedIdAppointment, setSelectedIdAppointment] = useState<number | null | any>(null);
@@ -188,11 +188,12 @@ export default function AppointmentCalendar() {
                         onChange={handleSedeChange}
                         className="border border-gray-300 rounded-md p-2 w-full md:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        {sortedDataInfra?.map((infra: any, i: number) => (
-                            <option key={i} value={infra.id_sede}>
-                                {infra.nombres}
-                            </option>
-                        ))}
+                        {sortedDataInfra?.filter((item: any) => item.estado)
+                            .map((infra: any, i: number) => (
+                                <option key={i} value={infra.id_sede}>
+                                    {infra.nombres}
+                                </option>
+                            ))}
                     </select>
                     <select
                         name="profession"

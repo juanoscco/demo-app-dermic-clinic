@@ -19,7 +19,7 @@ export function DeleteEmployeeComponent({ onClose, id, update }: Props) {
       onClose();
       router.push("./")
     } catch (error) {
-      console.error('Failed to delete schedule', error);
+      console.error('Failed to delete Employee', error);
     }
   };
 

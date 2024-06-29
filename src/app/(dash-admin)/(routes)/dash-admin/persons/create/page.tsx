@@ -279,9 +279,11 @@ export default function UserCreate() {
                             className='w-full py-2 outline-none px-1'
 
                         >
-                            {dataInfra?.data?.content.map((item: any) => (
-                                <option key={item.id_sede} value={item.id_sede}>{item.nombres}</option>
-                            ))}
+                            {dataInfra?.data?.content
+                                .filter((infra: any) => infra.estado)
+                                .map((item: any) => (
+                                    <option key={item.id_sede} value={item.id_sede}>{item.nombres}</option>
+                                ))}
                         </select>
                     </div>
                     <div className="border border-gray-300 text-left p-2">

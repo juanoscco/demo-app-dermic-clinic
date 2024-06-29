@@ -1,13 +1,15 @@
 "use client";
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
+import { formatTime } from "@/utils/formatTime";
 import Link from 'next/link';
 
 const ITEMS_PER_PAGE = 10; // Número de elementos por página
 
 
 export default function AppointmentReports() {
+
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [selectedSede, setSelectedSede] = useState<number>(1);
@@ -15,15 +17,13 @@ export default function AppointmentReports() {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { data: dataAppointments, isLoading: loadingAppointments, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
-  const { data: dataInfrastructure, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' })
+  const { data: dataInfrastructure, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' });
 
-
-  const appointments = dataAppointments?.data?.content;
-  const infrastructure = dataInfrastructure?.data?.content;
-
+  const appointments = useMemo(() => dataAppointments?.data?.content?.filter((item: any) => item.estado), [dataAppointments]);
+  const infrastructure = useMemo(() => dataInfrastructure?.data?.content?.filter((item: any) => item.estado), [dataInfrastructure]);
 
   useEffect(() => {
-    if (!loadingAppointments && !loadingInfra && appointments.length > 0 && infrastructure.length > 0) {
+    if (!loadingAppointments && !loadingInfra && appointments && infrastructure) {
       const initialStartDate = new Date();
       const initialEndDate = new Date();
       initialStartDate.setDate(initialStartDate.getDate() - 3);
@@ -33,8 +33,8 @@ export default function AppointmentReports() {
     }
   }, [loadingAppointments, loadingInfra, appointments, infrastructure]);
 
-  useEffect(() => {
-    if (startDate && endDate && appointments.length > 0) {
+  const filterAppointments = useCallback(() => {
+    if (startDate && endDate && appointments) {
       const start = new Date(startDate);
       const end = new Date(endDate);
 
@@ -47,30 +47,45 @@ export default function AppointmentReports() {
         );
       });
 
-      // Aplicar paginación
       const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
       const endIndex = startIndex + ITEMS_PER_PAGE;
       setFilteredAppointments(filtered.slice(startIndex, endIndex));
     }
   }, [startDate, endDate, selectedSede, appointments, currentPage]);
-  const totalItems = filteredAppointments.length;
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-  // const handlePageChange = (page: number) => {
-  //   setCurrentPage(page);
-  // };
+  useEffect(() => {
+    filterAppointments();
+  }, [filterAppointments]);
 
-  const goToPrevPage = () => {
+  const fetchAllData = useCallback(() => {
+    if (!loadingAppointments && !loadingInfra) {
+      refetchAppointment();
+      refetchInfra();
+    }
+  }, [loadingAppointments, loadingInfra, refetchAppointment, refetchInfra]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      fetchAllData();
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [fetchAllData]);
+
+  const totalItems = useMemo(() => filteredAppointments.length, [filteredAppointments]);
+  const totalPages = useMemo(() => Math.ceil(totalItems / ITEMS_PER_PAGE), [totalItems]);
+
+  const goToPrevPage = useCallback(() => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
-  };
+  }, [currentPage]);
 
-  const goToNextPage = () => {
+  const goToNextPage = useCallback(() => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
-  };
+  }, [currentPage, totalPages]);
 
 
   return (
@@ -154,9 +169,9 @@ export default function AppointmentReports() {
 
                 </td>
                 <td className="px-4 py-2 text-xs sm:text-sm">{appointment.fecha_cita}</td>
-                <td className="px-4 py-2 text-xs sm:text-sm">{appointment.cita_info.hora_entrada}</td>
-                <td className="px-4 py-2 text-xs sm:text-sm">{appointment.cita_info.hora_atencion}</td>
-                <td className="px-4 py-2 text-xs sm:text-sm">{appointment.cita_info.hora_salida}</td>
+                <td className="px-4 py-2 text-xs sm:text-sm">{formatTime(appointment.cita_info.hora_entrada)}</td>
+                <td className="px-4 py-2 text-xs sm:text-sm">{formatTime(appointment.cita_info.hora_atencion)}</td>
+                <td className="px-4 py-2 text-xs sm:text-sm">{formatTime(appointment.cita_info.hora_salida)}</td>
                 <td className="px-4 py-2 text-xs sm:text-sm">
                   <Link className="text-blue-500 hover:underline" href={`list/${appointment.id_cita}`} passHref>
                     <>Detalle</>

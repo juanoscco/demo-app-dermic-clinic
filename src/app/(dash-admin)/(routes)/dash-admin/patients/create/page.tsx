@@ -54,25 +54,13 @@ export default function PatientsCreate() {
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
-            tipo_documento_identidad: Yup.object({
-                descripcion: Yup.string().required('Requerido'),
-            }).required('Requerido'),
             numero_documento_identidad: Yup.string().required('Requerido'),
             telefono: Yup.string()
                 .matches(/^[0-9]+$/, 'El teléfono debe contener solo números')
                 .required('Requerido'),
-            nacimiento: Yup.date().required('Requerido'),
-            estado_civil: Yup.object({
-                descripcion: Yup.string().required('Requerido'),
-            }).required('Requerido'),
-            ocupacion: Yup.string().required('Requerido'),
-            email: Yup.string().email('Correo electrónico no válido').required('Requerido'),
-            direccion: Yup.string().required('Requerido'),
-            distrito: Yup.string().required('Requerido'),
-            lugar_nacimiento: Yup.string().required('Requerido'),
-            estado_antiguedad: Yup.object({
-                descripcion: Yup.string().required('Requerido'),
-            }).required('Requerido'),
+
+            email: Yup.string().email('Correo electrónico no válido'),
+
         }),
         onSubmit: async (values, { resetForm }) => {
             // console.log(values);

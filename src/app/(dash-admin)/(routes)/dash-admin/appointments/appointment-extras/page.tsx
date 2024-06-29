@@ -5,6 +5,7 @@ import { useGetExtraAppointmentsQuery } from '../components/extras/list/store/se
 import { CreateAppointmentExtraComponent } from '../components/extras/create/createAppointmentExtra.component';
 import DetailpopupExtraAppointmentComponent from '../components/extras/find-by-id/detail-popup-extra-appointment-component';
 import { formatTime } from '@/utils/formatTime';
+import { DeleteAppointmentsExtraComponents } from '../components/extras/delete/components/delete-appointments-extra.components';
 
 
 
@@ -26,7 +27,7 @@ export default function ApointmentExtras() {
   const { data: dataExtraAppointment, isLoading: dataExtraAppointmentLoad, refetch: refetchExtraAppointment } = useGetExtraAppointmentsQuery({ limit: 150000, page: 0, filter: '' });
   const { data: dataInfra, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' });
 
-  const infrastructure = dataInfra?.data?.content;
+  const infrastructure = dataInfra?.data?.content?.filter((item: any) => item.estado);
 
   const today = formatDate(new Date());
 
@@ -55,7 +56,7 @@ export default function ApointmentExtras() {
         appointment.paciente?.nombres?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         appointment.paciente?.numero_documento_identidad?.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      return appointmentDate === selectedDate && appointment.sede.id_sede === selectedDistrict && matchesSearchTerm;
+      return appointmentDate === selectedDate && appointment.sede.id_sede === selectedDistrict && matchesSearchTerm && appointment.estado;
     });
   }, [appointmentsData, selectedDate, selectedDistrict, searchTerm, dataExtraAppointmentLoad, loadingInfra]);
 
@@ -94,6 +95,28 @@ export default function ApointmentExtras() {
   const closeDetailAppointmentClick = () => {
     setPopupDetailVisible(false);
   }
+  // *****
+  /**
+    * 
+    * DELETE APPOINTMENT
+    */
+  const [showPopupDelete, setShowPopupDelete] = useState(false);
+  const [selectedAppointmentExtraIdDelete, setSelectedAppointmentExtraIdDelete] = useState<number | null>(null)
+
+  const togglePopupDelete = (id?: number) => {
+    if (id) {
+      setSelectedAppointmentExtraIdDelete(id)
+    }
+    setShowPopupDelete(!showPopupDelete)
+  }
+
+  const selectedDeleteAppointmentExtra = selectedAppointmentExtraIdDelete !== null
+    ? appointmentsData.find((proc: any) => proc.id_cita_extra === selectedAppointmentExtraIdDelete)
+    : null;
+  /**
+   * 
+   * END DELETE APPOINTMENT
+   */
 
   return (
     <React.Fragment>
@@ -220,7 +243,11 @@ export default function ApointmentExtras() {
                 </td> */}
                 {/* <td></td> */}
                 <td className="px-4 py-2">
-                  <button className='text-red-500'>Eliminar</button>
+                  <button
+                    onClick={() => togglePopupDelete(filteredAppointment?.id_cita_extra)}
+                    className='text-red-500'
+                  >Eliminar
+                  </button>
                 </td>
               </tr>
             ))}
@@ -276,6 +303,14 @@ export default function ApointmentExtras() {
           id={selectedIdAppointment}
           close={closeDetailAppointmentClick}
           refetchAppointemnt={refetchExtraAppointment}
+        />
+      )}
+
+      {showPopupDelete && selectedDeleteAppointmentExtra && (
+        <DeleteAppointmentsExtraComponents
+        id={selectedDeleteAppointmentExtra?.id_cita_extra}
+        onClose={togglePopupDelete}
+        update={refetchExtraAppointment}
         />
       )}
     </React.Fragment>
