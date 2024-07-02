@@ -3,6 +3,7 @@ import React from 'react'
 import { useAddInfrastructureMutation } from './store/service';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { Alert } from '@/components/popup/popup-alert';
 
 export default function InfrastructureCreate() {
     const [addInfrastructure, { data, isLoading, isError }] = useAddInfrastructureMutation();
@@ -89,7 +90,7 @@ export default function InfrastructureCreate() {
                             <div className='text-red-500 text-sm'>{formik.errors.telefono}</div>
                         ) : null}
                     </div>
-                    <div className='border border-gray-300 text-left p-2'>
+                    {/* <div className='border border-gray-300 text-left p-2'>
                         <label className='block text-sm font-medium'>Estado</label>
                         <select
                             name='estado'
@@ -103,20 +104,20 @@ export default function InfrastructureCreate() {
                         {formik.touched.estado && formik.errors.estado ? (
                             <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
                         ) : null}
-                    </div>
+                    </div> */}
 
 
                     <button
                         type='submit'
-                        className='mt-4 px-4 py-2 bg-[#82b440] text-white hover:bg-green-700'
+                        className=' bg-[#82b440] text-white hover:bg-green-700 text-xl '
                         disabled={isLoading}
                     >
                         {isLoading ? 'Creando...' : 'Crear Infraestructura'}
                     </button>
                     {/* {data && alert(data.message)} */}
-                    {isError && <div className='text-red-500 text-sm mt-2'>Error al crear infraestructura</div>}
+                    {isError && <Alert type='error'>Error al crear infraestructura</Alert>}
                     {data && (
-                        <p>{data.message}</p>
+                        <Alert type='success'>{data.message}</Alert>
                     )}
                 </form>
             </div>

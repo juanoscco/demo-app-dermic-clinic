@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { useGetInfrastructureQuery } from "./store/service"
 import Link from "next/link"
 import { DatatableComponent } from '@/components/datatable/';
+import { ExcelExport } from "@/utils/excel";
+import { PrintButton } from "@/utils/print";
 
 
 export default function InfrastructureList() {
@@ -57,6 +59,46 @@ export default function InfrastructureList() {
     },
   ]
 
+  const columnsForExcelAndPrintSede = {
+    codigo: 'Código',
+    nombres: 'Nombre de la Sede',
+    direccion: 'Dirección',
+    telefono: 'Teléfono'
+  };
+
+  const handleExportExcel = ExcelExport({ data: data?.data?.content, columns: columnsForExcelAndPrintSede, filename: 'Sedes' });
+  const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrintSede, nametitle: 'Sedes' });
+
+
+
+  const paginationControls = {
+    perPageOptions: [10, 20, 30, 40],
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage
+  };
+  const headers = (
+    <div className='flex items-center gap-3'>
+      <Link
+        href={`./create`}
+        className='p-2 bg-blue-500 rounded-md text-white'
+
+      >Crear</Link>
+      <button
+        onClick={handleExportExcel}
+        className='p-2 bg-green-500 rounded-md text-white'
+      >
+        Excel
+      </button>
+      <button
+        onClick={handlePrint}
+        className='bg-gray-500 p-2 text-white rounded-md'
+      >
+        Imprimir
+      </button>
+    </div>
+  );
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Infraestructura</h1>
@@ -65,13 +107,10 @@ export default function InfrastructureList() {
         isLoading={isLoading}
         error={error}
         columns={columns}
-        perPage={perPage}
-        setPerPage={setPerPage}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        // refetch={refetch}
-        setFilter={setFilter}
+        paginationControls={paginationControls}
         filter={filter}
+        setFilter={setFilter}
+        headers={headers}
       />
     </React.Fragment>
   );

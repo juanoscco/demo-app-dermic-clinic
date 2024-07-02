@@ -240,7 +240,6 @@ export default function AppointmentCalendar() {
                                             // .filter((employee: any) => employee.id_empleado !== 1)
                                             .map((employee: any, j: number) => {
                                                 const filteredAppointment = filterAppointmentsByHourAndEmployee(hour, employee, selectedSedeId, selectedDate, selectedProfessionId);
-
                                                 return (
                                                     <td
                                                         key={j}

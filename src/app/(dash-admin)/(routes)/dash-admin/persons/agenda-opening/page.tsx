@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { useGetAgendaQuery } from './components/list/store/service'
 import Link from 'next/link';
 import { DatatableComponent } from '@/components/datatable';
+import { ExcelExport } from "@/utils/excel";
+import { PrintButton } from "@/utils/print";
 
 
 
@@ -75,20 +77,54 @@ export default function PersonsAgendaOpening() {
       )
     },
   ]
+  const columnsForExcelAndPrint = {
+    'empleado.nombres': "Nombre del empleado",
+    fecha_apertura: 'Fecha de Apertura',
+    hora_inicio: 'Hora Inicio',
+    hora_final: 'Hora Final'
+  };
+  const handleExportExcel = ExcelExport({ data: data?.data.content, columns: columnsForExcelAndPrint, filename: 'Apertura de agenda' })
+
+  const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrint, nametitle: 'Apertura de agenda' })
+
+  const paginationControls = {
+    perPageOptions: [10, 20, 30, 40],
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage
+  };
+  const headers = (
+    <div className='flex items-center gap-3'>
+
+      <button
+        onClick={handleExportExcel}
+        className='p-2 bg-green-500 rounded-md text-white'
+      >
+        Excel
+      </button>
+      <button
+        onClick={handlePrint}
+        className='bg-gray-500 p-2 text-white rounded-md'
+      >
+        Imprimir
+      </button>
+    </div>
+  );
+
   return (
     <React.Fragment>
-      <h1 className='text-2xl font-bold px-2 mb-2'>Apertura de agenda</h1>
+      <h1 className='text-2xl px-2 mb-2'>Apertura de agenda</h1>
       <DatatableComponent
         data={data?.data}
         isLoading={isLoading}
         error={error}
         columns={columns}
-        perPage={perPage}
-        setPerPage={setPerPage}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
+        paginationControls={paginationControls}
+        filter={filter}
         setFilter={setFilter}
-        filter={filter} />
+        headers={headers}
+      />
     </React.Fragment>
 
   )

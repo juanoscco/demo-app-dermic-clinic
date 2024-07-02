@@ -193,6 +193,14 @@ export default function Personal() {
     formik.setFieldValue('procedimiento_personales_detalle', selectedProcedures);
   }, [selectedProcedures]);
 
+  const [operationSuccess, setOperationSuccess] = useState(false); // Estado para controlar la operación exitosa
+
+  useEffect(() => {
+    if (operationSuccess) {
+      handleHeadboardPersonalClick(selectedHeadBoardId);
+      setOperationSuccess(false); // Restablecer el estado de éxito
+    }
+  }, [operationSuccess, selectedHeadBoardId]);
   return (
     <form onSubmit={formik.handleSubmit}>
       <section className='mt-2 bg-white'>
@@ -259,12 +267,16 @@ export default function Personal() {
         </section>
         <section className='w-[90%] flex justify-end pb-3'>
           {selectedHeadBoardDetails?.id_procedimiento_personal ? (
-            <button type='submit' className='px-3 py-1 bg-[#82b440] rounded-md text-white'>{updateLoadHeadboard ? 'Actualizando....' : 'Actualizar'}</button>
+            <button type='submit' className='px-3 py-1 bg-[#82b440] rounded-md text-white'>
+              {formik.isSubmitting ? 'Actualizando....' : 'Actualizar'}
+            </button>
           ) : (
-            <button type='submit' className='px-3 py-1 bg-[#82b440] rounded-md text-white'>{addLoadHeadboard ? 'Grabando...' : 'Grabar'}</button>
+            <button type='submit' className='px-3 py-1 bg-[#82b440] rounded-md text-white'>
+              {formik.isSubmitting ? 'Grabando...' : 'Grabar'}
+            </button>
           )}
-          {addHeadboard && (<Alert type='success'>Grabado correctamente!!</Alert>)}
-          {updateHeadboard && (<Alert type='success'>Actualizado correctamente</Alert>)}
+          {operationSuccess && (<Alert type='success'>Grabado correctamente!!</Alert>)}
+          {operationSuccess && (<Alert type='success'>Actualizado correctamente</Alert>)}
         </section>
       </section>
     </form>

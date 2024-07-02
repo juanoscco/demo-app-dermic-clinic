@@ -6,9 +6,11 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Alert } from '@/components/popup/popup-alert';
 import { Patient } from './interface';
+import { useRouter } from 'next/navigation';
 
 export default function PatientsCreate() {
 
+    const router = useRouter()
     // 
     const [addPatient, { isLoading: loadingPatient, data: dataPatient, error: errorPatient }] = useAddPatientMutation();
 
@@ -54,7 +56,7 @@ export default function PatientsCreate() {
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
-            numero_documento_identidad: Yup.string().required('Requerido'),
+            // numero_documento_identidad: Yup.string().required('Requerido'),
             telefono: Yup.string()
                 .matches(/^[0-9]+$/, 'El teléfono debe contener solo números')
                 .required('Requerido'),
@@ -67,6 +69,7 @@ export default function PatientsCreate() {
             try {
                 await addPatient(values);
                 resetForm();
+                router.push("./list")
             } catch (error) {
                 console.error(error);
             }

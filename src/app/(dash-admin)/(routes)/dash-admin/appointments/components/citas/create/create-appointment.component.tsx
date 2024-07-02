@@ -236,6 +236,19 @@ export function CreateAppointmentComponent({
         }
     }, [formik.values.procedimiento.id_procedimiento, filteredProcedure]);
 
+    // *****
+    const headers = (
+        <div className='flex items-center gap-3 md:flex-row flex-col'>
+   
+        </div>
+    );
+    const paginationControls = {
+        perPageOptions: [10, 20, 30, 40, 50],
+        perPage,
+        setPerPage,
+        currentPage,
+        setCurrentPage
+    };
     return (
         <div
             className="fixed inset-0  flex justify-end items-center bg-black bg-opacity-50"
@@ -281,17 +294,16 @@ export function CreateAppointmentComponent({
                                 />
                             )}
                             {activeTab === 2 && (
+                                // data: dataPatient, error: errorPatient, isLoading: loadPatient
                                 <DatatableComponent
                                     data={dataPatient?.data}
                                     isLoading={loadPatient}
                                     error={errorPatient}
                                     columns={columns}
-                                    perPage={perPage}
-                                    setPerPage={setPerPage}
-                                    currentPage={currentPage}
-                                    setCurrentPage={setCurrentPage}
-                                    setFilter={setFilter}
+                                    paginationControls={paginationControls}
                                     filter={filter}
+                                    setFilter={setFilter}
+                                    headers={headers}
                                 />
                             )}
                         </div>

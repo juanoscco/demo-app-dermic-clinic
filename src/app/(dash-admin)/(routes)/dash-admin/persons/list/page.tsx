@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { useGetEmployeesQuery } from './store/service'
 import { DatatableComponent } from "@/components/datatable/";
 import Link from 'next/link';
+import { ExcelExport } from "@/utils/excel";
+import { PrintButton } from "@/utils/print";
 
 
 export default function UserList() {
@@ -23,7 +25,6 @@ export default function UserList() {
     if (error) return <div>Error loading patients</div>;
 
 
-    // console.log(data)
     const columns = [
         {
             title: 'Empleado',
@@ -72,33 +73,51 @@ export default function UserList() {
         },
     ]
 
-    // const tableHTML = `          
-    //       <table className="w-full border-collapse">
-    //         <thead>
-    //           <tr>
-    //             <th className='px-4 py-2'>Nombre</th>
-    //             <th className="px-4 py-2">Apellidos</th>
-    //             <th className="px-4 py-2">Email</th>
-    //             <th className="px-4 py-2">DNI</th>
-    //             <th className="px-4 py-2">Rol</th>
-    //             <th className="px-4 py-2">Teléfono</th>
-    //           </tr>
-    //         </thead>
-    //         <tbody>
-    //           ${users.map(user => `
-    //             <tr key=${user.id} className='border-t border-gray-200'>
-    //               <td className='px-4 py-2'>${user.nombre}</td>
-    //               <td className="px-4 py-2">${user.apellidos}</td>
-    //               <td className="px-4 py-2">${user.email}</td>
-    //               <td className="px-4 py-2">${user.dni}</td>
-    //               <td className="px-4 py-2">${user.rol}</td>
-    //               <td className="px-4 py-2">${user.telefono}</td>
-    //             </tr>
-    //           `).join('')}
-    //         </tbody>
-    //       </table>
-    //     `;
 
+    const columnsForExcelAndPrint = {
+        nombres: 'Nombre del Empleado',
+        telefono: 'Teléfono',
+        'titulo.descripcion': 'Título',
+        'dia_sin_refriguerio.descripcion': 'Día sin refrigerio',
+        'sede.nombres': 'Sede',
+        'sede.direccion': 'Dirección de Sede',
+        numero: 'DNI'
+    };
+
+
+    const handleExportExcel = ExcelExport({ data: data?.data?.content, columns: columnsForExcelAndPrint, filename: 'Empleados' });
+    const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrint, nametitle: 'Empleados' });
+
+
+
+    const paginationControls = {
+        perPageOptions: [10, 20, 30, 40],
+        perPage,
+        setPerPage,
+        currentPage,
+        setCurrentPage
+    };
+    const headers = (
+        <div className='flex items-center gap-3'>
+            <Link
+                href={`./create`}
+                className='p-2 bg-blue-500 rounded-md text-white'
+
+            >Crear</Link>
+            <button
+                onClick={handleExportExcel}
+                className='p-2 bg-green-500 rounded-md text-white'
+            >
+                Excel
+            </button>
+            <button
+                onClick={handlePrint}
+                className='bg-gray-500 p-2 text-white rounded-md'
+            >
+                Imprimir
+            </button>
+        </div>
+    );
     return (
         <React.Fragment>
             <h1 className='text-2xl '>Lista de empleados</h1>
@@ -108,13 +127,10 @@ export default function UserList() {
                 isLoading={isLoading}
                 error={error}
                 columns={columns}
-                perPage={perPage}
-                setPerPage={setPerPage}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                // refetch={refetch}
-                setFilter={setFilter}
+                paginationControls={paginationControls}
                 filter={filter}
+                setFilter={setFilter}
+                headers={headers}
             />
 
 

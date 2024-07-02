@@ -100,7 +100,7 @@ export default function CreatePatientComponent({ addPatient, loadingPatient, nex
 
     return (
         <React.Fragment>
-            <h1 className='text-2xl'>Crear paciente</h1>
+            <h1 className='text-2xl px-3 pt-2'>Crear paciente</h1>
             <section className='mt-4 p-4 bg-white'>
                 <form
                     onSubmit={formik.handleSubmit}

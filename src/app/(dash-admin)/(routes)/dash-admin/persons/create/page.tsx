@@ -6,6 +6,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { Alert } from '@/components/popup/popup-alert';
+import { useRouter } from 'next/navigation';
 
 export default function UserCreate() {
 
@@ -15,6 +16,8 @@ export default function UserCreate() {
     const [addEmployee, { isLoading: loadingEmployee, data: dataEmployee, error: errorEmployee }] = useAddEmployeeMutation();
 
     const { data: dataInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0 })
+
+    const router = useRouter()
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -68,7 +71,6 @@ export default function UserCreate() {
             estado: true,
         },
         validationSchema: Yup.object({
-            numero: Yup.string().required('Requerido'),
             nombres: Yup.string().required('Requerido'),
             telefono: Yup.string().required('Requerido'),
             correo: Yup.string().email('Email inválido'),
@@ -77,6 +79,7 @@ export default function UserCreate() {
             // console.log(values)
             await addEmployee(values);
             resetForm();
+            router.push('./list')
         },
     });
 
@@ -286,9 +289,8 @@ export default function UserCreate() {
                                 ))}
                         </select>
                     </div>
-                    <div className="border border-gray-300 text-left p-2">
+                    {/* <div className="border border-gray-300 text-left p-2">
                         <label className='text-font-777 text-sm'>Estado <span className="text-red-500">*</span></label>
-                        {/* <input type="text" className='w-full py-2 outline-none px-1' /> */}
                         <select
                             name='estado'
                             value={formik.values.estado ? 'true' : 'false'}
@@ -301,7 +303,7 @@ export default function UserCreate() {
                         {formik.touched.estado && formik.errors.estado ? (
                             <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
                         ) : null}
-                    </div>
+                    </div> */}
 
                     <button className='bg-[#82b440] p-2 text-white' type='submit'>
                         {loadingEmployee ? 'Creando...' : 'Crear'}

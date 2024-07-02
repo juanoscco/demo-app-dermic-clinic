@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useGetExceptionsQuery } from './components/list/store/service';
 import { DatatableComponent } from '@/components/datatable';
 import Link from 'next/link';
+import * as XLSX from 'xlsx';
+import { ExcelExport } from "@/utils/excel";
+import { PrintButton } from "@/utils/print";
 
 
 export default function PersonsExceptions() {
@@ -69,6 +72,42 @@ export default function PersonsExceptions() {
             )
         },
     ]
+    const columnsForExcelAndPrint = {
+        'empleado.nombres':"Nombre del empleado", 
+        fecha_ausente_desde: 'Fecha Ausente Desde',
+        fecha_ausente_hasta: 'Fecha Ausente Hasta',
+        'hora_inicio.descripcion': 'Hora de Inicio',
+        'hora_final.descripcion': 'Hora de Finalización',
+        motivo: 'Motivo'
+    };
+    const handleExportExcel = ExcelExport({ data: data?.data.content, columns: columnsForExcelAndPrint, filename: 'Excepciones' })
+
+    const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrint, nametitle: 'Excepciones' })
+
+
+    const paginationControls = {
+        perPageOptions: [10, 20, 30, 40],
+        perPage,
+        setPerPage,
+        currentPage,
+        setCurrentPage
+    };
+    const headers = (
+        <div className='flex items-center gap-3'>
+            <button
+                onClick={handleExportExcel}
+                className='p-2 bg-green-500 rounded-md text-white'
+            >
+                Excel
+            </button>
+            <button
+                onClick={handlePrint}
+                className='bg-gray-500 p-2 text-white rounded-md'
+            >
+                Imprimir
+            </button>
+        </div>
+    );
     return (
         <React.Fragment>
             <h1 className='text-2xl px-3 mb-3'>Excepciones</h1>
@@ -77,13 +116,10 @@ export default function PersonsExceptions() {
                 isLoading={isLoading}
                 error={error}
                 columns={columns}
-                perPage={perPage}
-                setPerPage={setPerPage}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                // refetch={refetch}
-                setFilter={setFilter}
+                paginationControls={paginationControls}
                 filter={filter}
+                setFilter={setFilter}
+                headers={headers}
             />
         </React.Fragment>
     )

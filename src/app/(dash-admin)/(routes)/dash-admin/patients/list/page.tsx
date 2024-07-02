@@ -4,10 +4,9 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link';
 import { useGetPatientsQuery } from "./store/service/list-patient.service";
 import { DatatableComponent } from "@/components/datatable/";
+import { ExcelExport } from "@/utils/excel";
+import { PrintButton } from "@/utils/print";
 
-// TODO: DATA IN EXCEL
-// import { exportToExcel } from "@/utils/excel/excel.utils"
-// import { handlePrint } from "@/utils/print/print.utils"
 
 export default function PatientsList() {
   const [perPage, setPerPage] = useState(10); // Estado para almacenar el número de pacientes por página
@@ -43,7 +42,7 @@ export default function PatientsList() {
     {
       title: 'Información',
       displayName: 'Datos Personales',
-      field: 'telefono',//FieldValue
+      field: 'telefono', //FieldValue
       render: (fieldValue: any, item: any) => (
         <div>
           <h1>{fieldValue}</h1>
@@ -52,7 +51,7 @@ export default function PatientsList() {
       )
     },
     {
-      title: 'Dirección',
+      title: 'Ubicación',
       displayName: 'Ubicación',
       field: 'direccion', //FieldValue
       render: (fieldValue: any, item: any) => (
@@ -76,6 +75,53 @@ export default function PatientsList() {
     },
   ];
 
+
+  // };
+  // const handlePrint = () => {
+  // };
+
+  const columnsForExcelAndPrint = {
+    nombres: 'Nombre Del Paciente',
+    telefono: 'Teléfono',
+    direccion: 'Dirección',
+    distrito: 'Distrito',
+    email: 'Correo Electrónico',
+    numero_documento_identidad: 'Número de Documento'
+  }
+  const handleExportExcel = ExcelExport({ data: data?.data.content, columns: columnsForExcelAndPrint, filename: 'Pacientes' })
+
+  const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrint, nametitle: 'Pacientes' })
+
+  const paginationControls = {
+    perPageOptions: [10, 20, 30, 40, 50],
+    perPage,
+    setPerPage,
+    currentPage,
+    setCurrentPage
+  };
+  const headers = (
+    <div className='flex items-center gap-3 md:flex-row flex-col'>
+      <Link
+        href={`./create`}
+        className='p-2 bg-blue-500 rounded-md text-white xl:w-auto w-full text-center'
+
+      >
+        Crear
+      </Link>
+      <button
+        onClick={handleExportExcel}
+        className='p-2 bg-green-500 rounded-md text-white xl:w-auto w-full'
+      >
+        Excel
+      </button>
+      <button
+        onClick={handlePrint}
+        className='bg-gray-500 p-2 text-white rounded-md xl:w-auto w-full'
+      >
+        Imprimir
+      </button>
+    </div>
+  );
   return (
     <React.Fragment>
       <h1 className='text-2xl'>Lista de pacientes </h1>
@@ -84,13 +130,10 @@ export default function PatientsList() {
         isLoading={isLoading}
         error={error}
         columns={columns}
-        perPage={perPage}
-        setPerPage={setPerPage}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        // refetch={refetch}
-        setFilter={setFilter}
+        paginationControls={paginationControls}
         filter={filter}
+        setFilter={setFilter}
+        headers={headers}
       />
 
     </React.Fragment>

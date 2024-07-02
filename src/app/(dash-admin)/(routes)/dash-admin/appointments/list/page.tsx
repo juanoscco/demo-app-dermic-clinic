@@ -3,7 +3,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
-
+import { ExcelExport } from "@/utils/excel";
+import { PrintButton } from "@/utils/print";
 
 const formatDate = (date: string | Date) => {
   const d = new Date(date);
@@ -47,19 +48,11 @@ export default function AppointmentList() {
   // **********
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedDistrict, setSelectedDistrict] = useState<number>(1);
+
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Nuevo estado para los elementos por página
   const [searchTerm, setSearchTerm] = useState(''); // Nuevo estado para el término de búsqueda
-
-  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setItemsPerPage(Number(event.target.value));
-    setCurrentPage(1); // Reiniciar a la primera página cuando cambia la cantidad de elementos por página
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1); // Reiniciar a la primera página cuando cambia el término de búsqueda
-  };
 
   const filteredAppointments = useCallback(() => {
     if (loadingAppointments || loadingInfra || !appointmentsData) return [];
@@ -89,12 +82,36 @@ export default function AppointmentList() {
   }, [selectedDate, selectedDistrict, refetchAppointment, refetchInfra]);
 
   useEffect(() => {
-    // Reset page to 1 when filters change
     setCurrentPage(1);
   }, [selectedDate, selectedDistrict]);
 
 
+  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1); // Reiniciar a la primera página cuando cambia la cantidad de elementos por página
+  };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reiniciar a la primera página cuando cambia el término de búsqueda
+  };
+
+
+  const columnsForExcelAndPrint = {
+    'procedimiento.nombres': 'Nombre del Procedimiento',
+    'sala_tratamiento.nombres': 'Nombre de la Sala de Tratamiento',
+    'sala_tratamiento.piso': 'Piso de la Sala de Tratamiento',
+    'sede.nombres': 'Nombre de la Sede',
+    'paciente.nombres': 'Nombre del Paciente',
+    'paciente.numero_documento_identidad': 'Número de Documento del Paciente',
+    'paciente.telefono': 'Teléfono del Paciente',
+    'fecha_cita': 'Fecha de la Cita',
+    'empleado.nombres': 'Nombre del Empleado',
+    'horario.descripcion': 'Hora de la Cita'
+  };
+  const handleExportExcel = ExcelExport({ data: paginatedAppointments(), columns: columnsForExcelAndPrint, filename: 'Citas' })
+
+  const handlePrint = PrintButton({ data: paginatedAppointments(), columns: columnsForExcelAndPrint, nametitle: 'Citas' })
 
   return (
     <React.Fragment>
@@ -124,6 +141,8 @@ export default function AppointmentList() {
         </section>
 
       </section>
+
+
       <section
         className='flex xl:justify-between flex-col xl:flex-row mt-5 gap-3 bg-white rounded-md p-3'
       >
@@ -135,10 +154,14 @@ export default function AppointmentList() {
           className="p-2 border border-gray-300 rounded-md mb-2 outline-none w-full md:w-auto"
         />
         <div className="flex flex-col xl:flex-row items-center gap-3 ">
-          <button className="p-2 bg-green-500 rounded-md text-white w-full md:w-auto">
+          <button
+            onClick={handleExportExcel}
+            className="p-2 bg-green-500 rounded-md text-white w-full md:w-auto">
             Excel
           </button>
-          <button className="p-2 bg-gray-500 text-white rounded-md mt-2 xl:mt-0 w-full md:w-auto">
+          <button
+            onClick={handlePrint}
+            className="p-2 bg-gray-500 text-white rounded-md mt-2 xl:mt-0 w-full md:w-auto">
             Imprimir
           </button>
         </div>
@@ -149,27 +172,13 @@ export default function AppointmentList() {
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-gray-200">
-
-
               <th className="px-4 py-2 text-left">Paciente</th>
-              {/* <th className="px-4 py-2 text-left">DNI</th> */}
               <th className="px-4 py-2 text-left">Sala</th>
-
               <th className="px-4 py-2 text-left">Hora</th>
-              {/* <th className="px-4 py-2 text-left">Teléfono</th> */}
-              {/* <th className="px-4 py-2 text-left">Correo</th> */}
-              {/* <th className="px-4 py-2 text-left">Procedimiento</th> */}
-
               <th className="px-4 py-2 text-left">Llegada</th>
               <th className="px-4 py-2 text-left">Entrada</th>
               <th className="px-4 py-2 text-left">Salida</th>
-
-              {/* <th className="px-4 py-2 text-left">A/N</th> */}
-              {/* <th className="px-4 py-2 text-left">MD</th> */}
-              {/* <th className="px-4 py-2 text-left">Notas</th> */}
-              {/* <th className="px-4 py-2 text-left">Estado</th> */}
               <th className="px-4 py-2 text-left">Acciones</th>
-
             </tr>
           </thead>
           <tbody>

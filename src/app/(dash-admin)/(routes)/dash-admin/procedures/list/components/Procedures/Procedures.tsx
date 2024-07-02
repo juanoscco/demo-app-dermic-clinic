@@ -5,6 +5,9 @@ import { useGetProceduresQuery } from './store/service'
 import { DatatableComponent } from '@/components/datatable';
 import UpdateProceduresComponents from './update-procedures/update-procedures.components';
 import { DeleteProceduresComponent } from './delete-procedures/components';
+import Link from 'next/link';
+import { ExcelExport } from "@/utils/excel";
+import { PrintButton } from "@/utils/print";
 
 
 export default function Procedures() {
@@ -118,6 +121,47 @@ export default function Procedures() {
         }
 
     ]
+    const columnsForExcelAndPrintProcedimiento = {
+        nombres: 'Nombre del Procedimiento',
+        'duracion.descripcion': 'Duración',
+        anestesia: 'Anestesia',
+        'tipo_procedimiento.descripcion': 'Tipo de Procedimiento',
+        'subtipo_procedimiento.descripcion': 'Subtipo de Procedimiento'
+    };
+    
+    const handleExportExcel = ExcelExport({ data: data?.data?.content, columns: columnsForExcelAndPrintProcedimiento, filename: 'Procedimientos' });
+    const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrintProcedimiento, nametitle: 'Procedimientos' });
+    
+    const paginationControls = {
+        perPageOptions: [10, 20, 30, 40],
+        perPage,
+        setPerPage,
+        currentPage,
+        setCurrentPage
+    };
+    const headers = (
+        <div className='flex items-center gap-3'>
+            <Link
+                href={`./create`}
+                className='p-2 bg-blue-500 rounded-md text-white'
+
+            >
+                Crear
+            </Link>
+            <button
+                onClick={handleExportExcel}
+                className='p-2 bg-green-500 rounded-md text-white'
+            >
+                Excel
+            </button>
+            <button
+                onClick={handlePrint}
+                className='bg-gray-500 p-2 text-white rounded-md'
+            >
+                Imprimir
+            </button>
+        </div>
+    );
     return (
         <React.Fragment>
             <DatatableComponent
@@ -125,15 +169,11 @@ export default function Procedures() {
                 isLoading={isLoading}
                 error={error}
                 columns={columns}
-                perPage={perPage}
-                setPerPage={setPerPage}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                // refetch={refetch}
-                setFilter={setFilter}
+                paginationControls={paginationControls}
                 filter={filter}
+                setFilter={setFilter}
+                headers={headers}
             />
-
             {showPopup && selectedProcedure &&
                 <UpdateProceduresComponents
                     onClose={togglePopup}

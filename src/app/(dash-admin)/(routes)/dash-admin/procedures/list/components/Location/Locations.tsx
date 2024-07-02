@@ -178,7 +178,6 @@ export default function Sedes() {
         };
       }
 
-      // console.log("Selected Procedure Details:", selectedProcedureData);
       setSelectedLocationDetails(selectedProcedureData);
     } else {
       const nullProcedureData = {
@@ -187,7 +186,6 @@ export default function Sedes() {
         id_procedimiento_sede: null,
         procedures: []
       };
-      // console.log("Selected Procedure Details:", nullProcedureData);
       setSelectedLocationDetails(nullProcedureData);
     }
 
@@ -203,6 +201,15 @@ export default function Sedes() {
     formik.setFieldValue('procedimiento_sede_detalle', selectedProcedures)
   }, [selectedProcedures]);
 
+  const [operationSuccess, setOperationSuccess] = useState(false); // Estado para controlar la operación exitosa
+
+  useEffect(() => {
+    if (operationSuccess) {
+      handleInfrastructureClick(selectedLocationId);
+      setOperationSuccess(false); // Restablecer el estado de éxito
+    }
+  }, [operationSuccess, selectedLocationId]);
+  
   return (
     <form onSubmit={formik.handleSubmit}>
       <section className='mt-2 bg-white'>
@@ -213,16 +220,16 @@ export default function Sedes() {
               {loadingInfra ? (
                 <div>Cargando...</div>
               ) : (
-                infrastructure?.filter((infra:any) => infra.estado)
-                .map((infra: any) => (
-                  <li
-                    key={infra.id_sede}
-                    // className='px-2 py-1 mt-1 border-b hover:bg-gray-200 cursor-pointer border-gray-200'
-                    className={`flex items-center justify-between mt-1 py-1 px-2 cursor-pointer ${selectedLocationId === infra.id_sede ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
+                infrastructure?.filter((infra: any) => infra.estado)
+                  .map((infra: any) => (
+                    <li
+                      key={infra.id_sede}
+                      // className='px-2 py-1 mt-1 border-b hover:bg-gray-200 cursor-pointer border-gray-200'
+                      className={`flex items-center justify-between mt-1 py-1 px-2 cursor-pointer ${selectedLocationId === infra.id_sede ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
 
-                    onClick={() => handleInfrastructureClick(infra.id_sede)}
-                  >{infra.nombres}</li>
-                ))
+                      onClick={() => handleInfrastructureClick(infra.id_sede)}
+                    >{infra.nombres}</li>
+                  ))
               )}
             </ul>
           </section>
@@ -268,13 +275,22 @@ export default function Sedes() {
           </section>
         </section>
         <section className='w-[90%] flex justify-end pb-3'>
-          {selectedLocationDetails?.id_procedimiento_sede ? (
+          {/* {selectedLocationDetails?.id_procedimiento_sede ? (
             <button type='submit' className='px-3 py-1 bg-[#82b440] rounded-md text-white'>{loadUpdateLocationProc ? 'Actualizando....' : 'Actualizar'}</button>
           ) : (
             <button type='submit' className='px-3 py-1 bg-[#82b440] rounded-md text-white'>{loadAddLocationProc ? 'Grabando...' : 'Grabar'}</button>
+          )} */}
+          {selectedLocationDetails?.id_procedimiento_sede ? (
+            <button type="submit" className="px-3 py-1 bg-[#82b440] rounded-md text-white">
+              {formik.isSubmitting ? 'Actualizando....' : 'Actualizar'}
+            </button>
+          ) : (
+            <button type="submit" className="px-3 py-1 bg-[#82b440] rounded-md text-white">
+              {formik.isSubmitting ? 'Grabando...' : 'Grabar'}
+            </button>
           )}
-          {addDataLocationProc && (<Alert type='success'>Grabado correctamente!!</Alert>)}
-          {updateLocationProc && (<Alert type='success'>Actualizado correctamente</Alert>)}
+          {operationSuccess && (<Alert type='success'>Grabado correctamente!!</Alert>)}
+          {operationSuccess && (<Alert type='success'>Actualizado correctamente</Alert>)}
           {errorAddProcLocation && <Alert type='error'>Error en Grabar</Alert>}
           {errorUpdateProcLocation && <Alert type='error'>Error en actualizar</Alert>}
         </section>

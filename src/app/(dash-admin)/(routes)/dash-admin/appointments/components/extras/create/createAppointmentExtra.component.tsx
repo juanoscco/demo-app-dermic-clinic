@@ -48,10 +48,28 @@ const validationSchema = Yup.object({
 export function CreateAppointmentExtraComponent({
     close, location, refetch, date
 }: Props) {
+    /**
+         * Hooks
+         * Aqui estn los steps y los active tabs 
+         */
+    const [step, setStep] = useState(1);
+    const [activeTab, setActiveTab] = useState(1);
+    // Patients
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [filter, setFilter] = useState('');
+
+    const nextStep = () => {
+        setStep(step + 1);
+    };
+
+    const previousStep = () => {
+        setStep(step - 1);
+    };
 
     const [addPatient, { data: dataAddPatient, isLoading: loadAddPatient }] = useAddPatientMutation();
     const [addExtraAppointment, { isLoading: loadExtraAppointment }] = useAddExtraAppointmentMutation();
-    const { data: getPatients, isLoading: loadPatients, refetch: refetchPatients, error: errorPatient } = useGetPatientsQuery({ page: 0, limit: 12000, filter: '' });
+    const { data: getPatients, isLoading: loadPatients, refetch: refetchPatients, error: errorPatient } = useGetPatientsQuery({ page: currentPage -1, limit: perPage, filter: filter });
     const { data: getEmployees, isLoading: loadEmployees, refetch: refetchEmployess } = useGetEmployeesQuery({ page: 0, limit: 12000, filter: '' });
     const { data: getRoomProcedures, isLoading: loadRoomProcedures, refetch: refetchRoomProcedures } = useGetRoomProcedureQuery({ page: 0, limit: 13000, filter: '' });
 
@@ -72,24 +90,6 @@ export function CreateAppointmentExtraComponent({
     //     name_user: item.usuario.username
     // }))
     // console.log(dataEmployeeFiltered);
-    /**
-     * Hooks
-     * Aqui estn los steps y los active tabs 
-     */
-    const [step, setStep] = useState(1);
-    const [activeTab, setActiveTab] = useState(1);
-    // Patients
-    const [perPage, setPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [filter, setFilter] = useState('');
-
-    const nextStep = () => {
-        setStep(step + 1);
-    };
-
-    const previousStep = () => {
-        setStep(step - 1);
-    };
 
 
     const formik = useFormik({
@@ -249,6 +249,40 @@ export function CreateAppointmentExtraComponent({
         setSelectedEmployee(employee);
         formik.handleChange(e);
     };
+
+
+    // ********
+    const paginationControls = {
+        perPageOptions: [10, 20, 30, 40, 50],
+        perPage,
+        setPerPage,
+        currentPage,
+        setCurrentPage
+    };
+    const headers = (
+        <div className='flex items-center gap-3 md:flex-row flex-col'>
+            {/* <Link
+            href={`./create`}
+            className='p-2 bg-blue-500 rounded-md text-white xl:w-auto w-full text-center'
+    
+          >
+            Crear
+          </Link>
+          <button
+            onClick={handleExportExcel}
+            className='p-2 bg-green-500 rounded-md text-white xl:w-auto w-full'
+          >
+            Excel
+          </button>
+          <button
+            onClick={handlePrint}
+            className='bg-gray-500 p-2 text-white rounded-md xl:w-auto w-full'
+          >
+            Imprimir
+          </button> */}
+        </div>
+    );
+
     return (
         <PopupUpdate>
             <div className='flex justify-between py-4'>
@@ -284,20 +318,18 @@ export function CreateAppointmentExtraComponent({
                             />
                         )}
                         {activeTab === 2 && (
-                            <>
-                                <DatatableComponent
-                                    data={getPatients?.data}
-                                    isLoading={loadPatients}
-                                    error={errorPatient}
-                                    columns={columns}
-                                    perPage={perPage}
-                                    setPerPage={setPerPage}
-                                    currentPage={currentPage}
-                                    setCurrentPage={setCurrentPage}
-                                    setFilter={setFilter}
-                                    filter={filter}
-                                />
-                            </>
+
+                            <DatatableComponent
+                                data={getPatients?.data}
+                                isLoading={loadPatients}
+                                error={errorPatient}
+                                columns={columns}
+                                paginationControls={paginationControls}
+                                filter={filter}
+                                setFilter={setFilter}
+                                headers={headers}
+                            />
+
                         )}
                     </div>
                 )}

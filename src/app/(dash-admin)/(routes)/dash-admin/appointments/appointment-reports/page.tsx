@@ -4,17 +4,19 @@ import { useGetInfrastructureQuery } from '../../infrastructure/list/store/servi
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
 import { formatTime } from "@/utils/formatTime";
 import Link from 'next/link';
+import { ExcelExport } from "@/utils/excel";
+import { PrintButton } from "@/utils/print";
 
 const ITEMS_PER_PAGE = 10; // Número de elementos por página
-
 
 export default function AppointmentReports() {
 
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [selectedSede, setSelectedSede] = useState<number>(1);
-  const [filteredAppointments, setFilteredAppointments] = useState<any>([]);
+  const [filteredAppointments, setFilteredAppointments] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>(''); // Estado para el término de búsqueda
 
   const { data: dataAppointments, isLoading: loadingAppointments, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
   const { data: dataInfrastructure, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' });
@@ -40,10 +42,15 @@ export default function AppointmentReports() {
 
       const filtered = appointments.filter((appointment: any) => {
         const appointmentDate = new Date(appointment.fecha_cita);
+        const matchesSearchTerm = (
+          appointment.paciente?.nombres?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          appointment.paciente?.numero_documento_identidad?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
         return (
           appointmentDate >= start &&
           appointmentDate <= end &&
-          appointment.sede.id_sede === selectedSede
+          appointment.sede.id_sede === selectedSede &&
+          matchesSearchTerm
         );
       });
 
@@ -51,7 +58,7 @@ export default function AppointmentReports() {
       const endIndex = startIndex + ITEMS_PER_PAGE;
       setFilteredAppointments(filtered.slice(startIndex, endIndex));
     }
-  }, [startDate, endDate, selectedSede, appointments, currentPage]);
+  }, [startDate, endDate, selectedSede, appointments, currentPage, searchTerm]);
 
   useEffect(() => {
     filterAppointments();
@@ -87,6 +94,26 @@ export default function AppointmentReports() {
     }
   }, [currentPage, totalPages]);
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reiniciar a la primera página cuando cambia el término de búsqueda
+  };
+
+  const columnsForExcelAndPrint = {
+    'paciente.nombres': 'Nombre del Paciente',
+    'empleado.nombres': 'Nombre del Empleado',
+    'procedimiento.nombres': 'Nombre del Procedimiento',
+    'sala_tratamiento.nombres': 'Nombre de la Sala de Tratamiento',
+    'sala_tratamiento.piso': 'Piso de la Sala de Tratamiento',
+    'sede.nombres': 'Nombre de la Sede',
+    'paciente.numero_documento_identidad': 'Número de Documento del Paciente',
+    'paciente.telefono': 'Teléfono del Paciente',
+    'fecha_cita': 'Fecha de la Cita',
+    'horario.descripcion': 'Hora de la Cita'
+  };
+  const handleExportExcel = ExcelExport({ data: filteredAppointments, columns: columnsForExcelAndPrint, filename: 'Reporte de Citas' });
+
+  const handlePrint = PrintButton({ data: filteredAppointments, columns: columnsForExcelAndPrint, nametitle: 'Reporte de Citas' });
 
   return (
     <React.Fragment>
@@ -128,18 +155,23 @@ export default function AppointmentReports() {
         </div>
       </section>
 
-
       <section className="flex flex-col md:flex-row mt-4 p-3 gap-3 bg-white items-center justify-between">
         <input
           type="text"
           placeholder="Buscar"
           className="w-full md:w-auto outline-none border border-gray-200 p-2 rounded-lg"
+          value={searchTerm}
+          onChange={handleSearchChange}
         />
         <div className="flex flex-col md:flex-row w-full md:w-auto gap-2">
-          <button className="w-full md:w-auto bg-green-500 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+          <button
+            onClick={handleExportExcel}
+            className="w-full md:w-auto bg-green-500 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
             Excel
           </button>
-          <button className="w-full md:w-auto bg-blue-500 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button
+            onClick={handlePrint}
+            className="w-full md:w-auto bg-gray-500 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             Imprimir
           </button>
         </div>
@@ -173,7 +205,7 @@ export default function AppointmentReports() {
                 <td className="px-4 py-2 text-xs sm:text-sm">{formatTime(appointment.cita_info.hora_atencion)}</td>
                 <td className="px-4 py-2 text-xs sm:text-sm">{formatTime(appointment.cita_info.hora_salida)}</td>
                 <td className="px-4 py-2 text-xs sm:text-sm">
-                  <Link className="text-blue-500 hover:underline" href={`list/${appointment.id_cita}`} passHref>
+                  <Link className="text-gray-700 hover:underline" href={`list/${appointment.id_cita}`} passHref>
                     <>Detalle</>
                   </Link>
                 </td>
@@ -183,7 +215,7 @@ export default function AppointmentReports() {
         </table>
 
       </section>
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center mt-4 bg-white">
         <div className="text-sm text-gray-700">
           Página {currentPage} de {totalPages}, Mostrando {totalItems} elementos
         </div>

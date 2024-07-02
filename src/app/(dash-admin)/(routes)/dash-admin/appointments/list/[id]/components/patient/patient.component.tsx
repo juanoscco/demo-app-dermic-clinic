@@ -235,7 +235,7 @@ export default function PatientComponent({
 
                 </section>
             )}
-            {/* Cambiar ID */}
+            {/* Cambiar ID
             <section className="py-2 overflow-auto">
                 <h1 className='text-xl font-bold'>Seleccionar paciente</h1>
                 <DatatableComponent
@@ -250,7 +250,7 @@ export default function PatientComponent({
                     setFilter={setFilter}
                     filter={filter}
                 />
-            </section>
+            </section> */}
         </section>
     )
 }

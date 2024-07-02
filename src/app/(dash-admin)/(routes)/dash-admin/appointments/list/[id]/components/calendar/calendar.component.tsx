@@ -342,7 +342,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
     const [showPopupDelete, setShowPopupDelete] = useState(false);
 
     const togglePopupDelete = () => {
-        
+
         setShowPopupDelete(!showPopupDelete)
     }
     /**
@@ -353,114 +353,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
     return (
         <section className='grid grid-cols-1 md:grid-cols-2 gap-2'>
             {/*  */}
-            <form onSubmit={formik.handleSubmit} className=" p-6 border-b-2 md:border-r-2">
-                <div className="flex flex-col gap-5">
-                    <div >
-                        <h1 className="text-gray-700 font-bold mb-1 text-xl">Informacion Actual</h1>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                            <div className="border-b border-gray-300 pb-2">
-                                <label className="text-gray-700 font-semibold mb-1">Fecha de Cita</label>
-                                <p className="text-gray-600 mb-2">{dataDetailAppointmentById.fecha_cita}</p>
-                            </div>
-
-                            <div className="border-b border-gray-300 pb-2">
-                                <label className="text-gray-700 font-semibold mb-1">Hora</label>
-                                <p className="text-gray-600 mb-2">{dataDetailAppointmentById.hora.descripcion}</p>
-                            </div>
-                            <div className="border-b border-gray-300 pb-2">
-                                <label className="text-gray-700 font-semibold mb-1">Sala de Tratamiento</label>
-                                <p className="text-gray-600 mb-2">{dataDetailAppointmentById.sala_tratamiento.nombres}</p>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div>
-                        <h1 className="text-gray-700 font-bold mb-1 text-xl">Seleccionado</h1>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
-                            <div className='border border-gray-300 text-left p-2'>
-                                <h3>Hora</h3>
-                                <p className="text-gray-600 mb-2">{selectedHour?.descripcion ? selectedHour?.descripcion : 'Seleccione una de las casillas'}</p>
-                            </div>
-                            <div className='border border-gray-300 text-left p-2'>
-                                <h3>Fecha</h3>
-                                <p className="text-gray-600 mb-2">{selectedDate}</p>
-                            </div>
-                            <div className='border border-gray-300 text-left p-2'>
-                                <label className="text-gray-700 font-semibold mb-1">Empleado</label>
-                                <p className="text-gray-600 mb-2">{selectedEmployee?.nombres ? selectedEmployee?.nombres : 'Seleccione una de las casillas'}</p>
-                            </div>
-
-                            <div className='border border-gray-300 text-left p-2'>
-                                <label>Sala Tratamiento</label>
-                                {isEditable ? (
-                                    <select
-                                        className='w-full py-2 outline-none px-1'
-                                        value={selectedRoom ?? ''}
-                                        onChange={handleRoomChange}
-                                    >
-                                        <option value="">Selecciona un especialista</option>
-                                        {rooms.map(room => (
-                                            <option key={room.id_rooms} value={room.id_rooms}>
-                                                {room.name_rooms}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <p className="text-gray-600">{dataDetailAppointmentById.empleado.nombres}</p>
-                                )}
-                            </div>
-
-                            <div className='border border-gray-300 text-left p-2'>
-                                <label htmlFor="procedimiento.id_procedimiento" className="text-gray-700 font-semibold mb-2">Procedimiento</label>
-                                {isEditable ? (
-                                    <select
-                                        className='w-full py-2 outline-none px-1'
-                                        value={selectedProcedure ?? ''}
-                                        onChange={handleProcedureChange}
-                                    >
-                                        <option value="">Seleccione un procedimiento</option>
-                                        {filteredProcedure.map(proc => (
-                                            <option key={proc.id_proc} value={proc.id_proc}>
-                                                {proc.name_proc}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <p className="text-gray-600">{dataDetailAppointmentById.procedimiento.nombres}</p>
-                                )}
-                            </div>
-                            <button
-                                className={`rounded-md ${isEditable ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-gray-500 text-white'}`}
-                                type="button"
-                                onClick={handleToggleEdit}
-                            >
-                                {isEditable ? 'Volver' : 'Cambiar'}
-                            </button>
-                            <button
-                                className='w-full bg-red-500  shadow-xl p-3 rounded-sm text-white'
-                                onClick={() => togglePopupDelete()}
-                            >
-                                Eliminar
-                            </button>
-
-                            <button
-                                className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white'
-                                type='submit'>
-                                {appointmentLoad ? 'Guardando...' : 'Guardar'}
-                            </button>
-                        </div>
-                        {showPopupDelete && (
-                            <DeleteAppointmentComponents
-                                id={dataDetailAppointmentById.id_cita}
-                                onClose={togglePopupDelete}
-                                update={refetchAppointment}
-                            />
-                        )}
-                    </div>
-                </div>
-
-            </form>
             {/*  */}
             <section className="col-span-1 md:col-span-1 p-6">
                 <section className="bg-white p-4 mt-3 border rounded-md flex flex-col md:flex-row justify-between items-center gap-4">
@@ -498,7 +391,6 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                         </select>
                     </div>
                 </section>
-
                 <section className='w-full bg-white h-[30rem] overflow-x-auto mt-5'>
                     {/* TABLA CALENDARIO */}
                     <section className='w-full p-4'>
@@ -584,7 +476,114 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                     </section>
                 </section>
             </section>
+            <form onSubmit={formik.handleSubmit} className=" p-6 border-b-2 md:border-r-2">
+                <div className="flex flex-col gap-5">
+                    <div >
+                        <h1 className="text-gray-700 font-bold mb-1 text-xl">Informacion Actual</h1>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                            <div className="border-b border-gray-300 pb-2">
+                                <label className="text-gray-700 font-semibold mb-1">Fecha de Cita</label>
+                                <p className="text-gray-600 mb-2">{dataDetailAppointmentById.fecha_cita}</p>
+                            </div>
+
+                            <div className="border-b border-gray-300 pb-2">
+                                <label className="text-gray-700 font-semibold mb-1">Hora</label>
+                                <p className="text-gray-600 mb-2">{dataDetailAppointmentById.hora.descripcion}</p>
+                            </div>
+                            <div className="border-b border-gray-300 pb-2">
+                                <label className="text-gray-700 font-semibold mb-1">Sala de Tratamiento</label>
+                                <p className="text-gray-600 mb-2">{dataDetailAppointmentById.sala_tratamiento.nombres}</p>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div>
+                        <h1 className="text-gray-700 font-bold mb-1 text-xl">Seleccionado</h1>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
+                            <div className='border border-gray-300 text-left p-2'>
+                                <h3>Fecha</h3>
+                                <p className="text-gray-600 mb-2">{selectedDate}</p>
+                            </div>
+                            <div className='border border-gray-300 text-left p-2'>
+                                <h3>Hora</h3>
+                                <p className="text-gray-600 mb-2">{selectedHour?.descripcion ? selectedHour?.descripcion : 'Seleccione una de las casillas'}</p>
+                            </div>
+
+                            <div className='border border-gray-300 text-left p-2'>
+                                <label className="text-gray-700 font-semibold mb-1">Empleado</label>
+                                <p className="text-gray-600 mb-2">{selectedEmployee?.nombres ? selectedEmployee?.nombres : 'Seleccione una de las casillas'}</p>
+                            </div>
+
+                            <div className='border border-gray-300 text-left p-2'>
+                                <label>Sala Tratamiento</label>
+                                {isEditable ? (
+                                    <select
+                                        className='w-full py-2 outline-none px-1'
+                                        value={selectedRoom ?? ''}
+                                        onChange={handleRoomChange}
+                                    >
+                                        <option value="">Selecciona un especialista</option>
+                                        {rooms.map(room => (
+                                            <option key={room.id_rooms} value={room.id_rooms}>
+                                                {room.name_rooms}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <p className="text-gray-600">{dataDetailAppointmentById.sala_tratamiento.nombres}</p>
+                                )}
+                            </div>
+
+                            <div className='border border-gray-300 text-left p-2'>
+                                <label htmlFor="procedimiento.id_procedimiento" className="text-gray-700 font-semibold mb-2">Procedimiento</label>
+                                {isEditable ? (
+                                    <select
+                                        className='w-full py-2 outline-none px-1'
+                                        value={selectedProcedure ?? ''}
+                                        onChange={handleProcedureChange}
+                                    >
+                                        <option value="">Seleccione un procedimiento</option>
+                                        {filteredProcedure.map(proc => (
+                                            <option key={proc.id_proc} value={proc.id_proc}>
+                                                {proc.name_proc}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <p className="text-gray-600">{dataDetailAppointmentById.procedimiento.nombres}</p>
+                                )}
+                            </div>
+                            <button
+                                className={`rounded-md ${isEditable ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-gray-500 text-white'}`}
+                                type="button"
+                                onClick={handleToggleEdit}
+                            >
+                                {isEditable ? 'Volver' : 'Cambiar'}
+                            </button>
+                            <button
+                                className='w-full bg-red-500  shadow-xl p-3 rounded-sm text-white'
+                                onClick={() => togglePopupDelete()}
+                            >
+                                Eliminar
+                            </button>
+                            <button
+                                className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white'
+                                type='submit'>
+                                {appointmentLoad ? 'Guardando...' : 'Guardar'}
+                            </button>
+                        </div>
+                        {showPopupDelete && (
+                            <DeleteAppointmentComponents
+                                id={dataDetailAppointmentById.id_cita}
+                                onClose={togglePopupDelete}
+                                update={refetchAppointment}
+                            />
+                        )}
+                    </div>
+                </div>
+
+            </form>
         </section>
     )
 }
