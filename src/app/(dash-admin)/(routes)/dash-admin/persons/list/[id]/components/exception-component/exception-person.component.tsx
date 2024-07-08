@@ -27,7 +27,7 @@ export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props
     const [currentPage, setCurrentPage] = useState(1);
     const { data, isLoading, refetch } = useGetExceptionsQuery({ page: 0, limit: 30000, filter: '' })
 
-    const dataException = data?.data?.content.filter((exception: any) => exception.empleado.id_empleado === idPerson && exception.estado);
+    const dataException = data?.data?.content.filter((exception: any) => exception.empleado.id_empleado === idPerson);
     const pageSize = 5;
 
     // Calcular los datos para la página actual`
@@ -87,8 +87,9 @@ export default function ExceptionPersonComponent({ dataPerson, idPerson }: Props
     // end selected exception
 
     const selectedExceptionDelete = selectedExceptionIdDelete !== null
-    ? paginatedData.find((proc: any) => proc.id_excepcion === selectedExceptionIdDelete)
+    ? (paginatedData ? paginatedData.find((proc: any) => proc.id_excepcion === selectedExceptionIdDelete) : null)
     : null;
+  
 
     return (
         <div className="bg-white p-4 rounded-lg ">

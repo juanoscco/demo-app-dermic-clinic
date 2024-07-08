@@ -19,6 +19,7 @@ export interface AgendaOpening {
     hora_inicio: string;
     hora_final: string;
     estado: boolean;
+    estado_eliminado:boolean
 }
 
 

@@ -22,6 +22,8 @@ export default function InfraUpdateComponent({ onClose, id, data, update }: Prop
                 
             },
             estado: data.estado,
+            estado_eliminado: false
+
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
@@ -87,7 +89,7 @@ export default function InfraUpdateComponent({ onClose, id, data, update }: Prop
                         <div className='text-red-500 text-sm'>{formik.errors.telefono}</div>
                     ) : null}
                 </div>
-                <div className='border border-gray-300 text-left p-2'>
+                {/* <div className='border border-gray-300 text-left p-2'>
                     <label className='block text-sm font-medium'>Estado</label>
                     <select
                         name='estado'
@@ -101,7 +103,7 @@ export default function InfraUpdateComponent({ onClose, id, data, update }: Prop
                     {formik.touched.estado && formik.errors.estado ? (
                         <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
                     ) : null}
-                </div>
+                </div> */}
 
                 <button
                     type='submit'

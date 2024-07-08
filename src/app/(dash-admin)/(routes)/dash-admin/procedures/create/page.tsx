@@ -4,6 +4,8 @@ import { useAddProcedureMutation } from './store/service'
 import { Procedure } from "./interface"
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { decodeToken } from '@/app/(dash-admin)/utils';
+import { useRouter } from 'next/navigation';
 
 export default function ProceduresCreate() {
     const [addProcedure, { data, isLoading, isError }] = useAddProcedureMutation();
@@ -57,6 +59,10 @@ export default function ProceduresCreate() {
         formik.setFieldValue('subtipo_procedimiento.id_cabecera_detalle', selectedOption?.id);
         formik.setFieldValue('subtipo_procedimiento.descripcion', selectedOption?.descripcion);
     };
+    const decoded = decodeToken({});
+
+    const router = useRouter();
+
     const formik = useFormik<Procedure>({
         initialValues: {
             nombres: "",
@@ -67,10 +73,10 @@ export default function ProceduresCreate() {
                 valor: ""
             },
             empresa: {
-                id_empresa: 1
+                id_empresa: decoded?.id_empresa
             },
             usuario_registro: {
-                id_usuario: 2
+                id_usuario: decoded?.id_usuario
             },
             anestesia: true,
             tipo_procedimiento: {
@@ -85,7 +91,8 @@ export default function ProceduresCreate() {
                 descripcion: "Privado",
                 valor: ""
             },
-            estado: true
+            estado: true,
+            estado_eliminado: false
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
@@ -113,8 +120,9 @@ export default function ProceduresCreate() {
         onSubmit: async (values, { resetForm }) => {
             try {
                 addProcedure(values)
-                alert("Procedimiento creado satisfactoriamente!")
+                // alert("Procedimiento creado satisfactoriamente!")
                 resetForm();
+                router.push('./list')
             } catch (error) {
                 alert(error)
             }
@@ -215,7 +223,7 @@ export default function ProceduresCreate() {
                             <div>{formik.errors.subtipo_procedimiento.descripcion}</div>
                         ) : null}
                     </div>
-                    <div className="border border-gray-300 text-left p-2">
+                    {/* <div className="border border-gray-300 text-left p-2">
                         <label className='text-font-777 text-sm'>Estado <span className="text-red-500">*</span></label>
                         <select
                             name='estado'
@@ -223,12 +231,11 @@ export default function ProceduresCreate() {
                             onChange={(e) => formik.setFieldValue('estado', e.target.value === 'true')}
                             className='w-full py-2 outline-none px-1'
                         >
-                            {/* <option value=""></option> */}
                             <option value="true">Habilitado</option>
                             <option value="false">Desabilitado</option>
                         </select>
-                    </div>
-                    <button className='bg-[#82b440] p-2 text-white' type='submit'>Crear</button>
+                    </div> */}
+                    <button className='bg-[#82b440] p-2 text-white' type='submit'>{isLoading ? 'Creando...' : 'Crear'}</button>
                 </form>
             </section>
         </React.Fragment>

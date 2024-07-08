@@ -7,13 +7,14 @@ import TabsOpensHook from "../../hooks/tabs/tabs-opens.hook";
 import { sections } from "@/app/(dash-admin)/components/aside/mock/aside.mocks"
 import { Props } from "@/app/(dash-admin)/models/aside/aside.models"
 // 
-
+import {decodeToken } from "@/app/(dash-admin)/utils/"
 export function AsideComponent({ isNavActive, handleNavItemClick }: Props) {
 
   const {
     openSections, toggleAccordion
   } = TabsOpensHook()
 
+  const decoded = decodeToken({})
 
   return (
     <aside className={`${isNavActive ? " active" : ""
@@ -35,7 +36,7 @@ export function AsideComponent({ isNavActive, handleNavItemClick }: Props) {
         <Image src={user_admin} alt="user admin" className='h-10 w-10 rounded-full' unoptimized />
         <div>
           <h2 className='text-md text-gray-500'>Bienvenido</h2>
-          <span className='text-sm font-bold text-gray-500'>Adm. Jhon Doe</span>
+          <span className='text-sm font-bold text-gray-500'>{decoded?.empleado.split(" ").slice(0, 2).join(" ")}</span>
         </div>
       </section>
 

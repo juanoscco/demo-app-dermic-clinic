@@ -37,6 +37,7 @@ export interface Procedure {
     tipo_procedimiento: Procedimiento;
     subtipo_procedimiento: SubtipoProcedimiento;
     estado: boolean;
+    estado_eliminado:boolean
 }
 
 export interface ResponseProcedure {

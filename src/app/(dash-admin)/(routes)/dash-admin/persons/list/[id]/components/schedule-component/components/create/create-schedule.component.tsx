@@ -18,7 +18,7 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
 
     const formik = useFormik<Schedule>({
         initialValues: {
-            nombre_horario: '',
+            nombre_horario: 'Horario',
             usuario_registro: {
                 id_usuario: dataPerson.usuario.id_usuario,
             },
@@ -35,7 +35,9 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                     temprano_final: { id_cabecera: 10, id_cabecera_detalle: 48, descripcion: "11:40 a.m.", valor: "" },
                     tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 58, descripcion: "15:00 p.m.", valor: "" },
                     tarde_final: { id_cabecera: 10, id_cabecera_detalle: 64, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false
+                    estado: false,
+                    estado_eliminado: false
+
                 },
                 {
                     semana: { id_cabecera: 4, id_cabecera_detalle: 9, descripcion: "Martes", valor: "2" },
@@ -43,15 +45,19 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                     temprano_final: { id_cabecera: 10, id_cabecera_detalle: 54, descripcion: "11:40 a.m.", valor: "" },
                     tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 65, descripcion: "15:00 p.m.", valor: "" },
                     tarde_final: { id_cabecera: 10, id_cabecera_detalle: 72, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false
+                    estado: false,
+                    estado_eliminado: false
+
                 },
                 {
-                    semana: { id_cabecera: 4, id_cabecera_detalle: 10, descripcion: "Miércoles", valor: "3" },
+                    semana: { id_cabecera: 4, id_cabecera_detalle: 10, descripcion: "Miercoles", valor: "3" },
                     temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 40, descripcion: "08:00 a.m.", valor: "" },
                     temprano_final: { id_cabecera: 10, id_cabecera_detalle: 48, descripcion: "11:40 a.m.", valor: "" },
                     tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 57, descripcion: "15:00 p.m.", valor: "" },
                     tarde_final: { id_cabecera: 10, id_cabecera_detalle: 61, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false
+                    estado: false,
+                    estado_eliminado: false
+
                 },
                 {
                     semana: { id_cabecera: 4, id_cabecera_detalle: 11, descripcion: "Jueves", valor: "4" },
@@ -59,7 +65,9 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                     temprano_final: { id_cabecera: 10, id_cabecera_detalle: 53, descripcion: "11:40 a.m.", valor: "" },
                     tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 64, descripcion: "15:00 p.m.", valor: "" },
                     tarde_final: { id_cabecera: 10, id_cabecera_detalle: 72, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false
+                    estado: false,
+                    estado_eliminado: false
+
                 },
                 {
                     semana: { id_cabecera: 4, id_cabecera_detalle: 12, descripcion: "Viernes", valor: "5" },
@@ -67,7 +75,9 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                     temprano_final: { id_cabecera: 10, id_cabecera_detalle: 55, descripcion: "11:40 a.m.", valor: "" },
                     tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 66, descripcion: "15:00 p.m.", valor: "" },
                     tarde_final: { id_cabecera: 10, id_cabecera_detalle: 71, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false
+                    estado: false,
+                    estado_eliminado: false
+
                 },
                 {
                     semana: { id_cabecera: 4, id_cabecera_detalle: 13, descripcion: "Sabado", valor: "6" },
@@ -75,10 +85,13 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                     temprano_final: { id_cabecera: 10, id_cabecera_detalle: 57, descripcion: "11:40 a.m.", valor: "" },
                     tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 68, descripcion: "15:00 p.m.", valor: "" },
                     tarde_final: { id_cabecera: 10, id_cabecera_detalle: 73, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false
+                    estado: false,
+                    estado_eliminado: false
+
                 },
             ],
-            estado: dataPerson?.estado || false
+            estado: dataPerson?.estado || false,
+            estado_eliminado: false
         },
         validationSchema: Yup.object({
             nombre_horario: Yup.string().required('Requerido'),
@@ -104,12 +117,13 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
         }),
         onSubmit: async (values) => {
             try {
-                console.log(values);
 
-                await addSchelude(values as any);
-                update();
-                alert("Creado correctamente!!")
-                onClose();
+                await addSchelude(values as any).then(() => {
+                    console.log(values);
+                    update();
+                    onClose();
+                }).catch((err) => alert(err));
+
             } catch (error) {
                 console.error(error)
             }
@@ -181,7 +195,7 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
         <PopupUpdate>
             <button onClick={onClose} className='flex justify-end w-full'>x</button>
             <form onSubmit={formik.handleSubmit}>
-                <div className="mb-4 flex gap-2">
+                {/* <div className="mb-4 flex gap-2">
                     <label className="block text-gray-700">Nombre Horario</label>
                     <input
                         type="text"
@@ -194,7 +208,7 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                     {formik.touched.nombre_horario && formik.errors.nombre_horario ? (
                         <div className="text-red-500 flex items-center">{formik.errors.nombre_horario}</div>
                     ) : null}
-                </div>
+                </div> */}
 
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -295,23 +309,6 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                         </div>
 
                     ))}
-                </div>
-
-
-                <div className='border border-gray-300 text-left p-2 mt-2'>
-                    <label className='block text-sm font-medium'>Estado</label>
-                    <select
-                        name='estado'
-                        value={formik.values.estado ? 'true' : 'false'}
-                        onChange={(e) => formik.setFieldValue('estado', e.target.value === 'true')}
-                        className='w-full py-2 outline-none px-1'
-                    >
-                        <option value='true'>Habilitado</option>
-                        <option value='false'>Deshabilitado</option>
-                    </select>
-                    {formik.touched.estado && formik.errors.estado ? (
-                        <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
-                    ) : null}
                 </div>
                 <div className="flex justify-end mt-3">
                     <button type="button" className="mr-2 py-2 px-4 bg-gray-500 text-white rounded" onClick={onClose}>Cancelar</button>

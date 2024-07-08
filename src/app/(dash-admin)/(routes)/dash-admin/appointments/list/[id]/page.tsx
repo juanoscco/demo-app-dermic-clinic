@@ -25,7 +25,7 @@ export default function DetailsAppointment({ params }: Props) {
     // TODO: PARA LA NUEVA VERSION PASAR A STEPS
 
     if (error) (<div>Error en carga de datos</div>)
-    if(isLoading) (<div>Cargando....</div>)
+    if (isLoading) (<div>Cargando....</div>)
 
     const tabs: Tab[] = [
         {

@@ -12,7 +12,7 @@ export const appointmentListApi = createApi({
   }),
   endpoints: (builder) => ({
     getAppointmentList: builder.query({
-      query: ({ limit = 10, page = 0, filter = '' }) => `cita?p=${page}&limit=${limit}&filtro=${filter}`,
+      query: ({ limit = 10, page = 0, id_empleado = 0 }) => `cita?p=${page}&limit=${limit}&id_empleado=${id_empleado}`,
     }),
   }),
 });

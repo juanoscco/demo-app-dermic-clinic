@@ -67,13 +67,33 @@ export default function UserCreate() {
                     estado: true,
                 },
                 estado: true,
+                estado_eliminado: false
+
             },
             estado: true,
+            estado_eliminado: false
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
             telefono: Yup.string().required('Requerido'),
-            correo: Yup.string().email('Email inválido'),
+            correo: Yup.string().email('Email inválido').required(),
+            sede: Yup.object().shape({
+                id_sede: Yup.number().required('Requerido'),
+            }),
+            titulo: Yup.object().shape({
+                id_cabecera: Yup.number().required('Requerido'),
+                id_cabecera_detalle: Yup.number().required('Requerido'),
+                descripcion: Yup.string().required('Requerido'),
+            }),
+            dia_sin_refriguerio: Yup.object().shape({
+                id_cabecera: Yup.number().required('Requerido'),
+                id_cabecera_detalle: Yup.number().required('Requerido'),
+                descripcion: Yup.string().required('Requerido'),
+            }),
+            usuario: Yup.object().shape({
+                username: Yup.string().required('Requerido'),
+                password: Yup.string().required('Requerido'),
+            }),
         }),
         onSubmit: async (values, { resetForm }) => {
             // console.log(values)
@@ -232,6 +252,7 @@ export default function UserCreate() {
                         <input
                             type="password"
                             name='usuario.password'
+                            // autocomplete="usuario.password"
                             value={formik.values.usuario.password}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}

@@ -5,8 +5,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {PopupUpdate} from '@/components/popup/popup-update/';
 import { GetDniApiHook } from '@/config/hook-dni';
-import { useGetInfrastructureQuery } from '../../../../infrastructure/list/store/service';
-import { Employee } from "../../../create/interface"
+import { useGetInfrastructureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/infrastructure/list/store/service';
+import { Employee } from '@/app/(dash-admin)/(routes)/dash-admin/persons/create/interface';
 
 interface Props {
   onClose: any;
@@ -16,7 +16,7 @@ interface Props {
 }
 
 
-export default function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
+export  function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
   const [selectedSede, setSelectedSede] = useState(null);
 
   const [updateEmployee, { isLoading: loadingEmployee, isError }] = useUpdateEmployeeMutation();
@@ -82,8 +82,12 @@ export default function EmployeeUpdateComponent({ onClose, id, data, update }: P
           estado: true,
         },
         estado: true,
+        estado_eliminado: false
+
       },
       estado: true,
+      estado_eliminado: false
+
     },
     validationSchema: Yup.object({
       numero: Yup.string().required('Requerido'),

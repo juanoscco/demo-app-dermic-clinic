@@ -28,7 +28,7 @@ export default function DeleteInfraRoomsComponent({ onClose, id, update }: Props
                 <h1 className='font-bold text-2xl'>Eliminar Cuarto</h1>
                 <button onClick={onClose} className='text-2xl text-grayred-500 font-bold'>x</button>
             </div>
-            <p>{id}</p>
+            {/* <p>{id}</p> */}
             <p className="text-lg font-medium my-4">¿Estás seguro de eliminar a este Cuarto?</p>
             <div className='flex justify-between items-center'>
                 <button

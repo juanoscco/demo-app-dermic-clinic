@@ -1,10 +1,9 @@
 import './globals.css'
 import { Providers } from '@/redux/Provider'
 import type { Metadata } from 'next'
-import { Exo_2 } from 'next/font/google'
+import { Nunito } from 'next/font/google'
 
-const exo_2 = Exo_2({ weight: ["300", "400", "500", "600", "700"], subsets: ['cyrillic'] })
-
+const nunito = Nunito({ weight: ["300", "400", "600", "700"], subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Clinica de la Piel',
@@ -19,7 +18,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={exo_2.className}>
+      <body className={nunito.className}>
         <Providers>{children}</Providers>
       </body>
     </html>

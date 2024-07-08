@@ -21,10 +21,10 @@ export default function UpdateProceduresComponents({ onClose, id, data, update }
         initialValues: {
             id_procedimiento: id,
             empresa: {
-                id_empresa: 1
+                id_empresa: data.empresa.id_empresa
             },
             usuario_registro: {
-                id_usuario: 2
+                id_usuario: data.usuario_registro.id_usuario
             },
             nombres: data.nombres || "",
             duracion: {
@@ -46,7 +46,8 @@ export default function UpdateProceduresComponents({ onClose, id, data, update }
                 descripcion: data.subtipo_procedimiento.descripcion || "Privado",
                 valor: data.subtipo_procedimiento.valor || ""
             },
-            estado: true
+            estado: true,
+            estado_eliminado: false
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),

@@ -10,6 +10,8 @@ export interface Headquarters {
     telefono: string;
     empresa: Company;
     estado: boolean;
+    estado_eliminado: Boolean
+
 }
 
 export interface Props {

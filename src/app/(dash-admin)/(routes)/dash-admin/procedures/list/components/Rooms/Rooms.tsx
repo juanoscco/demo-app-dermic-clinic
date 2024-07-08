@@ -15,7 +15,7 @@ export default function RoomsProcedure() {
   const procedures = dataProcedures?.data?.content;
 
   // POST    
-  const [addRoomProcedure, { data: dataRoomProcedure, isLoading: loadingRoom, error: errorRoom}] = useAddRoomProcedureMutation();
+  const [addRoomProcedure, { data: dataRoomProcedure, isLoading: loadingRoom, error: errorRoom }] = useAddRoomProcedureMutation();
   const { data: dataProceduresRoom, refetch: refetchRoomProcedures } = useGetRoomProcedureQuery({ limit: 200, page: 0, filter: '' });
   // FORMATEO DE DATOS
   const [formattedData, setFormattedData] = useState<any[]>([]);
@@ -51,6 +51,7 @@ export default function RoomsProcedure() {
     initialValues: {
       procedimiento: selectedProcedureDetails?.id_procedimiento || null,
       procedimiento_sala_detalle: selectedProcedureDetails?.rooms.map((room: any) => room.idSala) || [],
+      estado_eliminado: false
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -67,7 +68,8 @@ export default function RoomsProcedure() {
           procedimiento_sala_detalle: values.procedimiento_sala_detalle.map((id_sala_tratamiento: any) => ({
             sala_tratamiento: { id_sala_tratamiento }
           })),
-          estado: true
+          estado: true,
+          estado_eliminado: values.estado_eliminado
         };
 
         if (selectedProcedureDetails?.id_procedimiento_sala) {
@@ -99,7 +101,7 @@ export default function RoomsProcedure() {
 
     procedures?.forEach((procedure: any) => {
       const match = dataProceduresRoom?.data?.content.find((data: any) =>
-        data.procedimiento.id_procedimiento === procedure.id_procedimiento 
+        data.procedimiento.id_procedimiento === procedure.id_procedimiento
       );
 
       const procedureData: any = {
@@ -121,7 +123,7 @@ export default function RoomsProcedure() {
 
         infraRoom.procedimiento_sala_detalle.forEach((room: any) => {
           const roomMatch = match && match.procedimiento_sala_detalle.some((detail: any) =>
-            detail.sala_tratamiento.id_sala_tratamiento === Number(room.id_sala_tratamiento) 
+            detail.sala_tratamiento.id_sala_tratamiento === Number(room.id_sala_tratamiento)
           );
 
           if (roomMatch) {

@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 import { Alert } from '@/components/popup/popup-alert';
 import { Patient } from './interface';
 import { useRouter } from 'next/navigation';
+import { decodeToken } from '@/app/(dash-admin)/utils';
+
 
 export default function PatientsCreate() {
 
@@ -17,14 +19,17 @@ export default function PatientsCreate() {
     //DNI 
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
 
+    // Ejemplo de uso
+    const decoded = decodeToken({});
+    // console.log(decoded);
     const formik = useFormik<Patient>({
         initialValues: {
             nombres: "",
             empresa: {
-                id_empresa: 1
+                id_empresa: decoded?.id_empresa
             },
             usuario_registro: {
-                id_usuario: 2
+                id_usuario: decoded?.id_usuario
             },
             tipo_documento_identidad: {
                 id_cabecera: 2,
@@ -52,7 +57,8 @@ export default function PatientsCreate() {
                 descripcion: "Nuevo",
                 valor: ""
             },
-            estado: true
+            estado: true,
+            estado_eliminado: false
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),

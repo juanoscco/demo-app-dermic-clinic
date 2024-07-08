@@ -68,7 +68,7 @@ export default function AppointmentCalendar() {
 
     const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 20, page: 0, filter: '' });
     const { data: dataEmployee, isLoading: loadEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 20000, page: 0, filter: '' });
-    const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
+    const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, id_empleado: 0 });
 
     // ***
     const [selectedDate, setSelectedDate] = useState(getCurrentDate());
@@ -171,6 +171,21 @@ export default function AppointmentCalendar() {
     }
 
     // ***
+    const [currentPage, setCurrentPage] = useState(0);
+    const pageSize = 4; // Número de doctores por página
+
+    const totalPages = Math.ceil(filteredEmployee?.length / pageSize);
+
+    const handlePrevPage = () => {
+        setCurrentPage((prevPage) => prevPage - 1);
+    };
+
+    const handleNextPage = () => {
+        setCurrentPage((prevPage) => prevPage + 1);
+    };
+
+    const renderedEmployees = filteredEmployee?.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+
     return (
         <React.Fragment>
             <h1 className='text-2xl'>Calendario de citas medicas</h1>
@@ -209,18 +224,34 @@ export default function AppointmentCalendar() {
                         ))}
                     </select>
                 </div>
+                <div className="flex justify-center items-center space-x-4">
+                    <button
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 0}
+                        className="px-4 py-2  text-gray-700  hover:underline "
+                    >
+                        Página Anterior
+                    </button>
+                    <button
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages - 1}
+                        className="px-4 py-2  text-gray-700  hover:underline "
+                    >
+                        Página Siguiente
+                    </button>
+                </div>
             </section>
 
             <section className='w-full bg-white h-[40rem] overflow-x-auto mt-5'>
                 {/* TABLA CALENDARIO */}
+
                 <section className='w-full p-4'>
                     <table className='w-full bg-white rounded-lg'>
                         <thead>
                             <tr>
                                 <th className='px-4 py-2 border w-24'>Hora</th>
-                                {filteredEmployee && filteredEmployee.length > 0 ? (
+                                {/* {filteredEmployee && filteredEmployee.length > 0 ? (
                                     filteredEmployee
-                                        // .filter((employee: any) => employee.id_empleado !== 1)
                                         .map((employee: any, i: number) => (
                                             <th key={employee.id_empleado} className='px-4 py-2 border'>
                                                 {employee.nombres}
@@ -228,16 +259,24 @@ export default function AppointmentCalendar() {
                                         ))
                                 ) : (
                                     <th className='px-4 py-2 border'>No hay doctores disponibles para esta sede</th>
+                                )} */}
+                                {renderedEmployees && renderedEmployees?.length > 0 ? (
+                                    renderedEmployees?.map((employee: any) => (
+                                        <th key={employee.id_empleado} className="px-4 py-2 border">
+                                            {employee.nombres}
+                                        </th>
+                                    ))
+                                ) : (
+                                    <th className="px-4 py-2 border">No hay doctores disponibles para esta sede</th>
                                 )}
                             </tr>
                         </thead>
-                        <tbody>
+                        {/* <tbody>
                             {hours.map((hour: any, i: number) => (
                                 <tr key={i}>
                                     <td className='border h-24 text-center w-10'>{hour.descripcion}</td>
                                     {filteredEmployee && filteredEmployee.length > 0 ? (
                                         filteredEmployee
-                                            // .filter((employee: any) => employee.id_empleado !== 1)
                                             .map((employee: any, j: number) => {
                                                 const filteredAppointment = filterAppointmentsByHourAndEmployee(hour, employee, selectedSedeId, selectedDate, selectedProfessionId);
                                                 return (
@@ -246,11 +285,9 @@ export default function AppointmentCalendar() {
                                                         className={`border h-20 w-52 cursor-pointer`}
                                                         onClick={() => {
                                                             if (!filteredAppointment) handleCellClick(hour, employee);
-                                                            // handleCellClick(hour, employee)
                                                         }}
                                                     >
                                                         {filteredAppointment ? (
-                                                            // item_color
                                                             <div
                                                                 className={`flex flex-col justify-between h-5/6 p-2 mx-1
                                                              ${filteredAppointment.item_color === 'Blue' ? 'bg-blue-300' : 'bg-orange-300'}`}
@@ -298,6 +335,134 @@ export default function AppointmentCalendar() {
                                     ) : (
                                         <td className=' border h-20 w-52 bg-gray-200 '></td>
                                     )}
+                                </tr>
+                            ))}
+                        </tbody> */}
+                        <tbody>
+                            {hours.map((hour: any, i: number) => (
+                                <tr key={i}>
+                                    <td className="border h-24 text-center w-10">{hour.descripcion}</td>
+                                    {renderedEmployees?.map((employee: any, j: number) => {
+                                        const filteredAppointment = filterAppointmentsByHourAndEmployee(
+                                            hour,
+                                            employee,
+                                            selectedSedeId,
+                                            selectedDate,
+                                            selectedProfessionId
+                                        );
+                                        return (
+                                            <td
+                                                key={j}
+                                                className={`border h-20 w-52 cursor-pointer`}
+                                                onClick={() => {
+                                                    if (!filteredAppointment) handleCellClick(hour, employee);
+                                                }}
+                                            >
+                                                {filteredAppointment ? (
+                                                    // <div className="flex flex-col justify-between h-5/6 p-2 mx-1">
+                                                    //     <div className="flex flex-wrap items-center justify-between">
+                                                    //         <div className="flex flex-col">
+                                                    //             <h3 className="capitalize text-xs font-bold">
+                                                    //                 {filteredAppointment.item_patient_name.toLowerCase()}
+                                                    //             </h3>
+                                                    //             <span className="text-xs underline">
+                                                    //                 {filteredAppointment.item_procedure_name}
+                                                    //             </span>
+                                                    //         </div>
+                                                    //         <div className="flex gap-2">
+                                                    //             <Link
+                                                    //                 href={`list/${filteredAppointment.id_appointment}`}
+                                                    //                 className="text-xs bg-yellow-400 p-1 rounded-md"
+                                                    //             >
+                                                    //                 Detalle
+                                                    //             </Link>
+                                                    //             <button
+                                                    //                 className="text-xs bg-gray-200 p-1 rounded-md"
+                                                    //                 onClick={() =>
+                                                    //                     handleDetailAppointmentClick(
+                                                    //                         filteredAppointment.id_appointment
+                                                    //                     )
+                                                    //                 }
+                                                    //             >
+                                                    //                 Atencion
+                                                    //             </button>
+                                                    //         </div>
+                                                    //     </div>
+                                                    //     <div className="flex justify-between">
+                                                    //         <div className="flex gap-2">
+                                                    //             <div className="h-4 w-4 bg-white text-sm flex items-center justify-center">
+                                                    //                 {filteredAppointment.item_id_state_time === 35
+                                                    //                     ? 'N'
+                                                    //                     : filteredAppointment.item_id_state_time === 36
+                                                    //                         ? 'A'
+                                                    //                         : ''}
+                                                    //             </div>
+                                                    //             <div className="h-4 w-4 bg-white text-sm flex items-center justify-center">
+                                                    //                 R
+                                                    //             </div>
+                                                    //         </div>
+                                                    //         <div
+                                                    //             className={`w-12 h-4 rounded-sm ${filteredAppointment.item_entrace &&
+                                                    //                 filteredAppointment.item_atention === null &&
+                                                    //                 filteredAppointment.item_exit === null
+                                                    //                 ? 'bg-green-500'
+                                                    //                 : filteredAppointment.item_entrace &&
+                                                    //                     filteredAppointment.item_atention &&
+                                                    //                     filteredAppointment.item_exit === null
+                                                    //                     ? 'bg-yellow-300'
+                                                    //                     : filteredAppointment.item_entrace &&
+                                                    //                         filteredAppointment.item_atention &&
+                                                    //                         filteredAppointment.item_exit
+                                                    //                         ? 'bg-blue-500'
+                                                    //                         : 'bg-white'
+                                                    //                 }`}
+                                                    //         ></div>
+                                                    //     </div>
+                                                    // </div>
+                                                    <div
+                                                        className={`flex flex-col justify-between h-5/6 p-2 mx-1
+                                                             ${filteredAppointment.item_color === 'Blue' ? 'bg-blue-300' : 'bg-orange-300'}`}
+
+                                                    >
+                                                        <div className='flex flex-wrap items-center justify-between'>
+                                                            <div className='flex flex-col '>
+                                                                <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>
+                                                                <span className='text-xs underline'>{filteredAppointment.item_procedure_name}</span>
+
+                                                            </div>
+
+                                                            <div className='flex gap-2'>
+                                                                <Link href={`list/${filteredAppointment.id_appointment}`} className='text-xs bg-yellow-400 p-1 rounded-md' >Detalle</Link>
+                                                                <button
+                                                                    className='text-xs bg-gray-200 p-1 rounded-md'
+                                                                    onClick={() => handleDetailAppointmentClick(filteredAppointment.id_appointment)}
+                                                                >
+                                                                    Atencion
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div className='flex justify-between'>
+                                                            <div className='flex gap-2'>
+                                                                <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>
+                                                                    {filteredAppointment.item_id_state_time === 35 ? 'N' : filteredAppointment.item_id_state_time === 36 ? 'A' : ''}
+                                                                </div>
+                                                                <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>R</div>
+                                                            </div>
+                                                            <div
+                                                                className={
+                                                                    `w-12 h-4 rounded-sm ${filteredAppointment.item_entrace && filteredAppointment.item_atention === null && filteredAppointment.item_exit === null ? 'bg-green-500' :
+                                                                        filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit === null ? 'bg-yellow-300' :
+                                                                            filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit ? 'bg-blue-500' : 'bg-white'}`}
+                                                            >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div></div>
+                                                )}
+                                            </td>
+                                        );
+                                    })}
                                 </tr>
                             ))}
                         </tbody>

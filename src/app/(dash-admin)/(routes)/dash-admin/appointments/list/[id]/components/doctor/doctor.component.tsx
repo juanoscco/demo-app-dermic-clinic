@@ -36,9 +36,6 @@ export default function DoctorComponent({ dataAppointment }: Props) {
                     </div>
                 </div>
             </section>
-
-
-
         </>
     )
 }

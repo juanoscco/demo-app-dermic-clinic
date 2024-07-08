@@ -18,17 +18,17 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
     const formik = useFormik<Schedule>({
         initialValues: {
             id_horario_trabajo: idUpdate,
-            nombre_horario: dataUpdate.nombre_horario,
+            nombre_horario: 'Horario',
             usuario_registro: {
-                id_usuario: dataUpdate?.usuario_registro?.id_usuario,
-                username: dataUpdate?.usuario_registro?.username,
-                rol: {
-                    id_rol: dataUpdate?.usuario_registro.rol.id_rol,
-                    descripcion: dataUpdate?.usuario_registro.rol.descripcion,
-                    valor: dataUpdate?.usuario_registro.rol.valor,
-                    estado: dataUpdate?.usuario_registro.rol.estado
-                },
-                estado: dataUpdate?.usuario_registro.estado
+                id_usuario: dataUpdate?.usuario?.id_usuario,
+                // username: dataUpdate?.usuario_registro?.username,
+                // rol: {
+                //     id_rol: dataUpdate?.usuario_registro.rol.id_rol,
+                //     descripcion: dataUpdate?.usuario_registro.rol.descripcion,
+                //     valor: dataUpdate?.usuario_registro.rol.valor,
+                //     estado: dataUpdate?.usuario_registro.rol.estado
+                // },
+                // estado: dataUpdate?.usuario_registro.estado
             },
             empleado: {
                 id_empleado: dataUpdate?.empleado.id_empleado,
@@ -36,212 +36,212 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
             empresa: {
                 id_empresa: dataUpdate?.empresa.id_empresa,
             },
-            horario_trabajo_detalle: [
+            horario_trabajo_detalles: [
                 {
                     semana: {
                         id_cabecera: 4,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[0].semana.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[0].semana.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[0].semana.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[0]?.semana.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[0]?.semana.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[0]?.semana.valor,
                     },
                     temprano_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[0].temprano_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[0].temprano_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[0].temprano_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[0].temprano_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[0].temprano_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[0].temprano_inicio.valor,
                     },
                     temprano_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[0].temprano_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[0].temprano_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[0].temprano_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[0].temprano_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[0].temprano_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[0].temprano_final.valor,
                     },
                     tarde_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[0].tarde_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[0].tarde_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[0].tarde_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[0].tarde_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[0].tarde_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[0].tarde_inicio.valor,
                     },
                     tarde_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[0].tarde_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[0].tarde_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[0].tarde_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[0].tarde_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[0].tarde_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[0].tarde_final.valor,
                     },
-                    estado: dataUpdate.horario_trabajo_detalle[0].estado,
+                    estado: dataUpdate.horario_trabajo_detalles[0].estado,
                 },
                 {
                     semana: {
                         id_cabecera: 4,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[1].semana.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[1].semana.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[1].semana.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[1].semana.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[1].semana.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[1].semana.valor,
                     },
                     temprano_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[1].temprano_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[1].temprano_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[1].temprano_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[1].temprano_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[1].temprano_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[1].temprano_inicio.valor,
                     },
                     temprano_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[1].temprano_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[1].temprano_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[1].temprano_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[1].temprano_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[1].temprano_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[1].temprano_final.valor,
                     },
                     tarde_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[1].tarde_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[1].tarde_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[1].tarde_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[1].tarde_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[1].tarde_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[1].tarde_inicio.valor,
                     },
                     tarde_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[1].tarde_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[1].tarde_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[1].tarde_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[1].tarde_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[1].tarde_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[1].tarde_final.valor,
                     },
-                    estado: dataUpdate.horario_trabajo_detalle[1].estado,
+                    estado: dataUpdate.horario_trabajo_detalles[1].estado,
                 },
                 {
                     semana: {
                         id_cabecera: 4,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[2].semana.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[2].semana.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[2].semana.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[2].semana.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[2].semana.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[2].semana.valor,
                     },
                     temprano_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[2].temprano_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[2].temprano_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[2].temprano_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[2].temprano_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[2].temprano_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[2].temprano_inicio.valor,
                     },
                     temprano_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[2].temprano_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[2].temprano_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[2].temprano_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[2].temprano_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[2].temprano_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[2].temprano_final.valor,
                     },
                     tarde_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[2].tarde_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[2].tarde_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[2].tarde_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[2].tarde_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[2].tarde_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[2].tarde_inicio.valor,
                     },
                     tarde_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[2].tarde_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[2].tarde_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[2].tarde_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[2].tarde_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[2].tarde_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[2].tarde_final.valor,
                     },
-                    estado: dataUpdate.horario_trabajo_detalle[2].estado,
+                    estado: dataUpdate.horario_trabajo_detalles[2].estado,
                 },
                 {
                     semana: {
                         id_cabecera: 4,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[3]?.semana.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[3]?.semana.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[3]?.semana.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[3]?.semana.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[3]?.semana.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[3]?.semana.valor,
                     },
                     temprano_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[3]?.temprano_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[3]?.temprano_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[3]?.temprano_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[3]?.temprano_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[3]?.temprano_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[3]?.temprano_inicio.valor,
                     },
                     temprano_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[3]?.temprano_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[3]?.temprano_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[3]?.temprano_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[3]?.temprano_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[3]?.temprano_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[3]?.temprano_final.valor,
                     },
                     tarde_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[3]?.tarde_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[3]?.tarde_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[3]?.tarde_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[3]?.tarde_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[3]?.tarde_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[3]?.tarde_inicio.valor,
                     },
                     tarde_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[3]?.tarde_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[3]?.tarde_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[3]?.tarde_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[3]?.tarde_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[3]?.tarde_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[3]?.tarde_final.valor,
                     },
-                    estado: dataUpdate.horario_trabajo_detalle[3]?.estado,
+                    estado: dataUpdate.horario_trabajo_detalles[3]?.estado,
                 },
                 {
                     semana: {
                         id_cabecera: 4,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[4]?.semana.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[4]?.semana.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[4]?.semana.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[4]?.semana.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[4]?.semana.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[4]?.semana.valor,
                     },
                     temprano_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[4]?.temprano_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[4]?.temprano_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[4]?.temprano_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[4]?.temprano_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[4]?.temprano_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[4]?.temprano_inicio.valor,
                     },
                     temprano_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[4]?.temprano_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[4]?.temprano_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[4]?.temprano_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[4]?.temprano_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[4]?.temprano_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[4]?.temprano_final.valor,
                     },
                     tarde_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[4]?.tarde_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[4]?.tarde_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[4]?.tarde_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[4]?.tarde_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[4]?.tarde_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[4]?.tarde_inicio.valor,
                     },
                     tarde_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[4]?.tarde_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[4]?.tarde_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[4]?.tarde_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[4]?.tarde_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[4]?.tarde_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[4]?.tarde_final.valor,
                     },
-                    estado: dataUpdate.horario_trabajo_detalle[4]?.estado,
+                    estado: dataUpdate.horario_trabajo_detalles[4]?.estado,
                 },
                 {
                     semana: {
                         id_cabecera: 4,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[5]?.semana.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[5]?.semana.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[5]?.semana.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[5]?.semana.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[5]?.semana.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[5]?.semana.valor,
                     },
                     temprano_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[5]?.temprano_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[5]?.temprano_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[5]?.temprano_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[5]?.temprano_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[5]?.temprano_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[5]?.temprano_inicio.valor,
                     },
                     temprano_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[5]?.temprano_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[5]?.temprano_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[5]?.temprano_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[5]?.temprano_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[5]?.temprano_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[5]?.temprano_final.valor,
                     },
                     tarde_inicio: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[5]?.tarde_inicio.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[5]?.tarde_inicio.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[5]?.tarde_inicio.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[5]?.tarde_inicio.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[5]?.tarde_inicio.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[5]?.tarde_inicio.valor,
                     },
                     tarde_final: {
                         id_cabecera: 10,
-                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalle[5]?.tarde_final.id_cabecera_detalle,
-                        descripcion: dataUpdate.horario_trabajo_detalle[5]?.tarde_final.descripcion,
-                        valor: dataUpdate.horario_trabajo_detalle[5]?.tarde_final.valor,
+                        id_cabecera_detalle: dataUpdate.horario_trabajo_detalles[5]?.tarde_final.id_cabecera_detalle,
+                        descripcion: dataUpdate.horario_trabajo_detalles[5]?.tarde_final.descripcion,
+                        valor: dataUpdate.horario_trabajo_detalles[5]?.tarde_final.valor,
                     },
-                    estado: dataUpdate.horario_trabajo_detalle[5]?.estado,
+                    estado: dataUpdate.horario_trabajo_detalles[5]?.estado,
                 },
             ],
-            
+
             estado: dataUpdate.estado || false
         },
         validationSchema: Yup.object({
             nombre_horario: Yup.string().required('Requerido'),
-            horario_trabajo_detalle: Yup.array().of(
+            horario_trabajo_detalles: Yup.array().of(
                 Yup.object({
                     semana: Yup.object({
                         descripcion: Yup.string().required('Required'),
@@ -263,6 +263,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
         }),
         onSubmit: async (values) => {
             try {
+                console.log(values);
                 await updateSchedule({ scheduleId: values.id_horario_trabajo, scheduleData: values }).unwrap();
                 onClose();
                 update();
@@ -324,22 +325,25 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
     // const handleSelectChange = (e: any, index: number, field: any, optionsArray: any) => {
     //     const value = parseInt(e.target.value);
     //     const option = optionsArray.find((opcion: any) => opcion.id_cabecera_detalle === value);
-    //     formik.setFieldValue(`horario_trabajo_detalle[${index}].${field}`, option);
+    //     formik.setFieldValue(`horario_trabajo_detalles[${index}].${field}`, option);
     // };
 
     const handleActivationToggle = (index: any, active: any) => {
-        formik.setFieldValue(`horario_trabajo_detalle[${index}].estado`, active);
+        formik.setFieldValue(`horario_trabajo_detalles[${index}].estado`, active);
     };
 
     const handleSelectChange = (e: any, index: any, field: any, options: any) => {
         const value = options.find((option: any) => option.id_cabecera_detalle === parseFloat(e.target.value));
-        formik.setFieldValue(`horario_trabajo_detalle[${index}].${field}`, value);
+        formik.setFieldValue(`horario_trabajo_detalles[${index}].${field}`, value);
     };
     return (
         <PopupUpdate>
-            <button onClick={onClose} className='flex justify-end w-full'>x</button>
+            <div>
+                <h1>Actualizar Horario</h1>
+                <button onClick={onClose} className='flex justify-end w-full'>x</button>
+            </div>
             <form onSubmit={formik.handleSubmit}>
-                <div className="mb-4 flex gap-2">
+                {/* <div className="mb-4 flex gap-2">
                     <label className="block text-gray-700">Nombre Horario</label>
                     <input
                         type="text"
@@ -352,11 +356,11 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                     {formik.touched.nombre_horario && formik.errors.nombre_horario ? (
                         <div className="text-red-500 flex items-center">{formik.errors.nombre_horario}</div>
                     ) : null}
-                </div>
+                </div> */}
 
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {formik.values.horario_trabajo_detalle?.map((detalle, index) => (
+                    {formik.values.horario_trabajo_detalles?.map((detalle, index) => (
                         <div key={index} className='border border-gray-300  p-4 '>
                             <h1 className="font-bold text-lg">{detalle?.semana.descripcion}</h1>
 
@@ -365,7 +369,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                                     <div className="mb-2">
                                         <label className="block text-gray-700">Temprano Inicio</label>
                                         <select
-                                            name={`horario_trabajo_detalle[${index}].temprano_inicio.id_cabecera_detalle`}
+                                            name={`horario_trabajo_detalles[${index}].temprano_inicio.id_cabecera_detalle`}
                                             onChange={(e) => handleSelectChange(e, index, 'temprano_inicio', opcionesInicioTemprano)}
                                             onBlur={formik.handleBlur}
                                             value={detalle.temprano_inicio?.id_cabecera_detalle || ''}
@@ -382,7 +386,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                                     <div className="mb-2">
                                         <label className="block text-gray-700">Tarde Inicio</label>
                                         <select
-                                            name={`horario_trabajo_detalle[${index}].tarde_inicio.id_cabecera_detalle`}
+                                            name={`horario_trabajo_detalles[${index}].tarde_inicio.id_cabecera_detalle`}
                                             onChange={(e) => handleSelectChange(e, index, 'tarde_inicio', opcionesInicioTarde)}
                                             onBlur={formik.handleBlur}
                                             value={detalle.tarde_inicio?.id_cabecera_detalle || ''}
@@ -401,7 +405,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                                     <div className="mb-2">
                                         <label className="block text-gray-700">Temprano Final</label>
                                         <select
-                                            name={`horario_trabajo_detalle[${index}].temprano_final.id_cabecera_detalle`}
+                                            name={`horario_trabajo_detalles[${index}].temprano_final.id_cabecera_detalle`}
                                             onChange={(e) => handleSelectChange(e, index, 'temprano_final', opcionesFinalTemprano)}
                                             onBlur={formik.handleBlur}
                                             value={detalle.temprano_final?.id_cabecera_detalle || ''}
@@ -418,7 +422,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                                     <div className="mb-2">
                                         <label className="block text-gray-700">Tarde Final</label>
                                         <select
-                                            name={`horario_trabajo_detalle[${index}].tarde_final.id_cabecera_detalle`}
+                                            name={`horario_trabajo_detalles[${index}].tarde_final.id_cabecera_detalle`}
                                             onChange={(e) => handleSelectChange(e, index, 'tarde_final', opcionesFinalTarde)}
                                             onBlur={formik.handleBlur}
                                             value={detalle.tarde_final?.id_cabecera_detalle || ''}
@@ -456,7 +460,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                 </div>
 
 
-                <div className='border border-gray-300 text-left p-2 mt-2'>
+                {/* <div className='border border-gray-300 text-left p-2 mt-2'>
                     <label className='block text-sm font-medium'>Estado</label>
                     <select
                         name='estado'
@@ -470,7 +474,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                     {formik.touched.estado && formik.errors.estado ? (
                         <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
                     ) : null}
-                </div>
+                </div> */}
                 <div className="flex justify-end mt-3">
                     <button type="button" className="mr-2 py-2 px-4 bg-gray-500 text-white rounded" onClick={onClose}>Cancelar</button>
                     <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded">{isLoading ? 'Actualizar...' : 'Actualizar'}</button>

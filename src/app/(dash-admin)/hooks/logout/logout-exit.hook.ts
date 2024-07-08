@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-// import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 // import { useLogoutMutation } from '@/app/(auth)/service/authApi';
 
 export default function LogoutExitHook() {
@@ -8,6 +8,7 @@ export default function LogoutExitHook() {
   const handleLogout = async () => {
     // await logout()
     localStorage.removeItem('token');
+    Cookies.remove('logged');
     router.push('/')
   }
  

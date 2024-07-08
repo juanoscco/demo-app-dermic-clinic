@@ -54,6 +54,7 @@ export default function Sedes() {
     initialValues: {
       sede: selectedLocationDetails?.id_sede || null,
       procedimiento_sede_detalle: selectedLocationDetails?.procedures.map((proc: any) => proc.id_proc) || [],
+      estado_eliminado: false
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -69,7 +70,8 @@ export default function Sedes() {
           procedimiento_sede_detalle: values.procedimiento_sede_detalle.map((id_procedimiento: any) => ({
             procedimiento: { id_procedimiento }
           })),
-          estado: true
+          estado: true,
+          estado_eliminado: values.estado_eliminado
         };
 
         if (selectedLocationDetails?.id_procedimiento_sede) {

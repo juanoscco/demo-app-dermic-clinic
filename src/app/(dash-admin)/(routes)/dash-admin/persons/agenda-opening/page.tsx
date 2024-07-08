@@ -83,7 +83,7 @@ export default function PersonsAgendaOpening() {
     hora_inicio: 'Hora Inicio',
     hora_final: 'Hora Final'
   };
-  const handleExportExcel = ExcelExport({ data: data?.data.content, columns: columnsForExcelAndPrint, filename: 'Apertura de agenda' })
+  const handleExportExcel = ExcelExport({ data: data?.data?.content, columns: columnsForExcelAndPrint, filename: 'Apertura de agenda' })
 
   const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrint, nametitle: 'Apertura de agenda' })
 

@@ -167,45 +167,9 @@ export default function PatientComponent({
     }, [filter, refetch]);
 
     return (
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+        <section >
             {/* Datos */}
-            {selectedPatient ? (
-                <form onSubmit={formik.handleSubmit} className=" p-6  border-r-2">
-                    <h2 className="text-lg  mb-4 font-bold">Detalles del Paciente Seleccionado</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                        <div className="border-b border-gray-300 pb-2">
-                            <p className="text-gray-600 text-sm">Nombre:</p>
-                            <p className="capitalize text-gray-800 font-medium">{selectedPatient.nombres.toLowerCase()}</p>
-                            <p className="text-gray-600 text-sm mt-2">Email:</p>
-                            <p className="text-gray-800">{selectedPatient.numero_documento_identidad}</p>
-                        </div>
-                        <div className="border-b border-gray-300 pb-2">
-                            <p className="text-gray-600 text-sm">Email:</p>
-                            <p className="capitalize text-gray-800 font-medium">{selectedPatient.email}</p>
-                            <p className="text-gray-600 text-sm mt-2">Teléfono:</p>
-                            <p className="text-gray-800">{selectedPatient.telefono}</p>
-                        </div>
-
-                        <div className="border-b border-gray-300 pb-2">
-                            <p className="text-gray-600 text-sm">Dirección:</p>
-                            <p className="text-gray-800">{selectedPatient.direccion}</p>
-                            <p className="text-gray-600 text-sm mt-2">Lugar de nacimiento:</p>
-                            <p className="text-gray-800">{selectedPatient.lugar_nacimiento}</p>
-
-                        </div>
-                        <div className="border-b border-gray-300 pb-2">
-                            <p className="text-gray-600 text-sm mt-2">Estado de antigüedad:</p>
-                            <p className="text-gray-800">{selectedPatient.estado_antiguedad.descripcion}</p>
-                            <p className="text-gray-600 text-sm">Estado civil:</p>
-                            <p className="text-gray-800">{selectedPatient.estado_civil.descripcion}</p>
-                        </div>
-                    </div>
-                    <button type='submit'>{appointmentLoad?'Cargando...':'Guardar'}</button>
-
-                </form>
-            ) : (
-                <section className=" p-6  border-r-2 ">
-                    <h2 className="text-lg  mb-4 font-bold">Detalles del Paciente</h2>
+            <section className=" p-6 rounded-lg ">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                         <div className="border-b border-gray-300 pb-2">
                             <p className="text-gray-600 text-sm">Nombre:</p>
@@ -234,7 +198,6 @@ export default function PatientComponent({
                     </div>
 
                 </section>
-            )}
             {/* Cambiar ID
             <section className="py-2 overflow-auto">
                 <h1 className='text-xl font-bold'>Seleccionar paciente</h1>

@@ -46,8 +46,10 @@ export default function CreateInfraRoomComponent({ id, dataInfra, update, onClos
         id_empresa: 1,
       },
       nombres: '',
-      piso:  '',
-      estado:  true,
+      piso: '',
+      estado: true,
+      estado_eliminado: false
+
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -55,7 +57,6 @@ export default function CreateInfraRoomComponent({ id, dataInfra, update, onClos
         console.log(values);
         await addRoom(values);
         update();
-        alert("Creado correctamente");
         onClose();
       } catch (error) {
         console.error('Error al agregar el consultorio:', error);
@@ -106,7 +107,7 @@ export default function CreateInfraRoomComponent({ id, dataInfra, update, onClos
         </div>
 
 
-        <div className='border border-gray-300 text-left p-2'>
+        {/* <div className='border border-gray-300 text-left p-2'>
           <label className='block text-sm font-medium'>Estado</label>
           <select
             name='estado'
@@ -120,7 +121,7 @@ export default function CreateInfraRoomComponent({ id, dataInfra, update, onClos
           {formik.touched.estado && formik.errors.estado ? (
             <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
           ) : null}
-        </div>
+        </div> */}
         <button
           type='submit'
           className='px-4 py-2 bg-[#82b440] text-white hover:bg-green-700'

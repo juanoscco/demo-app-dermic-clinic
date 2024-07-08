@@ -3,25 +3,28 @@ import { GetDniApiHook } from '@/config/hook-dni';
 import React, { useEffect } from 'react'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { decodeToken } from '@/app/(dash-admin)/utils';
+
 interface Props {
     addPatient?: any;
     loadingPatient?: any;
     nextStep?: any;
-    refetch?:any;
+    refetch?: any;
 }
 
 export default function CreatePatientComponent({ addPatient, loadingPatient, nextStep, refetch }: Props) {
 
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
+    const decoded = decodeToken({});
 
     const formik = useFormik({
         initialValues: {
             nombres: "",
             empresa: {
-                id_empresa: 1
+                id_empresa: decoded?.id_empresa
             },
             usuario_registro: {
-                id_usuario: 2
+                id_usuario: decoded?.id_usuario
             },
             tipo_documento_identidad: {
                 id_cabecera: 2,
@@ -49,29 +52,30 @@ export default function CreatePatientComponent({ addPatient, loadingPatient, nex
                 descripcion: "Nuevo",
                 valor: ""
             },
-            estado: true
+            estado: true,
+            estado_eliminado: false
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
-            tipo_documento_identidad: Yup.object({
-                descripcion: Yup.string().required('Requerido'),
-            }).required('Requerido'),
-            numero_documento_identidad: Yup.string().required('Requerido'),
+            // tipo_documento_identidad: Yup.object({
+            //     descripcion: Yup.string().required('Requerido'),
+            // }).required('Requerido'),
+            // numero_documento_identidad: Yup.string().required('Requerido'),
             telefono: Yup.string()
                 .matches(/^[0-9]+$/, 'El teléfono debe contener solo números')
                 .required('Requerido'),
-            nacimiento: Yup.date().required('Requerido'),
-            estado_civil: Yup.object({
-                descripcion: Yup.string().required('Requerido'),
-            }).required('Requerido'),
-            ocupacion: Yup.string().required('Requerido'),
-            email: Yup.string().email('Correo electrónico no válido').required('Requerido'),
-            direccion: Yup.string().required('Requerido'),
-            distrito: Yup.string().required('Requerido'),
-            lugar_nacimiento: Yup.string().required('Requerido'),
-            estado_antiguedad: Yup.object({
-                descripcion: Yup.string().required('Requerido'),
-            }).required('Requerido'),
+            // nacimiento: Yup.date().required('Requerido'),
+            // estado_civil: Yup.object({
+            //     descripcion: Yup.string().required('Requerido'),
+            // }).required('Requerido'),
+            // ocupacion: Yup.string().required('Requerido'),
+            email: Yup.string().email('Correo electrónico no válido')
+            // direccion: Yup.string().required('Requerido'),
+            // distrito: Yup.string().required('Requerido'),
+            // lugar_nacimiento: Yup.string().required('Requerido'),
+            // estado_antiguedad: Yup.object({
+            //     descripcion: Yup.string().required('Requerido'),
+            // }).required('Requerido'),
         }),
         onSubmit: async (values, { resetForm }) => {
             // console.log(values);
@@ -105,7 +109,7 @@ export default function CreatePatientComponent({ addPatient, loadingPatient, nex
                 <form
                     onSubmit={formik.handleSubmit}
                     className="grid grid-cols-1 md:grid-cols-2 gap-5"
-                    >
+                >
                     <div className='border border-gray-300 text-left p-2'>
                         <label className='text-font-777 text-sm' htmlFor="numero_documento_identidad">DNI  <span className="text-red-500">*</span></label>
                         <div className='flex gap-3'>

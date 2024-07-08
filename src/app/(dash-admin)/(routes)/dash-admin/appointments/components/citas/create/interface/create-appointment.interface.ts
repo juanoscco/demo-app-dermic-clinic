@@ -45,6 +45,7 @@ export interface Appointment {
     empleado: Empleado;
     hora: Hora;
     estado: boolean;
+    estado_eliminado:boolean
 }
 
 export interface ResponseAppointment {

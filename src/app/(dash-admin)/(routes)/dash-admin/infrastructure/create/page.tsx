@@ -4,9 +4,17 @@ import { useAddInfrastructureMutation } from './store/service';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Alert } from '@/components/popup/popup-alert';
+import { decodeToken } from '@/app/(dash-admin)/utils';
+import { useRouter } from 'next/navigation';
 
 export default function InfrastructureCreate() {
     const [addInfrastructure, { data, isLoading, isError }] = useAddInfrastructureMutation();
+
+
+    const router = useRouter();
+
+
+
     const formik = useFormik({
         initialValues: {
             nombres: '',
@@ -16,22 +24,24 @@ export default function InfrastructureCreate() {
                 id_empresa: 1,
             },
             estado: true,
+            estado_eliminado: false
+
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
-            direccion: Yup.string().required('Requerido'),
-            telefono: Yup.string().required('Requerido'),
             empresa: Yup.object({
                 id_empresa: Yup.number().required('Requerido'),
             }),
             // estado: Yup.boolean().required('Requerido'),
         }),
         onSubmit: async (values, { resetForm }) => {
-            // console.log(values)
             await addInfrastructure(values);
             resetForm();
+            router.push('./list')
         },
     });
+
+
     return (
         <React.Fragment>
             <h1 className='text-2xl'>Creacion de infraestructura</h1>
@@ -69,9 +79,7 @@ export default function InfrastructureCreate() {
                             onBlur={formik.handleBlur}
                             className='w-full py-2 outline-none px-1'
                         />
-                        {formik.touched.direccion && formik.errors.direccion ? (
-                            <div className='text-red-500 text-sm'>{formik.errors.direccion}</div>
-                        ) : null}
+
                     </div>
 
                     <div
@@ -86,25 +94,8 @@ export default function InfrastructureCreate() {
                             onBlur={formik.handleBlur}
                             className='w-full py-2 outline-none px-1'
                         />
-                        {formik.touched.telefono && formik.errors.telefono ? (
-                            <div className='text-red-500 text-sm'>{formik.errors.telefono}</div>
-                        ) : null}
+
                     </div>
-                    {/* <div className='border border-gray-300 text-left p-2'>
-                        <label className='block text-sm font-medium'>Estado</label>
-                        <select
-                            name='estado'
-                            value={formik.values.estado ? 'true' : 'false'}
-                            onChange={(e) => formik.setFieldValue('estado', e.target.value === 'true')}
-                            className='w-full py-2 outline-none px-1'
-                        >
-                            <option value='true'>Habilitado</option>
-                            <option value='false'>Deshabilitado</option>
-                        </select>
-                        {formik.touched.estado && formik.errors.estado ? (
-                            <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
-                        ) : null}
-                    </div> */}
 
 
                     <button

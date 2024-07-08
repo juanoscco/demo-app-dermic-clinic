@@ -1,10 +1,9 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useGetScheludesQuery } from './components/list/store/service';
 import { DatatableComponent } from "@/components/datatable/";
 import Link from 'next/link';
-import { ExcelExport } from "@/utils/excel";
-import { PrintButton } from "@/utils/print";
+
 
 export default function PersonsSchedulesList() {
   const [perPage, setPerPage] = useState(10);
@@ -13,47 +12,31 @@ export default function PersonsSchedulesList() {
   const [filter, setFilter] = useState('');
   const { data, isLoading, error, refetch } = useGetScheludesQuery({ page: currentPage - 1, limit: perPage, filter })
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      refetch();
-    }, 300);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [filter, refetch]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error al cargar los horarios</div>;
+  const schedulesDays = useCallback((item: any) => {
+    const filteredDetails = item?.horario_trabajo_detalles.filter((detail: any) => detail.estado === true);
 
-  const schedulesDays = (item: any) => {
-    const filteredDetails = item?.horario_trabajo_detalle.filter((detail: any) => detail.estado === true);
-
-    return filteredDetails.map(
-
-      (detail: any, i: number) => (
-        <>
-          <p className='flex gap-2' key={i}>{detail.semana.descripcion}</p>
-        </>
-      )
-    )
-  }
-
+    return filteredDetails?.map((detail: any) => (
+      <p className='flex gap-2' key={detail.id_horario_trabajo_detalle}>{detail.semana.descripcion}</p>
+    ));
+  }, []);
 
   const columns = [
     {
-      title: 'Nombre de Horario',
+      title: 'Horario',
       displayName: 'Nombre de Horario',
-      field: 'id_horario_trabajo', //FieldValue
+      field: '', //FieldValue
       render: (fieldValue: any, item: any) => (
         <div>
           <h1>{item.empleado.nombres.toLowerCase()}</h1>
-          <span>{item.nombre_horario}</span>
         </div>
       )
     },
     {
-      title: 'Nombre de Horario',
-      displayName: 'Nombre de Horario',
-      field: 'id_horario_trabajo', //FieldValue
+      title: 'Dias',
+      displayName: 'Dias de trabajo',
+      field: '', //FieldValue
       render: (fieldValue: any, item: any) => (
 
         <div className='flex gap-2'>{schedulesDays(item)}</div>
@@ -71,22 +54,17 @@ export default function PersonsSchedulesList() {
       )
     },
   ]
+  
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      refetch();
+    }, 300);
 
-  // const columnsForExcelAndPrint = {
-  //   nombre_horario: 'Nombre del Horario',
-  //   'horario_trabajo_detalle.0.semana.descripcion': 'Día de la Semana',
-  //   'horario_trabajo_detalle.0.temprano_inicio.descripcion': 'Inicio Temprano',
-  //   'horario_trabajo_detalle.0.temprano_final.descripcion': 'Finalización Temprano',
-  //   'horario_trabajo_detalle.0.tarde_inicio.descripcion': 'Inicio Tarde',
-  //   'horario_trabajo_detalle.0.tarde_final.descripcion': 'Finalización Tarde'
-  // };
+    return () => clearTimeout(delayDebounceFn);
+  }, [filter, refetch]);
 
-
-
-  // const handleExportExcel = ExcelExport({ data: data?.data.content, columns: columnsForExcelAndPrint, filename: 'Horario de Empleado' })
-
-  // const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrint, nametitle: 'Horario de Empleado' })
-
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error al cargar los horarios</div>;
 
 
   const paginationControls = {

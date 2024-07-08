@@ -82,7 +82,7 @@ export default function AgendaPersonComponent({ dataPerson, idPerson }: Props) {
         : null;
 
     const selectedAgendaDelete = selectedAgendaIdDelete !== null
-        ? paginatedData.find((proc: any) => proc.id_agenda === selectedAgendaIdDelete)
+        ? (paginatedData ? paginatedData.find((proc: any) => proc.id_agenda === selectedAgendaIdDelete) : null)
         : null;
     return (
         <div className="bg-white p-4 rounded-lg">

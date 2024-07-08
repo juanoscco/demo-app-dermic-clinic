@@ -60,4 +60,10 @@ export const sections: Section[] = [
       { href: '/dash-admin/appointments/appointment-extras', text: 'Calendario de extras' },
     ],
   },
+  {
+    id: 'seven',
+    title: 'Configuracion',
+    icon: 'icon-config',
+    link: '/dash-admin/config',
+  },
 ];

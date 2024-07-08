@@ -16,11 +16,6 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
     const [showPopupUpdate, setShowPopupUpdate] = useState(false);
     const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null)
 
-    // Eliminar
-    const [selectedScheduleDeleteId, setSelectedScheduleDeleteId] = useState<number | null>(null)
-    const [showPopupDelete, setShowPopupDelete] = useState(false);
-
-
     const { data: dataSchedule, isLoading, refetch } = useGetScheludesQuery({ page: 0, limit: 5, filter: '' })
 
     const filteredSchedules = dataSchedule?.data?.content.filter((schedule: any) => schedule?.empleado?.id_empleado === idPerson)
@@ -51,6 +46,7 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
 
     if (isLoading) return <div>loading....</div>
 
+    // console.log(filteredSchedules);
     return (
 
         <div className="bg-white p-6 rounded-lg">
@@ -59,15 +55,16 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
                 {Array.isArray(filteredSchedules) && filteredSchedules.length > 0 ? (
 
                     <React.Fragment>
-                        <h2 className="text-xl font-bold mb-4">{filteredSchedules[0].nombre_horario}</h2>
+                        <h2 className="text-xl font-bold mb-4">Horario</h2>
                         <div className='flex gap-2'>
+
                             <button
                                 className='text-yellow-400 hover:text-yellow-500'
 
                                 onClick={() => togglePopupUpdateId(filteredSchedules[0].id_horario_trabajo)}>
                                 Editar
                             </button>
-                            
+
                         </div>
                     </React.Fragment>
                 ) : (
@@ -90,9 +87,9 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredSchedules[0].horario_trabajo_detalle
-                            .filter((detalle: any) => detalle.estado)
-                            .map((detalle: any, i: number) => (
+                        {filteredSchedules[0]?.horario_trabajo_detalles
+                            ?.filter((detail: any) => detail.estado)
+                            ?.map((detalle: any, i: number) => (
                                 <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-100"}>
                                     <td className="border px-4 py-2">{detalle.semana.descripcion}</td>
                                     <td className="border px-4 py-2">
@@ -103,9 +100,10 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
                                     </td>
                                 </tr>
                             ))}
+
                     </tbody>
                 </table>
-                ) : (
+            ) : (
                 <div className='flex justify-center items-center h-full'>
                     Horario vacio, crea un horario
                 </div>
@@ -129,7 +127,7 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
                     update={refetch}
                 />
             )}
-            
+
         </div>
 
     )

@@ -18,7 +18,7 @@ export default function AppointmentReports() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>(''); // Estado para el término de búsqueda
 
-  const { data: dataAppointments, isLoading: loadingAppointments, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, filter: '' });
+  const { data: dataAppointments, isLoading: loadingAppointments, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, id_empleado: 0 });
   const { data: dataInfrastructure, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 15, page: 0, filter: '' });
 
   const appointments = useMemo(() => dataAppointments?.data?.content?.filter((item: any) => item.estado), [dataAppointments]);
@@ -178,7 +178,7 @@ export default function AppointmentReports() {
       </section>
 
 
-      <section className="p-4 bg-white h-4/6" >
+      <section className="p-4 bg-white h-[39rem]" >
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="">
             <tr>

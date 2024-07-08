@@ -44,6 +44,7 @@ export interface Patient {
     lugar_nacimiento: string;
     estado_antiguedad: EstadoAntiguedad;
     estado: boolean;
+    estado_eliminado: boolean
 }
 
 export interface PatientResponse {

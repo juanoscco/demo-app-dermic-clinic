@@ -103,6 +103,7 @@ export function CreateAppointmentExtraComponent({
             fecha_cita: date,
             empleado: { id_empleado: 0 },
             estado: true,
+            estado_eliminado:false
         },
         validationSchema,
         onSubmit: async (values) => {

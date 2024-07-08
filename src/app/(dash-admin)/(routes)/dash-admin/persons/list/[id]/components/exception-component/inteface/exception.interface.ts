@@ -1,5 +1,6 @@
 interface UsuarioRegistro {
     id_usuario: number;
+    estado_eliminado:boolean
 }
 
 interface Empleado {
@@ -28,6 +29,8 @@ export interface Exception {
     empresa: Empresa;
     motivo: string;
     estado: boolean;
+    estado_eliminado:boolean
+
 }
 
 export interface ResponseException {

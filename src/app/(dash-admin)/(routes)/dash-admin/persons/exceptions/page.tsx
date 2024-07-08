@@ -80,7 +80,7 @@ export default function PersonsExceptions() {
         'hora_final.descripcion': 'Hora de Finalización',
         motivo: 'Motivo'
     };
-    const handleExportExcel = ExcelExport({ data: data?.data.content, columns: columnsForExcelAndPrint, filename: 'Excepciones' })
+    const handleExportExcel = ExcelExport({ data: data?.data?.content, columns: columnsForExcelAndPrint, filename: 'Excepciones' })
 
     const handlePrint = PrintButton({ data: data?.data?.content, columns: columnsForExcelAndPrint, nametitle: 'Excepciones' })
 

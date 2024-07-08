@@ -84,7 +84,8 @@ export function CreateExceptionComponents({ id, data, onClose, update }: Props) 
                 id_empresa: data?.empresa.id_empresa
             },
             motivo: "",
-            estado: true
+            estado: true,
+            estado_eliminado:false
         },
         validationSchema,
         onSubmit: async (values) => {

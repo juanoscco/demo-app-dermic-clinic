@@ -24,6 +24,8 @@ interface HorarioTrabajoDetalle {
     tarde_inicio: CabeceraDetalle;
     tarde_final: CabeceraDetalle;
     estado: boolean;
+    estado_eliminado?: boolean
+
 }
 
 export interface Schedule {
@@ -33,6 +35,7 @@ export interface Schedule {
     empresa?: Empresa;
     horario_trabajo_detalle: HorarioTrabajoDetalle[];
     estado: boolean;
+    estado_eliminado:boolean
 }
 
 export interface ResponseSchedule {

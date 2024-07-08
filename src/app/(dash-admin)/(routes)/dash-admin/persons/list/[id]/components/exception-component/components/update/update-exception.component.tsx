@@ -61,7 +61,8 @@ export function UpdateExceptionComponent({ id, data, onClose, update }: Props) {
         initialValues: {
             id_excepcion: id,
             usuario_registro: {
-                id_usuario: data?.usuario_registro.id_usuario
+                id_usuario: data?.usuario_registro.id_usuario,
+                estado_eliminado: false
             },
             empleado: {
                 id_empleado: data?.empleado.id_empleado
@@ -84,7 +85,9 @@ export function UpdateExceptionComponent({ id, data, onClose, update }: Props) {
                 id_empresa: data?.empresa.id_empresa
             },
             motivo: data?.motivo,
-            estado: true
+            estado: true,
+            estado_eliminado: false
+
         },
         validationSchema,
         onSubmit: async (values) => {

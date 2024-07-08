@@ -128,12 +128,14 @@ export function CreateAppointmentComponent({
                 descripcion: hour?.descripcion,
                 valor: ""
             },
-            estado: true
+            estado: true,
+            estado_eliminado: false
         },
         validationSchema,
         onSubmit: async (values) => {
             // console.log('Form values:', values);
             try {
+                console.log('Form values', values)
                 await addAppointment(values);
                 refetch();
                 closePopup();
@@ -239,7 +241,7 @@ export function CreateAppointmentComponent({
     // *****
     const headers = (
         <div className='flex items-center gap-3 md:flex-row flex-col'>
-   
+
         </div>
     );
     const paginationControls = {

@@ -14,7 +14,7 @@ interface Props {
   update?: any
 }
 
-export default function PatientUpdateComponent({ onClose, id, data, update }: Props) {
+export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
 
   const [updatePatient, { data: dataPatient, isLoading, isError }] = useUpdatePatientMutation();
 
@@ -31,10 +31,10 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
       id_paciente: id,
       nombres: data?.nombres,
       empresa: {
-        id_empresa: 1
+        id_empresa: data.empresa.id_empresa
       },
       usuario_registro: {
-        id_usuario: 2
+        id_usuario: data.usuario_registro.id_usuario
       },
       tipo_documento_identidad: {
         id_cabecera: data.tipo_documento_identidad.id_cabecera,
@@ -62,33 +62,34 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
         descripcion: data.estado_antiguedad.descripcion || '',
         valor: data.estado_antiguedad.valor || ''
       },
-      estado: data.estado
+      estado: data.estado,
+      estado_eliminado: false
     },
     validationSchema: Yup.object({
       nombres: Yup.string().required('Requerido'),
-      tipo_documento_identidad: Yup.object({
-        descripcion: Yup.string().required('Requerido'),
-      }).required('Requerido'),
-      numero_documento_identidad: Yup.string().required('Requerido'),
-      telefono: Yup.string().required('Requerido'),
-      nacimiento: Yup.date().required('Requerido'),
-      estado_civil: Yup.object({
-        descripcion: Yup.string().required('Requerido'),
-      }).required('Requerido'),
-      ocupacion: Yup.string().required('Requerido'),
-      email: Yup.string().email('Correo electrónico no válido').required('Requerido'),
-      direccion: Yup.string().required('Requerido'),
-      distrito: Yup.string().required('Requerido'),
-      lugar_nacimiento: Yup.string().required('Requerido'),
-      estado_antiguedad: Yup.object({
-        descripcion: Yup.string().required('Requerido'),
-      }).required('Requerido'),
-      estado: Yup.boolean().required('Requerido'),
+      // tipo_documento_identidad: Yup.object({
+      //   descripcion: Yup.string().required('Requerido'),
+      // }).required('Requerido'),
+      // numero_documento_identidad: Yup.string().required('Requerido'),
+      // telefono: Yup.string().required('Requerido'),
+      // nacimiento: Yup.date().required('Requerido'),
+      // estado_civil: Yup.object({
+      //   descripcion: Yup.string().required('Requerido'),
+      // }).required('Requerido'),
+      // ocupacion: Yup.string().required('Requerido'),
+      // email: Yup.string().email('Correo electrónico no válido').required('Requerido'),
+      // direccion: Yup.string().required('Requerido'),
+      // distrito: Yup.string().required('Requerido'),
+      // lugar_nacimiento: Yup.string().required('Requerido'),
+      // estado_antiguedad: Yup.object({
+      //   descripcion: Yup.string().required('Requerido'),
+      // }).required('Requerido'),
+      // estado: Yup.boolean().required('Requerido'),
     }),
     onSubmit: async (values) => {
       try {
         await updatePatient({ patientId: values.id_paciente, patientData: values }).unwrap().then(() => (
-          update(),          
+          update(),
           onClose()
         ));
 
@@ -294,7 +295,7 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
             </div>
           )}
         </div>
-        <div>
+        {/* <div>
           <label htmlFor="estado" className="">Estado</label>
           <input
             type="checkbox"
@@ -306,10 +307,10 @@ export default function PatientUpdateComponent({ onClose, id, data, update }: Pr
           />
           {formik.touched.estado && formik.errors.estado && (
             <div className="text-red-500 text-sm">
-              {/* {formik.errors.estado} */}
+
             </div>
           )}
-        </div>
+        </div> */}
         <div className="col-span-2">
           <button type="submit" disabled={isLoading} className="w-full p-2 bg-blue-500 text-white rounded">{isLoading ? "Actualizando" : "Actualizar"}</button>
           {/* {dataPatient && <Alert type='success'>Actualizado correctamente</Alert>} */}

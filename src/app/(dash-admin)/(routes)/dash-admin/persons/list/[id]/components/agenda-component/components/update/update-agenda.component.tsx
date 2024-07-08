@@ -36,7 +36,8 @@ export function UpdateAgendaComponent({ idAgendaUpdate, dataAgendaUpdate, update
         fecha_apertura: dataAgendaUpdate?.fecha_apertura,
         hora_inicio: dataAgendaUpdate?.hora_inicio,
         hora_final: dataAgendaUpdate?.hora_final,
-        estado: true
+        estado: true,
+        estado_eliminado:false
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {

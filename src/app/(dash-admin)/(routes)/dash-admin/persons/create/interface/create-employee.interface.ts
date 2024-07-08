@@ -29,6 +29,8 @@ interface Usuario {
     password: string;
     rol: Rol;
     estado: boolean;
+    estado_eliminado: boolean
+
 }
 
 interface Titulo {
@@ -66,6 +68,8 @@ export interface Employee {
     empresa: Empresa;
     usuario: Usuario;
     estado: boolean;
+    estado_eliminado: boolean
+
 }
 
 

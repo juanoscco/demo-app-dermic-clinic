@@ -10,6 +10,7 @@ import Cookies from 'js-cookie'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { LoginFormValues } from "@/app/(auth)/models/login.interface"
+import { jwtDecode } from 'jwt-decode';
 
 
 
@@ -42,72 +43,29 @@ export default function FormLogin() {
     },
   });
 
-  // useEffect(() => {
-  //   if (data) {
-  //     Cookies.set("token", data.jwt);
-  //     router.push('/dash-admin/home');
-  //   }
-  // }, [data, router]);
-
-  // useEffect(() => {
-  //   if (data) {
-  //     console.log('Data received:', data);
-  //     if (data.jwt) {
-  //       Cookies.set("jwt", data.jwt);
-  //       router.push('/dash-admin/home');
-  //     } else {
-  //       console.error('No JWT token in data');
-  //     }
-  //   }
-  // }, [data, router]);
-
-  // console.log(Cookies.get("jwt"))
-
-  // if (isLoading) {
-  //   return (
-  //     <div>Cargando....</div>
-  //   );
-  // }
-
-  // useEffect(() => {
-  //   if (data) {
-  //     console.log('Data received:', data.jwt);
-  //     if (data.jwt) {
-  //       Cookies.set("jwt", String(data.jwt));
-  //       console.log('JWT token set in cookie:', Cookies.get("jwt")); // Verificar si la cookie se ha establecido
-  //       router.push('/dash-admin/home');
-  //     } else {
-  //       console.error('No JWT token in data');
-  //     }
-  //   }
-  // }, [data, router]);
-
-  // useEffect(() => {
-  //   console.log('Current JWT cookie:', Cookies.get()); // Mover esto a otro useEffect para asegurarse de que se ejecuta después de que el token se establece
-  // }, []);
-
-  // if (isLoading) {
-  //   return (
-  //     <div>Cargando....</div>
-  //   );
-  // }
 
   useEffect(() => {
     if (data) {
-      // console.log('Data received:', data.jwt);
       if (data.jwt) {
-        localStorage.setItem('token', data.jwt); // Guardar token en localStorage
-        // console.log('JWT token set in localStorage:', localStorage.getItem('token')); // Verificar si el token se ha establecido
+        // Guardar token en localStorage
+        localStorage.setItem('token', data.jwt);
+
+        // Guardar los primeros 10 caracteres del token en una cookie
+        const shortToken = data.jwt.slice(0, 10);
+        Cookies.set('logged', shortToken, { path: '/' });
+        // console.log('Cookie set:', Cookies.get('logged'));
+        // Decodificar el JWT
+    
         router.push('/dash-admin/home');
       } else {
         console.error('No JWT token in data');
+
+        // Establecer cookie de logged = false
+        Cookies.set('logged', 'false', { path: '/' });
+        console.log('Cookie set:', Cookies.get('logged'));
       }
     }
   }, [data, router]);
-
-  // useEffect(() => {
-  //   console.log('Current JWT token:', localStorage.getItem('token')); // Mover esto a otro useEffect para asegurarse de que se ejecuta después de que el token se establece
-  // }, []);
 
   if (isLoading) {
     return (

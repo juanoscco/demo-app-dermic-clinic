@@ -38,7 +38,8 @@ export  function CreateAgendaComponent({ id, data, onClose, update }: Props) {
             fecha_apertura: "",
             hora_inicio: "",
             hora_final: "",
-            estado: true
+            estado: true,
+            estado_eliminado:false
         },
         validationSchema,
         onSubmit: async (values) => {

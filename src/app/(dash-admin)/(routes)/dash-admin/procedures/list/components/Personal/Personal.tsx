@@ -45,6 +45,7 @@ export default function Personal() {
       id_cabecera_detalle: selectedHeadBoardDetails?.id_cabecera_detalle || null,
       descripcion: selectedHeadBoardDetails?.descripcion || '',
       procedimiento_personales_detalle: selectedHeadBoardDetails?.procedures?.map((proc: any) => proc.id_proc) || [],
+      estado_eliminado:false
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -63,7 +64,8 @@ export default function Personal() {
           procedimiento_personales_detalle: values.procedimiento_personales_detalle.map((id_procedimiento: any) => ({
             procedimiento: { id_procedimiento }
           })),
-          estado: true
+          estado: true,
+          estado_eliminado: values.estado_eliminado
         };
 
         if (selectedHeadBoardDetails?.id_procedimiento_personal) {

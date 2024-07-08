@@ -12,18 +12,17 @@ interface Props {
 export const DeleteExceptionComponent: React.FC<Props> = ({ id, onClose, update }) => {
     const [deleteExceptionEmployee, { isLoading, isSuccess, isError }] = useDeleteExceptionEmployeeMutation();
 
-    console.log(id);
     const handleDelete = async () => {
         try {
             await deleteExceptionEmployee({ deleteExceptionEmployeeId: id }).unwrap();
             // Handle success (e.g., show success message, refetch list)
-            update();
             onClose();
+            update();
+
         } catch (error) {
             // Handle error (e.g., show error message)
             console.error('Fallo en eliminar la excepcion', error);
         }
-
     };
 
     return (

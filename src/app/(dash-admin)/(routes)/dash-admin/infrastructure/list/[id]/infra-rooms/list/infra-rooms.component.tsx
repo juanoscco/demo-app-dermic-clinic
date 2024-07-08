@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import CreateInfraRoomComponent from '../create/create-infra-room.component';
 import { useGetRoomsListQuery } from './store/service';
 import UpdateInfraRoomsComponent from '../update/update-infra-rooms.component';
@@ -30,20 +30,23 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
   const [currentPage, setCurrentPage] = useState(1);
   // const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const itemsPerPage = 10
-  const filteredRooms = dataRoom?.data?.content?.filter((room: any) => room.sede.id_sede === id && room.estado);
+  const itemsPerPage = 8;
+
+  // Filtrar habitaciones según la sede y el estado
+  const filteredRooms = useMemo(() => {
+    return dataRoom?.data?.content?.filter((room: any) => room.sede.id_sede === id && room.estado) || [];
+  }, [dataRoom, id]);
 
   useEffect(() => {
     // Resetear a la primera página cuando se filtran nuevamente las habitaciones
     setCurrentPage(1);
   }, [filteredRooms]);
 
-  // 
-  const totalPages = Math.ceil(filteredRooms?.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredRooms.length / itemsPerPage);
 
   const indexOfLastRoom = currentPage * itemsPerPage;
   const indexOfFirstRoom = indexOfLastRoom - itemsPerPage;
-  const currentRooms = filteredRooms?.slice(indexOfFirstRoom, indexOfLastRoom);
+  const currentRooms = filteredRooms.slice(indexOfFirstRoom, indexOfLastRoom);
 
   const goToPrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -54,11 +57,11 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
   };
 
   const selectedRoomUpdate = selectedRoomId !== null
-    ? currentRooms.find((room: any) => room.id_sala_tratamiento === selectedRoomId)
+    ? filteredRooms.find((room: any) => room.id_sala_tratamiento === selectedRoomId)
     : null;
 
   const selectedRoomDelete = selectedRoomIdDelete !== null
-    ? currentRooms.find((room: any) => room.id_sala_tratamiento === selectedRoomIdDelete)
+    ? filteredRooms.find((room: any) => room.id_sala_tratamiento === selectedRoomIdDelete)
     : null;
 
   // Crear
@@ -94,8 +97,8 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
   if (error) return <div>Error loading patients</div>;
 
   return (
-    <React.Fragment>
-      <div className="flex justify-between items-center p-4 bg-white mt-4">
+    <div className='h-[20rem]'>
+      <div className="flex justify-between items-center p-4 bg-white mt-4 ">
         <h1 className="text-2xl font-bold text-gray-700">Cuartos</h1>
         <button
           onClick={togglePopup}
@@ -107,7 +110,7 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
 
       <section className="p-4 bg-white">
         {currentRooms?.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-rows-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-rows-2 gap-5 h-[15rem]">
             {currentRooms.map((room: any) => (
               <div
                 key={room.id_sala_tratamiento}
@@ -116,20 +119,23 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
                 <div className='flex justify-between'>
                   <h2 className="text-xl font-semibold mb-2">{room.nombres}</h2>
                   <div className='flex gap-3'>
-                    <span 
-                    className='text-red-400 cursor-pointer' 
-                    onClick={() => togglewPopUpDelete(room.id_sala_tratamiento)}
+                    <span
+                      className='text-red-400 cursor-pointer'
+                      onClick={() => togglewPopUpDelete(room.id_sala_tratamiento)}
                     >Eliminar</span>
 
                     <span className='text-yellow-400 cursor-pointer' onClick={() => togglePopupId(room.id_sala_tratamiento)}>Editar</span>
 
-                  </div>                </div>
+                  </div>
+                </div>
                 <p className="text-gray-600">Piso: {room.piso}</p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-700">Cuartos vacíos</p>
+          <div className="h-[15rem] flex items-center justify-center">
+            <p className='text-center text-gray-700'>Cuartos vacíos</p>
+          </div>
         )}
         <div className="flex justify-between items-center mt-4">
           <button
@@ -174,6 +180,6 @@ export default function InfraRoomsComponent({ id, dataInfra }: Props) {
           update={refetch}
         />
       )}
-    </React.Fragment>
+    </div>
   )
 }

@@ -5,9 +5,11 @@ import { useGetAppointmentListQuery } from '../appointments/components/citas/lis
 import { useGetExtraAppointmentsQuery } from '../appointments/components/extras/list/store/service'
 import { useGetEmployeesQuery } from '../persons/list/store/service'
 import { useGetPatientsQuery } from '../patients/list/store/service'
+import { decodeToken } from '@/app/(dash-admin)/utils'
 
 export default function Home() {
-  
+  const decoded = decodeToken({});
+
   const { data: appointmentsData, isLoading: appointmentLoad, isError: appointmentError } = useGetAppointmentListQuery({});
   const { data: appointmentsExtraData, isLoading: appointmentExtraLoad, isError: appointmentExtraError } = useGetExtraAppointmentsQuery({});
   const { data: employeesData, isLoading: employeesLoad, isError: employeesError } = useGetEmployeesQuery({});
@@ -100,7 +102,7 @@ export default function Home() {
 
   return (
     <React.Fragment>
-      <h1 className='font-bold text-2xl'>Bienvenido Administrador!</h1>
+      <h1 className='font-bold text-2xl'>Bienvenido {decoded?.empleado}!</h1>
       <span className='text-gray-500'>Seccion de panel de control</span>
       <section className='mt-4'>
         <section className='bg-slate-950 text-white p-5 rounded-t-xl'>
