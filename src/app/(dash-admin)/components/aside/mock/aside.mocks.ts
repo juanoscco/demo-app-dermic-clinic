@@ -64,6 +64,6 @@ export const sections: Section[] = [
     id: 'seven',
     title: 'Configuracion',
     icon: 'icon-config',
-    link: '/dash-admin/config',
+    link: '/dash-admin/config-user',
   },
 ];

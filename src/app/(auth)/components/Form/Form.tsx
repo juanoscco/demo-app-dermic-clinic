@@ -10,7 +10,6 @@ import Cookies from 'js-cookie'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { LoginFormValues } from "@/app/(auth)/models/login.interface"
-import { jwtDecode } from 'jwt-decode';
 
 
 
@@ -48,7 +47,7 @@ export default function FormLogin() {
     if (data) {
       if (data.jwt) {
         // Guardar token en localStorage
-        localStorage.setItem('token', data.jwt);
+        window.localStorage.setItem('token', data.jwt);
 
         // Guardar los primeros 10 caracteres del token en una cookie
         const shortToken = data.jwt.slice(0, 10);
@@ -82,12 +81,12 @@ export default function FormLogin() {
           <input
             type="text"
             id="username"
-            // name="username"
+            name="username"
             className='border border-gray-400 w-full px-3 rounded-sm p-2'
-            // onChange={formik.handleChange}
-            // onBlur={formik.handleBlur}
-            // value={formik.values.username}
-            {...formik.getFieldProps('username')}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.username}
+            // {...formik.getFieldProps('username')}
           />
           {formik.touched.username && formik.errors.username ? (
             <div className='text-red-400'>{formik.errors.username}</div>
@@ -98,12 +97,12 @@ export default function FormLogin() {
           <input
             type="password"
             id="password"
-            // name="password"
+            name="password"
             className='border border-gray-400 w-full px-3 rounded-sm p-2'
-            // onChange={formik.handleChange}
-            // onBlur={formik.handleBlur}
-            // value={formik.values.password}
-            {...formik.getFieldProps('password')}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
+            // {...formik.getFieldProps('password')}
           />
           {formik.touched.password && formik.errors.password ? (
             <div className='text-red-400'>{formik.errors.password}</div>

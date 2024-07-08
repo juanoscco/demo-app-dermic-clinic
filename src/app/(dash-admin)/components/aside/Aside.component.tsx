@@ -7,7 +7,7 @@ import TabsOpensHook from "../../hooks/tabs/tabs-opens.hook";
 import { sections } from "@/app/(dash-admin)/components/aside/mock/aside.mocks"
 import { Props } from "@/app/(dash-admin)/models/aside/aside.models"
 // 
-import {decodeToken } from "@/app/(dash-admin)/utils/"
+import { decodeToken } from "@/app/(dash-admin)/utils/"
 export function AsideComponent({ isNavActive, handleNavItemClick }: Props) {
 
   const {
