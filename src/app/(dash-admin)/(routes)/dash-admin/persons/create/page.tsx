@@ -76,7 +76,7 @@ export default function UserCreate() {
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
             telefono: Yup.string().required('Requerido'),
-            correo: Yup.string().email('Email inválido').required(),
+            correo: Yup.string().email('Email inválido'),
             sede: Yup.object().shape({
                 id_sede: Yup.number().required('Requerido'),
             }),
@@ -85,11 +85,11 @@ export default function UserCreate() {
                 id_cabecera_detalle: Yup.number().required('Requerido'),
                 descripcion: Yup.string().required('Requerido'),
             }),
-            dia_sin_refriguerio: Yup.object().shape({
-                id_cabecera: Yup.number().required('Requerido'),
-                id_cabecera_detalle: Yup.number().required('Requerido'),
-                descripcion: Yup.string().required('Requerido'),
-            }),
+            // dia_sin_refriguerio: Yup.object().shape({
+            //     id_cabecera: Yup.number().required('Requerido'),
+            //     id_cabecera_detalle: Yup.number().required('Requerido'),
+            //     descripcion: Yup.string().required('Requerido'),
+            // }),
             usuario: Yup.object().shape({
                 username: Yup.string().required('Requerido'),
                 password: Yup.string().required('Requerido'),

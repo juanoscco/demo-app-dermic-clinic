@@ -34,7 +34,7 @@ export interface Schedule {
     usuario_registro: UsuarioRegistro | any;
     empleado?: Empleado;
     empresa?: Empresa;
-    horario_trabajo_detalles: HorarioTrabajoDetalle[];
+    horario_trabajo_detalle: HorarioTrabajoDetalle[];
     estado: boolean;
     estado_eliminado?:boolean
 }

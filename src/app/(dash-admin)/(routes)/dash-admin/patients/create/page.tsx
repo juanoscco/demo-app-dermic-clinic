@@ -73,6 +73,7 @@ export default function PatientsCreate() {
         onSubmit: async (values, { resetForm }) => {
             // console.log(values);
             try {
+                console.log(values);
                 await addPatient(values);
                 resetForm();
                 router.push("./list")

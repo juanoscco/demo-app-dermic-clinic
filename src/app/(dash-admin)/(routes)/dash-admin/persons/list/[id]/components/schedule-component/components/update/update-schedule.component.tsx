@@ -36,7 +36,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
             empresa: {
                 id_empresa: dataUpdate?.empresa.id_empresa,
             },
-            horario_trabajo_detalles: [
+            horario_trabajo_detalle: [
                 {
                     semana: {
                         id_cabecera: 4,
@@ -69,6 +69,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                         valor: dataUpdate.horario_trabajo_detalles[0].tarde_final.valor,
                     },
                     estado: dataUpdate.horario_trabajo_detalles[0].estado,
+                    estado_eliminado: false
                 },
                 {
                     semana: {
@@ -102,6 +103,8 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                         valor: dataUpdate.horario_trabajo_detalles[1].tarde_final.valor,
                     },
                     estado: dataUpdate.horario_trabajo_detalles[1].estado,
+                    estado_eliminado: false
+
                 },
                 {
                     semana: {
@@ -135,6 +138,8 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                         valor: dataUpdate.horario_trabajo_detalles[2].tarde_final.valor,
                     },
                     estado: dataUpdate.horario_trabajo_detalles[2].estado,
+                    estado_eliminado: false
+
                 },
                 {
                     semana: {
@@ -168,6 +173,8 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                         valor: dataUpdate.horario_trabajo_detalles[3]?.tarde_final.valor,
                     },
                     estado: dataUpdate.horario_trabajo_detalles[3]?.estado,
+                    estado_eliminado: false
+
                 },
                 {
                     semana: {
@@ -201,6 +208,8 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                         valor: dataUpdate.horario_trabajo_detalles[4]?.tarde_final.valor,
                     },
                     estado: dataUpdate.horario_trabajo_detalles[4]?.estado,
+                    estado_eliminado: false
+
                 },
                 {
                     semana: {
@@ -234,10 +243,14 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
                         valor: dataUpdate.horario_trabajo_detalles[5]?.tarde_final.valor,
                     },
                     estado: dataUpdate.horario_trabajo_detalles[5]?.estado,
+                    estado_eliminado: false
+
                 },
             ],
 
-            estado: dataUpdate.estado || false
+            estado: dataUpdate.estado || false,
+            estado_eliminado: false
+
         },
         validationSchema: Yup.object({
             nombre_horario: Yup.string().required('Requerido'),
@@ -329,12 +342,12 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
     // };
 
     const handleActivationToggle = (index: any, active: any) => {
-        formik.setFieldValue(`horario_trabajo_detalles[${index}].estado`, active);
+        formik.setFieldValue(`horario_trabajo_detalle[${index}].estado`, active);
     };
 
     const handleSelectChange = (e: any, index: any, field: any, options: any) => {
         const value = options.find((option: any) => option.id_cabecera_detalle === parseFloat(e.target.value));
-        formik.setFieldValue(`horario_trabajo_detalles[${index}].${field}`, value);
+        formik.setFieldValue(`horario_trabajo_detalle[${index}].${field}`, value);
     };
     return (
         <PopupUpdate>
@@ -360,7 +373,7 @@ export default function UpdateScheduleComponent({ idUpdate, dataUpdate, update, 
 
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {formik.values.horario_trabajo_detalles?.map((detalle, index) => (
+                    {formik.values.horario_trabajo_detalle?.map((detalle, index) => (
                         <div key={index} className='border border-gray-300  p-4 '>
                             <h1 className="font-bold text-lg">{detalle?.semana.descripcion}</h1>
 
