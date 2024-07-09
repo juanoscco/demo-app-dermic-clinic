@@ -33,9 +33,9 @@ export default function PatientsCreate() {
             },
             tipo_documento_identidad: {
                 id_cabecera: 2,
-                id_cabecera_detalle: 3,
-                descripcion: "DNI",
-                valor: ""
+                id_cabecera_detalle: 5,
+                descripcion: 'DNI',
+                valor: '',
             },
             numero_documento_identidad: "",
             telefono: "",
@@ -43,7 +43,7 @@ export default function PatientsCreate() {
             estado_civil: {
                 id_cabecera: 8,
                 id_cabecera_detalle: 38,
-                descripcion: "Soltero/a",
+                descripcion: "--Seleccione--",
                 valor: ""
             },
             ocupacion: "",
@@ -83,14 +83,15 @@ export default function PatientsCreate() {
         },
     });
     const estadosAntiguedad = [
-        { id: 35, descripcion: "Nuevo" },
-        { id: 36, descripcion: "Antiguo" }
+        { id: 44, descripcion: "Nuevo" },
+        { id: 45, descripcion: "Antiguo" }
     ];
     const estadosCiviles = [
-        { id: 31, descripcion: "Soltero/a" },
-        { id: 32, descripcion: "Casado/a" },
-        { id: 33, descripcion: "Divorciado/a" },
-        { id: 34, descripcion: "Viudo/a" }
+        { id: 38, descripcion: "--Seleccione--" },
+        { id: 39, descripcion: "Soltero/a" },
+        { id: 40, descripcion: "Casado/a" },
+        { id: 41, descripcion: "Divorciado/a" },
+        { id: 42, descripcion: "Viudo/a" }
     ];
 
     useEffect(() => {
@@ -201,7 +202,6 @@ export default function PatientsCreate() {
                             onBlur={formik.handleBlur}
                             value={formik.values.estado_civil.id_cabecera_detalle}
                         >
-                            <option value="">Selecciona una opción</option>
                             {estadosCiviles.map(estado => (
                                 <option key={estado.id} value={estado.id}>
                                     {estado.descripcion}
@@ -307,7 +307,6 @@ export default function PatientsCreate() {
                             onBlur={formik.handleBlur}
                             value={formik.values.estado_antiguedad.id_cabecera_detalle}
                         >
-                            <option value="">Selecciona una opción</option>
                             {estadosAntiguedad.map(estado => (
                                 <option key={estado.id} value={estado.id}>
                                     {estado.descripcion}

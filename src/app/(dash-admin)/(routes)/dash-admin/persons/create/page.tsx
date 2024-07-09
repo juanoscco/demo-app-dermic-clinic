@@ -49,15 +49,15 @@ export default function UserCreate() {
             },
             titulo: {
                 id_cabecera: 3,
-                id_cabecera_detalle: 0,
-                descripcion: '',
+                id_cabecera_detalle: 7,
+                descripcion: '--Seleccione--',
                 valor: '',
             },
             dia_sin_refriguerio: {
                 id_cabecera: 4,
-                id_cabecera_detalle: 0,
-                descripcion: '',
-                valor: '',
+                id_cabecera_detalle: 11,
+                descripcion: '--Seleccione--',
+                valor: '0',
             },
             empresa: {
                 id_empresa: 1,
@@ -85,23 +85,13 @@ export default function UserCreate() {
             sede: Yup.object().shape({
                 id_sede: Yup.number().required('Requerido'),
             }),
-            // titulo: Yup.object().shape({
-            //     id_cabecera: Yup.number().required('Requerido'),
-            //     id_cabecera_detalle: Yup.number().required('Requerido'),
-            //     descripcion: Yup.string().required('Requerido'),
-            // }),
-            // dia_sin_refriguerio: Yup.object().shape({
-            //     id_cabecera: Yup.number().required('Requerido'),
-            //     id_cabecera_detalle: Yup.number().required('Requerido'),
-            //     descripcion: Yup.string().required('Requerido'),
-            // }),
+            
             usuario: Yup.object().shape({
                 username: Yup.string().required('Requerido'),
                 password: Yup.string().required('Requerido'),
             }),
         }),
         onSubmit: async (values, { resetForm }) => {
-            console.log(values)
             await addEmployee(values);
             resetForm();
             router.push('./list')
