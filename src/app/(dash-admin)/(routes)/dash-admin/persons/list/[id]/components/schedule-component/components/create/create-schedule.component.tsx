@@ -18,7 +18,7 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
 
     const formik = useFormik<Schedule>({
         initialValues: {
-            nombre_horario: 'Horario',
+            nombre_horario: 'Horario de empleado',
             usuario_registro: {
                 id_usuario: dataPerson.usuario.id_usuario,
             },

@@ -14,7 +14,7 @@ export default function PatientsCreate() {
 
     const router = useRouter()
     // 
-    const [addPatient, { isLoading: loadingPatient, data: dataPatient, error: errorPatient }] = useAddPatientMutation();
+    const [addPatient, { data: dataPatient, isLoading: loadingPatient, error: errorPatient }] = useAddPatientMutation();
 
     //DNI 
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
@@ -319,7 +319,9 @@ export default function PatientsCreate() {
                         ) : null}
                     </div>
 
-                    <button className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white' type='submit'>{loadingPatient ? 'Creando...' : 'Crear'}</button>
+                    <button 
+                    className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white' 
+                    type='submit'>{loadingPatient ? 'Creando...' : 'Crear'}</button>
                 </form>
                 {dataPatient && (
                     <Alert type="success">

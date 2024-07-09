@@ -1,11 +1,12 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { PopupUpdate } from "@/components/popup/popup-update/"
 import { useUpdatePatientMutation } from "./store/service/patient-update.service";
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Alert } from '@/components/popup/popup-alert';
+import { GetDniApiHook } from '@/config/hook-dni';
 
 interface Props {
   onClose: any;
@@ -16,7 +17,10 @@ interface Props {
 
 export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
 
-  const [updatePatient, { data: dataPatient, isLoading, isError }] = useUpdatePatientMutation();
+  const [updatePatient, { data: dataPatient, isLoading: loadingPatient, isError }] = useUpdatePatientMutation();
+
+  const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
+
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -71,7 +75,7 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
       //   descripcion: Yup.string().required('Requerido'),
       // }).required('Requerido'),
       // numero_documento_identidad: Yup.string().required('Requerido'),
-      // telefono: Yup.string().required('Requerido'),
+      telefono: Yup.string().required('Requerido'),
       // nacimiento: Yup.date().required('Requerido'),
       // estado_civil: Yup.object({
       //   descripcion: Yup.string().required('Requerido'),
@@ -99,224 +103,227 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
     }
   });
 
+  const estadosAntiguedad = [
+    { id: 35, descripcion: "Nuevo" },
+    { id: 36, descripcion: "Antiguo" }
+  ];
+  const estadosCiviles = [
+    { id: 31, descripcion: "Soltero/a" },
+    { id: 32, descripcion: "Casado/a" },
+    { id: 33, descripcion: "Divorciado/a" },
+    { id: 34, descripcion: "Viudo/a" }
+  ];
+  useEffect(() => {
+    if (dniData && dniData.nombre) {
+      formik.setFieldValue('nombres', dniData.nombre);
+    }
+  }, [dniData, formik.setFieldValue]);
+
+
+
 
   return (
     <PopupUpdate>
-      <button className='flex justify-end w-full text-2xl' onClick={onClose}>x</button>
-      <h1 className='text-2xl mb-3'>Actualizar Paciente</h1>
-      <form onSubmit={formik.handleSubmit} className="grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="nombres" className="block">Nombres</label>
+      <div className='flex justify-between py-4'>
+        <h1 className='text-2xl mb-3'>Actualizar Paciente</h1>
+
+        <button className='text-2xl' onClick={onClose}>x</button>
+      </div>
+
+      <form
+        onSubmit={formik.handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className='border border-gray-300 text-left p-2'>
+          <label className='text-font-777 text-sm' htmlFor="numero_documento_identidad">DNI  <span className="text-red-500">*</span></label>
+          <div className='flex gap-3'>
+            <input
+              type="text"
+              id="numero_documento_identidad"
+              name="numero_documento_identidad"
+              className='w-full py-2 outline-none px-1'
+              onChange={(e) => {
+                formik.handleChange(e);
+                setDni(e.target.value);
+              }}
+              onBlur={formik.handleBlur}
+              value={formik.values.numero_documento_identidad}
+            />
+
+            <button onClick={handleClick} disabled={loadingDni}
+              className='bg-[#82b440] text-white py-2 px-4 rounded-sm'>
+              {loadingDni ? 'Buscando...' : 'Buscar'}
+            </button>
+          </div>
+          {errorDni && <div className='text-red-400'>Error en DNI</div>}
+        </div>
+
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="nombres">Apellidos y Nombres <span className="text-red-500">*</span></label>
           <input
             type="text"
+            id="nombres"
             name="nombres"
-            className="w-full p-2 border border-gray-300 rounded capitalize"
+            className='w-full py-2 outline-none px-1 capitalize'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.nombres.toLowerCase()}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
           />
-          {formik.touched.nombres && formik.errors.nombres && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.nombres} */}
-            </div>
-          )}
+
         </div>
-        <div>
-          <label htmlFor="tipo_documento_identidad.descripcion" className="block">Tipo Documento Identidad</label>
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="telefono">Teléfono<span className="text-red-500">*</span></label>
           <input
             type="text"
-            name="tipo_documento_identidad.descripcion"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.tipo_documento_identidad.descripcion}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.tipo_documento_identidad?.descripcion && formik.errors.tipo_documento_identidad?.descripcion && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.tipo_documento_identidad.descripcion} */}
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="numero_documento_identidad" className="block">Número Documento Identidad</label>
-          <input
-            type="text"
-            name="numero_documento_identidad"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.numero_documento_identidad}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.numero_documento_identidad && formik.errors.numero_documento_identidad && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.numero_documento_identidad} */}
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="telefono" className="block">Teléfono</label>
-          <input
-            type="text"
+            id="telefono"
             name="telefono"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.telefono}
+            className='w-full py-2 outline-none px-1'
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            value={formik.values.telefono}
           />
-          {formik.touched.telefono && formik.errors.telefono && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.telefono} */}
-            </div>
-          )}
+
         </div>
-        <div>
-          <label htmlFor="nacimiento" className="block">Fecha de Nacimiento</label>
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="nacimiento">Fecha de Nacimiento <span className="text-red-500">*</span></label>
           <input
             type="date"
+            id="nacimiento"
             name="nacimiento"
-            className="w-full p-2 border border-gray-300 rounded"
+            className='w-full py-2 outline-none px-1'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.nacimiento}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
           />
-          {formik.touched.nacimiento && formik.errors.nacimiento && (
-            <div className="text-red-500 text-sm">{formik.errors.nacimiento}</div>
-          )}
+
         </div>
-        <div>
-          <label htmlFor="estado_civil.descripcion" className="block">Estado Civil</label>
-          <input
-            type="text"
-            name="estado_civil.descripcion"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.estado_civil.descripcion}
-            onChange={formik.handleChange}
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="estado_civil">Estado Civil</label>
+          <select
+            id="estado_civil"
+            name="estado_civil.id_cabecera_detalle"
+            className='w-full py-2 outline-none px-1'
+            onChange={(e) => {
+              formik.handleChange(e);
+              const selectedOption = estadosCiviles.find(
+                (estado) => estado.id.toString() === e.target.value
+              );
+              formik.setFieldValue(
+                'estado_civil.descripcion',
+                selectedOption ? selectedOption.descripcion : ''
+              );
+            }}
             onBlur={formik.handleBlur}
-          />
-          {formik.touched.estado_civil?.descripcion && formik.errors.estado_civil?.descripcion && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors?.estado_civil?.descripcion} */}
-            </div>
-          )}
+            value={formik.values.estado_civil.id_cabecera_detalle}
+          >
+            <option value="">Selecciona una opción</option>
+            {estadosCiviles.map(estado => (
+              <option key={estado.id} value={estado.id}>
+                {estado.descripcion}
+              </option>
+            ))}
+          </select>
+
         </div>
-        <div>
-          <label htmlFor="ocupacion" className="block">Ocupación</label>
-          <input
-            type="text"
-            name="ocupacion"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.ocupacion}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.ocupacion && formik.errors.ocupacion && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.ocupacion} */}
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="email" className="block">Email</label>
+
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
+            id="email"
             name="email"
-            className="w-full p-2 border border-gray-300 rounded"
+            className='w-full py-2 outline-none px-1'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
           />
-          {formik.touched.email && formik.errors.email && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.email} */}
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="direccion" className="block">Dirección</label>
-          <input
-            type="text"
-            name="direccion"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.direccion}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.direccion && formik.errors.direccion && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.direccion} */}
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="distrito" className="block">Distrito</label>
-          <input
-            type="text"
-            name="distrito"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.distrito}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.distrito && formik.errors.distrito && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.distrito} */}
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="lugar_nacimiento" className="block">Lugar de Nacimiento</label>
-          <input
-            type="text"
-            name="lugar_nacimiento"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.lugar_nacimiento}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.lugar_nacimiento && formik.errors.lugar_nacimiento && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.lugar_nacimiento} */}
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="estado_antiguedad.descripcion" className="block">Estado Antigüedad</label>
-          <input
-            type="text"
-            name="estado_antiguedad.descripcion"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formik.values.estado_antiguedad.descripcion}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.estado_antiguedad?.descripcion && formik.errors.estado_antiguedad?.descripcion && (
-            <div className="text-red-500 text-sm">
-              {/* {formik.errors.estado_antiguedad.descripcion} */}
-            </div>
-          )}
-        </div>
-        {/* <div>
-          <label htmlFor="estado" className="">Estado</label>
-          <input
-            type="checkbox"
-            name="estado"
-            className="m-1 border-gray-300 rounded"
-            checked={formik.values.estado}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.estado && formik.errors.estado && (
-            <div className="text-red-500 text-sm">
 
-            </div>
-          )}
-        </div> */}
-        <div className="col-span-2">
-          <button type="submit" disabled={isLoading} className="w-full p-2 bg-blue-500 text-white rounded">{isLoading ? "Actualizando" : "Actualizar"}</button>
-          {/* {dataPatient && <Alert type='success'>Actualizado correctamente</Alert>} */}
-          {isError && <Alert type='error'>Error al guardar cambios</Alert>}
         </div>
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="tipo_documento_identidad">Ocupacion</label>
+          <input
+            type="text"
+            id="ocupacion"
+            name="ocupacion"
+            className='w-full py-2 outline-none px-1'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.ocupacion}
+          />
+
+        </div>
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="direccion">Dirección</label>
+          <input
+            type="text"
+            id="direccion"
+            name="direccion"
+            className='w-full py-2 outline-none px-1'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.direccion}
+          />
+
+        </div>
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="distrito">Distrito</label>
+          <input
+            type="text"
+            id="distrito"
+            name="distrito"
+            className='w-full py-2 outline-none px-1'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.distrito}
+          />
+
+        </div>
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="lugar_nacimiento">Lugar de Nacimiento</label>
+          <input
+            type="text"
+            id="lugar_nacimiento"
+            name="lugar_nacimiento"
+            className='w-full py-2 outline-none px-1'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.lugar_nacimiento}
+          />
+
+        </div>
+        <div className='border border-gray-300 text-left p-2'>
+          <label htmlFor="estado_antiguedad">Estado</label>
+          <select
+            id="estado_antiguedad"
+            name="estado_antiguedad.id_cabecera_detalle"
+            className='w-full py-2 outline-none px-1'
+            onChange={(e) => {
+              formik.handleChange(e);
+              const selectedOption = estadosAntiguedad.find(
+                (estado) => estado.id.toString() === e.target.value
+              );
+              formik.setFieldValue(
+                'estado_antiguedad.descripcion',
+                selectedOption ? selectedOption.descripcion : ''
+              );
+            }}
+            onBlur={formik.handleBlur}
+            value={formik.values.estado_antiguedad.id_cabecera_detalle}
+          >
+            <option value="">Selecciona una opción</option>
+            {estadosAntiguedad.map(estado => (
+              <option key={estado.id} value={estado.id}>
+                {estado.descripcion}
+              </option>
+            ))}
+          </select>
+
+        </div>
+
+        <button
+          className='w-full bg-[#82b440] shadow-xl p-3 rounded-sm text-white'
+          type='submit'>{loadingPatient ? 'Actualizando...' : 'Actualizar'}</button>
       </form>
+      {isError && <Alert type='error'>Error al guardar cambios</Alert>}
 
     </PopupUpdate>
   )

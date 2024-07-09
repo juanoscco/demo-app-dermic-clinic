@@ -209,7 +209,7 @@ export default function Personal() {
         <section className='flex flex-col lg:flex-row items-center justify-around h-5/6 w-full p-5'>
           <section className='w-full lg:w-2/6 max-h-full h-[35rem] border border-gray-300 overflow-x-auto'>
             <ul className='p-4'>
-              <input className='outline-none border border-gray-200 rounded-md p-2 w-full' type='text' placeholder='Buscar...' />
+              {/* <input className='outline-none border border-gray-200 rounded-md p-2 w-full' type='text' placeholder='Buscar...' /> */}
               {loadHeadBoard ? (
                 <div>Cargando....</div>
               ) :

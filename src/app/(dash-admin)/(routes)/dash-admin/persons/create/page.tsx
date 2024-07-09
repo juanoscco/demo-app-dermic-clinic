@@ -7,17 +7,22 @@ import * as Yup from 'yup';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { Alert } from '@/components/popup/popup-alert';
 import { useRouter } from 'next/navigation';
+import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
 
 export default function UserCreate() {
+    const router = useRouter()
 
     const [selectedSede, setSelectedSede] = useState(null);
 
     const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
     const [addEmployee, { isLoading: loadingEmployee, data: dataEmployee, error: errorEmployee }] = useAddEmployeeMutation();
 
-    const { data: dataInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0 })
+    const { data: dataInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0 });
 
-    const router = useRouter()
+    const { data: dataTitle } = useGetFindHeadBoardQuery(3)
+
+    const { data: dataBreak } = useGetFindHeadBoardQuery(4)
+
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -80,11 +85,11 @@ export default function UserCreate() {
             sede: Yup.object().shape({
                 id_sede: Yup.number().required('Requerido'),
             }),
-            titulo: Yup.object().shape({
-                id_cabecera: Yup.number().required('Requerido'),
-                id_cabecera_detalle: Yup.number().required('Requerido'),
-                descripcion: Yup.string().required('Requerido'),
-            }),
+            // titulo: Yup.object().shape({
+            //     id_cabecera: Yup.number().required('Requerido'),
+            //     id_cabecera_detalle: Yup.number().required('Requerido'),
+            //     descripcion: Yup.string().required('Requerido'),
+            // }),
             // dia_sin_refriguerio: Yup.object().shape({
             //     id_cabecera: Yup.number().required('Requerido'),
             //     id_cabecera_detalle: Yup.number().required('Requerido'),
@@ -199,13 +204,18 @@ export default function UserCreate() {
                             onBlur={formik.handleBlur}
                             className='w-full py-2 outline-none px-1'
                         >
-                            <option value={0}>Seleccione</option>
+                            {/* <option value={0}>Seleccione</option>
                             <option value={8}>Lunes</option>
                             <option value={9}>Martes</option>
                             <option value={10}>Miércoles</option>
                             <option value={11}>Jueves</option>
                             <option value={12}>Viernes</option>
-                            <option value={13}>Sábado</option>
+                            <option value={13}>Sábado</option> */}
+                            {dataBreak?.cabecera?.cabeceras_detalles.map((item: any) => (
+                                <option value={item.id_cabecera_detalle} key={item.id_cabecera_detalle}>
+                                    {item.descripcion}
+                                </option>
+                            ))}
                         </select>
                         {formik.touched.dia_sin_refriguerio?.id_cabecera_detalle && formik.errors.dia_sin_refriguerio?.id_cabecera_detalle ? (
                             <div className='text-red-500 text-sm'>{formik.errors.dia_sin_refriguerio.id_cabecera_detalle}</div>
@@ -226,10 +236,13 @@ export default function UserCreate() {
                             className='w-full py-2 outline-none px-1'
 
                         >
-                            <option value={0}>Seleccione</option>
+                            {/* <option value={0}>Seleccione</option>
                             <option value={5}>Cosmiatras</option>
                             <option value={6}>Doctores</option>
-                            <option value={7}>Secretarias</option>
+                            <option value={7}>Secretarias</option> */}
+                            {dataTitle?.cabecera?.cabeceras_detalles.map((item: any) => (
+                                <option value={item.id_cabecera_detalle} key={item.id_cabecera_detalle}>{item.descripcion}</option>
+                            ))}
 
                         </select>
                     </div>

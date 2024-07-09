@@ -138,16 +138,15 @@ export default function DetailpopupExtraAppointmentComponent({ id, close, refetc
                         </div>
                     </article>
                     {/* <div className='divide-y'></div> */}
-                    <article className="mb-4">
+                    {/* <article className="mb-4">
                         <p className="font-bold text-gray-700 mb-2">Notas</p>
                         <textarea name="" id="" className='border w-full border-gray-300 rounded-sm'></textarea>
                     </article>
                     <div className="mb-4">
                         <p className="font-bold text-gray-700 mb-2">Minutos Alarma</p>
-                        {/* Aquí puedes agregar un input para los minutos de la alarma */}
                         <input type="text" className='border border-gray-300 w-full h-12 rounded-md' />
-                    </div>
-                    <button className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Grabar</button>
+                    </div> */}
+                    <button className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600" onClick={close}>Cerrar</button>
                 </section>
             </section>
         </PopupUpdate>

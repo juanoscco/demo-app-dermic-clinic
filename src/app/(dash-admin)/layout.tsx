@@ -10,10 +10,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
 
-  const { handleBurgerClick, isNavActive, handleNavItemClick } = AsideSidebarHook()
+  const { handleBurgerClick, isNavActive, handleNavItemClick, decoded } = AsideSidebarHook()
   return (
     <main className='min-h-screen flex min-w-full'>
-      <AsideComponent isNavActive={isNavActive} handleNavItemClick={handleNavItemClick} />
+      <AsideComponent isNavActive={isNavActive} handleNavItemClick={handleNavItemClick} decoded={decoded}/>
       <section className='w-full px-5 flex flex-col gap-5 bg-[#fafafa] '>
         <NavbarComponent handleBurgerClick={handleBurgerClick} isNavActive={isNavActive} />
         <section className="h-5/6">

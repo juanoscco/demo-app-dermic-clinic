@@ -219,17 +219,25 @@ export default function RoomsProcedure() {
   };
 
 
+  const [operationSuccess, setOperationSuccess] = useState(false); // Estado para controlar la operación exitosa
+
+  useEffect(() => {
+    if (operationSuccess) {
+      handleProcedureClick(selectedProcedureId);
+      setOperationSuccess(false); // Restablecer el estado de éxito
+    }
+  }, [operationSuccess, selectedProcedureId]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
       <section className='flex flex-col lg:flex-row items-center justify-around h-5/6 w-full p-5'>
         <section className='w-full lg:w-2/6 max-h-full h-[35rem] border border-gray-300 overflow-x-auto'>
           <ul className='p-2'>
-            <input
+            {/* <input
               type="text"
               className='outline-none border border-gray-200 rounded-md p-2 w-full'
               placeholder='Buscar...'
-            />
+            /> */}
             {loadingProcedures ? (
               <div>Loading...</div>
             ) : (
@@ -313,11 +321,15 @@ export default function RoomsProcedure() {
       <section className='w-[90%] flex justify-end pb-3'>
         {selectedProcedureDetails?.id_procedimiento_sala ? (
           <button type="submit" className='px-3 py-1 bg-[#82b440] rounded-md text-white'>
-            {loadUpdateRoomProcedure ? 'Actualizando....' : 'Actualizar'}
+            {/* {loadUpdateRoomProcedure ? 'Actualizando....' : 'Actualizar'} */}
+            {formik.isSubmitting ? 'Actualizando....' : 'Actualizar'}
+
           </button>
         ) : (
           <button type="submit" className='px-3 py-1 bg-[#82b440] rounded-md text-white'>
-            {loadingRoom ? 'Grabando...' : 'Grabar'}
+            {/* {loadingRoom ? 'Grabando...' : 'Grabar'} */}
+            {formik.isSubmitting ? 'Grabando...' : 'Grabar'}
+
           </button>
         )}
         {dataUpdateRoomProcedure && (<Alert type='success'>Actualizado Satisfactoriamente!!</Alert>)}

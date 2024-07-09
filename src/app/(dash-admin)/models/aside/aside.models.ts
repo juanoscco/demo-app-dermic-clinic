@@ -1,6 +1,7 @@
 export interface Props {
     isNavActive: any,
     handleNavItemClick: any,
+    decoded?:any
 }
 
 // Definición de la interfaz para los enlaces
