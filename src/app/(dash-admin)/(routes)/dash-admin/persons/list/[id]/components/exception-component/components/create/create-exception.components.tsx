@@ -4,6 +4,8 @@ import { useAddExceptionMutation } from '@/app/(dash-admin)/(routes)/dash-admin/
 import { PopupUpdate } from '@/components/popup/popup-update';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
+
 interface Props {
     id?: number | any;
     data?: any;
@@ -12,7 +14,7 @@ interface Props {
 }
 
 const today = new Date();
-today.setHours(0, 0, 0, 0); // Para ignorar la parte de la hora
+today.setHours(0, 0, 0, 0);
 
 const validationSchema = Yup.object({
     fecha_ausente_desde: Yup.date()
@@ -24,39 +26,12 @@ const validationSchema = Yup.object({
     motivo: Yup.string().required('Required')
 });
 
-const timeOptions = [
-    { id_cabecera_detalle: 40, descripcion: "09:00 a.m." },
-    { id_cabecera_detalle: 41, descripcion: "09:20 a.m." },
-    { id_cabecera_detalle: 42, descripcion: "09:40 a.m." },
-    { id_cabecera_detalle: 43, descripcion: "10:00 a.m." },
-    { id_cabecera_detalle: 44, descripcion: "10:20 a.m." },
-    { id_cabecera_detalle: 45, descripcion: "10:40 a.m." },
-    { id_cabecera_detalle: 46, descripcion: "11:00 a.m." },
-    { id_cabecera_detalle: 47, descripcion: "11:20 a.m." },
-    { id_cabecera_detalle: 48, descripcion: "11:40 a.m." },
-    { id_cabecera_detalle: 49, descripcion: "12:00 p.m." },
-    { id_cabecera_detalle: 50, descripcion: "12:20 p.m." },
-    { id_cabecera_detalle: 51, descripcion: "12:40 p.m." },
-    { id_cabecera_detalle: 52, descripcion: "13:00 p.m." },
-    { id_cabecera_detalle: 53, descripcion: "13:20 p.m." },
-    { id_cabecera_detalle: 54, descripcion: "13:40 p.m." },
-    { id_cabecera_detalle: 55, descripcion: "14:00 p.m." },
-    { id_cabecera_detalle: 56, descripcion: "14:20 p.m." },
-    { id_cabecera_detalle: 57, descripcion: "14:40 p.m." },
-    { id_cabecera_detalle: 58, descripcion: "15:00 p.m." },
-    { id_cabecera_detalle: 59, descripcion: "15:20 p.m." },
-    { id_cabecera_detalle: 60, descripcion: "15:40 p.m." },
-    { id_cabecera_detalle: 61, descripcion: "16:00 p.m." },
-    { id_cabecera_detalle: 62, descripcion: "16:20 p.m." },
-    { id_cabecera_detalle: 63, descripcion: "16:40 p.m." },
-    { id_cabecera_detalle: 64, descripcion: "17:00 p.m." },
-    { id_cabecera_detalle: 65, descripcion: "17:20 p.m." },
-    { id_cabecera_detalle: 66, descripcion: "17:40 p.m." },
-    { id_cabecera_detalle: 67, descripcion: "18:00 p.m." }
-];
+
 
 export function CreateExceptionComponents({ id, data, onClose, update }: Props) {
     const [addException, { isLoading }] = useAddExceptionMutation();
+    const { data: dataTimeOptiones } = useGetFindHeadBoardQuery(10)
+    const timeOptions = dataTimeOptiones?.cabecera?.cabeceras_detalles
     // console.log(data)
     const formik = useFormik({
         initialValues: {
@@ -70,14 +45,14 @@ export function CreateExceptionComponents({ id, data, onClose, update }: Props) 
             fecha_ausente_hasta: "",
             hora_inicio: {
                 id_cabecera: 10,
-                id_cabecera_detalle: 43,
-                descripcion: "10:00 a.m.",
+                id_cabecera_detalle: 46,
+                descripcion: "--Seleccione--",
                 valor: ""
             },
             hora_final: {
                 id_cabecera: 10,
                 id_cabecera_detalle: 46,
-                descripcion: "11:00 a.m.",
+                descripcion: "--Seleccione--",
                 valor: ""
             },
             empresa: {
@@ -85,12 +60,12 @@ export function CreateExceptionComponents({ id, data, onClose, update }: Props) 
             },
             motivo: "",
             estado: true,
-            estado_eliminado:false
+            estado_eliminado: false
         },
         validationSchema,
         onSubmit: async (values) => {
             try {
-                // console.log(values)
+                console.log(values)
                 await addException(values);
                 update();
                 onClose();
@@ -99,13 +74,25 @@ export function CreateExceptionComponents({ id, data, onClose, update }: Props) 
             }
         }
     })
-
+    const handleStartTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedOption = timeOptions?.find((option: any) => option.id_cabecera_detalle === parseInt(e.target.value));
+        formik.setFieldValue('hora_inicio.id_cabecera_detalle', selectedOption?.id_cabecera_detalle);
+        formik.setFieldValue('hora_inicio.descripcion', selectedOption?.descripcion);
+        formik.setFieldValue('hora_inicio.valor', selectedOption?.valor || '');
+    };
+    const handleEndTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedOption = timeOptions?.find((option: any) => option.id_cabecera_detalle === parseInt(e.target.value));
+        formik.setFieldValue('hora_final.id_cabecera_detalle', selectedOption?.id_cabecera_detalle);
+        formik.setFieldValue('hora_final.descripcion', selectedOption?.descripcion);
+        formik.setFieldValue('hora_final.valor', selectedOption?.valor || '');
+    };
     return (
         <PopupUpdate>
             <div className='flex justify-between flex-wrap mb-4'>
                 <h1 className='text-2xl'>Crear Excepcion</h1>
                 <button onClick={onClose}>x</button>
-            </div>            <form onSubmit={formik.handleSubmit}
+            </div>
+            <form onSubmit={formik.handleSubmit}
                 className='grid grid-cols-1 md:grid-cols-2 gap-5'
             >
                 <div className='border border-gray-300 text-left p-2'>
@@ -141,11 +128,11 @@ export function CreateExceptionComponents({ id, data, onClose, update }: Props) 
                     <select
                         id="hora_inicio"
                         className='w-full py-2 outline-none px-1'
-
-                        {...formik.getFieldProps('hora_inicio.descripcion')}
+                        value={formik.values.hora_inicio.id_cabecera_detalle}
+                        onChange={handleStartTimeChange}
                     >
-                        {timeOptions.map(option => (
-                            <option key={option.id_cabecera_detalle} value={option.descripcion}>
+                        {timeOptions?.map((option: any) => (
+                            <option key={option.id_cabecera_detalle} value={option.id_cabecera_detalle}>
                                 {option.descripcion}
                             </option>
                         ))}
@@ -160,11 +147,11 @@ export function CreateExceptionComponents({ id, data, onClose, update }: Props) 
                     <select
                         id="hora_final"
                         className='w-full py-2 outline-none px-1'
-
-                        {...formik.getFieldProps('hora_final.descripcion')}
+                        value={formik.values.hora_final.id_cabecera_detalle}
+                        onChange={handleEndTimeChange}
                     >
-                        {timeOptions.map(option => (
-                            <option key={option.id_cabecera_detalle} value={option.descripcion}>
+                        {timeOptions?.map((option: any) => (
+                            <option key={option.id_cabecera_detalle} value={option.id_cabecera_detalle}>
                                 {option.descripcion}
                             </option>
                         ))}
@@ -173,7 +160,6 @@ export function CreateExceptionComponents({ id, data, onClose, update }: Props) 
                         <div>{formik.errors.hora_final.descripcion}</div>
                     ) : null}
                 </div>
-
                 <div className='border border-gray-300 text-left p-2'>
                     <label htmlFor="motivo">Motivo</label>
                     <input

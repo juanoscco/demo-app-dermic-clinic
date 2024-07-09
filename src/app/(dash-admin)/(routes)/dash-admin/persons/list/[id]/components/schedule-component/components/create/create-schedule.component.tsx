@@ -30,61 +30,61 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
             },
             horario_trabajo_detalle: [
                 {
-                    semana: { id_cabecera: 4, id_cabecera_detalle: 8, descripcion: "Lunes", valor: "1" },
-                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 37, descripcion: "08:00 a.m.", valor: "" },
-                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 48, descripcion: "11:40 a.m.", valor: "" },
-                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 58, descripcion: "15:00 p.m.", valor: "" },
-                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 64, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false,
-                    estado_eliminado: false
-
-                },
-                {
-                    semana: { id_cabecera: 4, id_cabecera_detalle: 9, descripcion: "Martes", valor: "2" },
-                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 43, descripcion: "08:00 a.m.", valor: "" },
-                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 54, descripcion: "11:40 a.m.", valor: "" },
-                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 65, descripcion: "15:00 p.m.", valor: "" },
-                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 72, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false,
-                    estado_eliminado: false
-
-                },
-                {
-                    semana: { id_cabecera: 4, id_cabecera_detalle: 10, descripcion: "Miercoles", valor: "3" },
-                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 40, descripcion: "08:00 a.m.", valor: "" },
-                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 48, descripcion: "11:40 a.m.", valor: "" },
-                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 57, descripcion: "15:00 p.m.", valor: "" },
-                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 61, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false,
-                    estado_eliminado: false
-
-                },
-                {
-                    semana: { id_cabecera: 4, id_cabecera_detalle: 11, descripcion: "Jueves", valor: "4" },
-                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 42, descripcion: "08:00 a.m.", valor: "" },
-                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 53, descripcion: "11:40 a.m.", valor: "" },
-                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 64, descripcion: "15:00 p.m.", valor: "" },
-                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 72, descripcion: "17:00 p.m.", valor: "" },
-                    estado: false,
-                    estado_eliminado: false
-
-                },
-                {
-                    semana: { id_cabecera: 4, id_cabecera_detalle: 12, descripcion: "Viernes", valor: "5" },
-                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 43, descripcion: "08:00 a.m.", valor: "" },
+                    semana: { id_cabecera: 4, id_cabecera_detalle: 12, descripcion: "Lunes", valor: "1" },
+                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 47, descripcion: "08:00 a.m.", valor: "" },
                     temprano_final: { id_cabecera: 10, id_cabecera_detalle: 55, descripcion: "11:40 a.m.", valor: "" },
-                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 66, descripcion: "15:00 p.m.", valor: "" },
-                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 71, descripcion: "17:00 p.m.", valor: "" },
+                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 68, descripcion: "15:00 p.m.", valor: "" },
+                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 86, descripcion: "21:00 p.m.", valor: "" },
                     estado: false,
                     estado_eliminado: false
 
                 },
                 {
-                    semana: { id_cabecera: 4, id_cabecera_detalle: 13, descripcion: "Sabado", valor: "6" },
-                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 45, descripcion: "08:00 a.m.", valor: "" },
-                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 57, descripcion: "11:40 a.m.", valor: "" },
+                    semana: { id_cabecera: 4, id_cabecera_detalle: 13, descripcion: "Martes", valor: "2" },
+                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 47, descripcion: "08:00 a.m.", valor: "" },
+                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 55, descripcion: "11:40 a.m.", valor: "" },
                     tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 68, descripcion: "15:00 p.m.", valor: "" },
-                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 73, descripcion: "17:00 p.m.", valor: "" },
+                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 86, descripcion: "21:00 p.m.", valor: "" },
+                    estado: false,
+                    estado_eliminado: false
+
+                },
+                {
+                    semana: { id_cabecera: 4, id_cabecera_detalle: 14, descripcion: "Miercoles", valor: "3" },
+                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 47, descripcion: "08:00 a.m.", valor: "" },
+                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 55, descripcion: "11:40 a.m.", valor: "" },
+                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 68, descripcion: "15:00 p.m.", valor: "" },
+                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 86, descripcion: "21:00 p.m.", valor: "" },
+                    estado: false,
+                    estado_eliminado: false
+
+                },
+                {
+                    semana: { id_cabecera: 4, id_cabecera_detalle: 15, descripcion: "Jueves", valor: "4" },
+                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 47, descripcion: "08:00 a.m.", valor: "" },
+                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 55, descripcion: "11:40 a.m.", valor: "" },
+                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 68, descripcion: "15:00 p.m.", valor: "" },
+                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 86, descripcion: "21:00 p.m.", valor: "" },
+                    estado: false,
+                    estado_eliminado: false
+
+                },
+                {
+                    semana: { id_cabecera: 4, id_cabecera_detalle: 16, descripcion: "Viernes", valor: "5" },
+                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 47, descripcion: "08:00 a.m.", valor: "" },
+                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 55, descripcion: "11:40 a.m.", valor: "" },
+                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 68, descripcion: "15:00 p.m.", valor: "" },
+                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 86, descripcion: "21:00 p.m.", valor: "" },
+                    estado: false,
+                    estado_eliminado: false
+
+                },
+                {
+                    semana: { id_cabecera: 4, id_cabecera_detalle: 17, descripcion: "Sabado", valor: "6" },
+                    temprano_inicio: { id_cabecera: 10, id_cabecera_detalle: 47, descripcion: "08:00 a.m.", valor: "" },
+                    temprano_final: { id_cabecera: 10, id_cabecera_detalle: 55, descripcion: "11:40 a.m.", valor: "" },
+                    tarde_inicio: { id_cabecera: 10, id_cabecera_detalle: 68, descripcion: "15:00 p.m.", valor: "" },
+                    tarde_final: { id_cabecera: 10, id_cabecera_detalle: 86, descripcion: "21:00 p.m.", valor: "" },
                     estado: false,
                     estado_eliminado: false
 
@@ -132,52 +132,57 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
     });
 
     const opcionesInicioTemprano = [
-        { id_cabecera_detalle: 37, descripcion: "08:00 a.m." },
-        { id_cabecera_detalle: 38, descripcion: "08:20 a.m." },
-        { id_cabecera_detalle: 39, descripcion: "08:40 a.m." },
-        { id_cabecera_detalle: 40, descripcion: "09:00 a.m." },
-        { id_cabecera_detalle: 41, descripcion: "09:20 a.m." },
-        { id_cabecera_detalle: 42, descripcion: "09:40 a.m." },
-        { id_cabecera_detalle: 43, descripcion: "10:00 a.m." }
+        { id_cabecera_detalle: 47, descripcion: "08:00 a.m." },
+        { id_cabecera_detalle: 48, descripcion: "08:20 a.m." },
+        { id_cabecera_detalle: 49, descripcion: "08:40 a.m." },
+        { id_cabecera_detalle: 50, descripcion: "09:00 a.m." },
+        { id_cabecera_detalle: 51, descripcion: "09:20 a.m." },
+        { id_cabecera_detalle: 52, descripcion: "09:40 a.m." },
+        { id_cabecera_detalle: 53, descripcion: "10:00 a.m." },
     ];
 
     const opcionesFinalTemprano = [
-        { id_cabecera_detalle: 44, descripcion: "10:20 a.m." },
-        { id_cabecera_detalle: 45, descripcion: "10:40 a.m." },
-        { id_cabecera_detalle: 46, descripcion: "11:00 a.m." },
-        { id_cabecera_detalle: 47, descripcion: "11:20 a.m." },
-        { id_cabecera_detalle: 48, descripcion: "11:40 a.m." },
-        { id_cabecera_detalle: 49, descripcion: "12:00 p.m." },
-        { id_cabecera_detalle: 50, descripcion: "12:20 p.m." },
-        { id_cabecera_detalle: 51, descripcion: "12:40 p.m." }
+        { id_cabecera_detalle: 54, descripcion: "10:20 a.m." },
+        { id_cabecera_detalle: 55, descripcion: "10:40 a.m." },
+        { id_cabecera_detalle: 56, descripcion: "11:00 a.m." },
+        { id_cabecera_detalle: 57, descripcion: "11:20 a.m." },
+        { id_cabecera_detalle: 58, descripcion: "11:40 a.m." },
+        { id_cabecera_detalle: 59, descripcion: "12:00 p.m." },
+        { id_cabecera_detalle: 60, descripcion: "12:20 p.m." },
+        { id_cabecera_detalle: 61, descripcion: "12:40 p.m." }
 
     ];
 
     const opcionesInicioTarde = [
-        { id_cabecera_detalle: 52, descripcion: "13:00 p.m." },
-        { id_cabecera_detalle: 53, descripcion: "13:20 p.m." },
-        { id_cabecera_detalle: 54, descripcion: "13:40 p.m." },
-        { id_cabecera_detalle: 55, descripcion: "14:00 p.m." },
-        { id_cabecera_detalle: 56, descripcion: "14:20 p.m." },
-        { id_cabecera_detalle: 57, descripcion: "14:40 p.m." },
-        { id_cabecera_detalle: 58, descripcion: "15:00 p.m." }
+        { id_cabecera_detalle: 62, descripcion: "13:00 p.m." },
+        { id_cabecera_detalle: 63, descripcion: "13:20 p.m." },
+        { id_cabecera_detalle: 64, descripcion: "13:40 p.m." },
+        { id_cabecera_detalle: 65, descripcion: "14:00 p.m." },
+        { id_cabecera_detalle: 66, descripcion: "14:20 p.m." },
+        { id_cabecera_detalle: 67, descripcion: "14:40 p.m." },
+        { id_cabecera_detalle: 68, descripcion: "15:00 p.m." }
     ];
 
     const opcionesFinalTarde = [
-        { id_cabecera_detalle: 59, descripcion: "15:20 p.m." },
-        { id_cabecera_detalle: 60, descripcion: "15:40 p.m." },
-        { id_cabecera_detalle: 61, descripcion: "16:00 p.m." },
-        { id_cabecera_detalle: 62, descripcion: "16:20 p.m." },
-        { id_cabecera_detalle: 63, descripcion: "16:40 p.m." },
-        { id_cabecera_detalle: 64, descripcion: "17:00 p.m." },
-        { id_cabecera_detalle: 65, descripcion: "17:20 p.m." },
-        { id_cabecera_detalle: 66, descripcion: "17:40 p.m." },
-        { id_cabecera_detalle: 67, descripcion: "18:00 p.m." },
-        { id_cabecera_detalle: 68, descripcion: "18:20 p.m." },
-        { id_cabecera_detalle: 69, descripcion: "18:40 p.m." },
-        { id_cabecera_detalle: 70, descripcion: "19:00 p.m." },
-        { id_cabecera_detalle: 71, descripcion: "19:20 p.m." },
-        { id_cabecera_detalle: 72, descripcion: "19:40 p.m." }
+        { id_cabecera_detalle: 69, descripcion: "15:20 p.m." },
+        { id_cabecera_detalle: 70, descripcion: "15:40 p.m." },
+        { id_cabecera_detalle: 71, descripcion: "16:00 p.m." },
+        { id_cabecera_detalle: 72, descripcion: "16:20 p.m." },
+        { id_cabecera_detalle: 73, descripcion: "16:40 p.m." },
+        { id_cabecera_detalle: 74, descripcion: "17:00 p.m." },
+        { id_cabecera_detalle: 75, descripcion: "17:20 p.m." },
+        { id_cabecera_detalle: 76, descripcion: "17:40 p.m." },
+        { id_cabecera_detalle: 77, descripcion: "18:00 p.m." },
+        { id_cabecera_detalle: 78, descripcion: "18:20 p.m." },
+        { id_cabecera_detalle: 79, descripcion: "18:40 p.m." },
+        { id_cabecera_detalle: 80, descripcion: "19:00 p.m." },
+        { id_cabecera_detalle: 81, descripcion: "19:20 p.m." },
+        { id_cabecera_detalle: 82, descripcion: "19:40 p.m." },
+        { id_cabecera_detalle: 83, descripcion: "20:00 p.m." },
+        { id_cabecera_detalle: 84, descripcion: "20:20 p.m." },
+        { id_cabecera_detalle: 85, descripcion: "20:40 p.m." },
+        { id_cabecera_detalle: 86, descripcion: "21:00 p.m." },
+
     ];
 
 
@@ -193,7 +198,10 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
 
     return (
         <PopupUpdate>
-            <button onClick={onClose} className='flex justify-end w-full'>x</button>
+            <div className='flex justify-between items-center py-3'>
+                <h1 className='text-2xl font-bold '>Crear Horario</h1>
+                <button onClick={onClose} className='text-2xl font-bold'>x</button>
+            </div>
             <form onSubmit={formik.handleSubmit}>
                 {/* <div className="mb-4 flex gap-2">
                     <label className="block text-gray-700">Nombre Horario</label>

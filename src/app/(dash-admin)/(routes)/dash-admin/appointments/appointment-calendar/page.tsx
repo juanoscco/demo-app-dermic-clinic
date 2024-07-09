@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useGetInfrastructureQuery } from '../../infrastructure/list/store/service';
 import { CreateAppointmentComponent } from '../components/citas/create';
 import { useGetAppointmentListQuery } from '../components/citas/list/store/service';
@@ -8,49 +8,16 @@ import { useGetEmployeesQuery } from '../../persons/list/store/service';
 import DetailpopupAppointmentComponent from '../components/citas/find-by-id/detail-popup-appointment.component';
 
 import Link from 'next/link';
-
-const hours = [
-    { id_cabecera_detalle: 40, descripcion: "09:00 a.m.", valor: "" },
-    { id_cabecera_detalle: 41, descripcion: "09:20 a.m.", valor: "" },
-    { id_cabecera_detalle: 42, descripcion: "09:40 a.m.", valor: "" },
-    { id_cabecera_detalle: 43, descripcion: "10:00 a.m.", valor: "" },
-    { id_cabecera_detalle: 44, descripcion: "10:20 a.m.", valor: "" },
-    { id_cabecera_detalle: 45, descripcion: "10:40 a.m.", valor: "" },
-    { id_cabecera_detalle: 46, descripcion: "11:00 a.m.", valor: "" },
-    { id_cabecera_detalle: 47, descripcion: "11:20 a.m.", valor: "" },
-    { id_cabecera_detalle: 48, descripcion: "11:40 a.m.", valor: "" },
-    { id_cabecera_detalle: 49, descripcion: "12:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 50, descripcion: "12:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 51, descripcion: "12:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 52, descripcion: "13:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 53, descripcion: "13:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 54, descripcion: "13:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 55, descripcion: "14:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 56, descripcion: "14:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 57, descripcion: "14:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 58, descripcion: "15:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 59, descripcion: "15:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 60, descripcion: "15:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 61, descripcion: "16:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 62, descripcion: "16:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 63, descripcion: "16:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 64, descripcion: "17:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 65, descripcion: "17:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 66, descripcion: "17:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 67, descripcion: "18:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 68, descripcion: "18:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 69, descripcion: "18:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 70, descripcion: "19:00 p.m.", valor: "" }
-];
+import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
 
 const title_employe = [
     {
-        id_cabecera_detalle: 5,
+        id_cabecera_detalle: 8,
         descripcion: "Cosmiatras",
         valor: ""
     },
     {
-        id_cabecera_detalle: 6,
+        id_cabecera_detalle: 9,
         descripcion: "Doctores",
         valor: ""
     },
@@ -70,10 +37,12 @@ export default function AppointmentCalendar() {
     const { data: dataEmployee, isLoading: loadEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 20000, page: 0, filter: '' });
     const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, id_empleado: 0 });
 
-    // ***
+    const { data: dataHours } = useGetFindHeadBoardQuery(10);
+    const hours = dataHours?.cabecera?.cabeceras_detalles;
+
     const [selectedDate, setSelectedDate] = useState(getCurrentDate());
     const [selectedSedeId, setSelectedSedeId] = useState<number | null | any>(1);
-    const [selectedProfessionId, setSelectedProfessionId] = useState<number | null>(6);
+    const [selectedProfessionId, setSelectedProfessionId] = useState<number | null>(8);
 
     const handleProfessionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const professionId = parseInt(event.target.value);
@@ -86,7 +55,6 @@ export default function AppointmentCalendar() {
     const handleSedeChange = (event: any) => {
         setSelectedSedeId(parseInt(event.target.value, 10));
     };
-
 
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDate(event.target.value);
@@ -126,20 +94,13 @@ export default function AppointmentCalendar() {
     };
 
     useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
+        if (!loadInfra && !loadEmployee && !loadAppointmentRoom) {
             refetchInfra();
-        }, 300);
-
-        return () => clearTimeout(delayDebounceFn);
-    }, [refetchInfra]);
-
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
             refetchEmployee();
-        }, 300);
+            refetchAppointment();
+        }
+    }, [loadInfra, loadEmployee, loadAppointmentRoom, refetchInfra, refetchEmployee, refetchAppointment]);
 
-        return () => clearTimeout(delayDebounceFn);
-    }, [refetchEmployee]);
 
     //*** hooks para el selecionado!
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
@@ -172,7 +133,7 @@ export default function AppointmentCalendar() {
 
     // ***
     const [currentPage, setCurrentPage] = useState(0);
-    const pageSize = 4; // Número de doctores por página
+    const pageSize = 4;
 
     const totalPages = Math.ceil(filteredEmployee?.length / pageSize);
 
@@ -244,7 +205,6 @@ export default function AppointmentCalendar() {
 
             <section className='w-full bg-white h-[40rem] overflow-x-auto mt-5'>
                 {/* TABLA CALENDARIO */}
-
                 <section className='w-full p-4'>
                     <table className='w-full bg-white rounded-lg'>
                         <thead>
@@ -262,8 +222,8 @@ export default function AppointmentCalendar() {
                                 )} */}
                                 {renderedEmployees && renderedEmployees?.length > 0 ? (
                                     renderedEmployees?.map((employee: any) => (
-                                        <th key={employee.id_empleado} className="px-4 py-2 border">
-                                            {employee.nombres}
+                                        <th key={employee.id_empleado} className="px-4 py-2 border capitalize">
+                                            Dr. {employee.nombres.split(" ").slice(0, 2).join(" ").toLowerCase()}
                                         </th>
                                     ))
                                 ) : (
@@ -271,200 +231,75 @@ export default function AppointmentCalendar() {
                                 )}
                             </tr>
                         </thead>
-                        {/* <tbody>
-                            {hours.map((hour: any, i: number) => (
-                                <tr key={i}>
-                                    <td className='border h-24 text-center w-10'>{hour.descripcion}</td>
-                                    {filteredEmployee && filteredEmployee.length > 0 ? (
-                                        filteredEmployee
-                                            .map((employee: any, j: number) => {
-                                                const filteredAppointment = filterAppointmentsByHourAndEmployee(hour, employee, selectedSedeId, selectedDate, selectedProfessionId);
-                                                return (
-                                                    <td
-                                                        key={j}
-                                                        className={`border h-20 w-52 cursor-pointer`}
-                                                        onClick={() => {
-                                                            if (!filteredAppointment) handleCellClick(hour, employee);
-                                                        }}
-                                                    >
-                                                        {filteredAppointment ? (
-                                                            <div
-                                                                className={`flex flex-col justify-between h-5/6 p-2 mx-1
-                                                             ${filteredAppointment.item_color === 'Blue' ? 'bg-blue-300' : 'bg-orange-300'}`}
-
-                                                            >
-                                                                <div className='flex flex-wrap items-center justify-between'>
-                                                                    <div className='flex flex-col '>
-                                                                        <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>
-                                                                        <span className='text-xs underline'>{filteredAppointment.item_procedure_name}</span>
-
-                                                                    </div>
-
-                                                                    <div className='flex gap-2'>
-                                                                        <Link href={`list/${filteredAppointment.id_appointment}`} className='text-xs bg-yellow-400 p-1 rounded-md' >Detalle</Link>
-                                                                        <button
-                                                                            className='text-xs bg-gray-200 p-1 rounded-md'
-                                                                            onClick={() => handleDetailAppointmentClick(filteredAppointment.id_appointment)}
-                                                                        >
-                                                                            Atencion
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                                <div className='flex justify-between'>
-                                                                    <div className='flex gap-2'>
-                                                                        <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>
-                                                                            {filteredAppointment.item_id_state_time === 35 ? 'N' : filteredAppointment.item_id_state_time === 36 ? 'A' : ''}
-                                                                        </div>
-                                                                        <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>R</div>
-                                                                    </div>
-                                                                    <div
-                                                                        className={
-                                                                            `w-12 h-4 rounded-sm ${filteredAppointment.item_entrace && filteredAppointment.item_atention === null && filteredAppointment.item_exit === null ? 'bg-green-500' :
-                                                                                filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit === null ? 'bg-yellow-300' :
-                                                                                    filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit ? 'bg-blue-500' : 'bg-white'}`}
-                                                                    >
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div></div>
-                                                        )}
-                                                    </td>
-                                                );
-                                            })
-                                    ) : (
-                                        <td className=' border h-20 w-52 bg-gray-200 '></td>
-                                    )}
-                                </tr>
-                            ))}
-                        </tbody> */}
                         <tbody>
-                            {hours.map((hour: any, i: number) => (
-                                <tr key={i}>
-                                    <td className="border h-24 text-center w-10">{hour.descripcion}</td>
-                                    {renderedEmployees?.map((employee: any, j: number) => {
-                                        const filteredAppointment = filterAppointmentsByHourAndEmployee(
-                                            hour,
-                                            employee,
-                                            selectedSedeId,
-                                            selectedDate,
-                                            selectedProfessionId
-                                        );
-                                        return (
-                                            <td
-                                                key={j}
-                                                className={`border h-20 w-52 cursor-pointer`}
-                                                onClick={() => {
-                                                    if (!filteredAppointment) handleCellClick(hour, employee);
-                                                }}
-                                            >
-                                                {filteredAppointment ? (
-                                                    // <div className="flex flex-col justify-between h-5/6 p-2 mx-1">
-                                                    //     <div className="flex flex-wrap items-center justify-between">
-                                                    //         <div className="flex flex-col">
-                                                    //             <h3 className="capitalize text-xs font-bold">
-                                                    //                 {filteredAppointment.item_patient_name.toLowerCase()}
-                                                    //             </h3>
-                                                    //             <span className="text-xs underline">
-                                                    //                 {filteredAppointment.item_procedure_name}
-                                                    //             </span>
-                                                    //         </div>
-                                                    //         <div className="flex gap-2">
-                                                    //             <Link
-                                                    //                 href={`list/${filteredAppointment.id_appointment}`}
-                                                    //                 className="text-xs bg-yellow-400 p-1 rounded-md"
-                                                    //             >
-                                                    //                 Detalle
-                                                    //             </Link>
-                                                    //             <button
-                                                    //                 className="text-xs bg-gray-200 p-1 rounded-md"
-                                                    //                 onClick={() =>
-                                                    //                     handleDetailAppointmentClick(
-                                                    //                         filteredAppointment.id_appointment
-                                                    //                     )
-                                                    //                 }
-                                                    //             >
-                                                    //                 Atencion
-                                                    //             </button>
-                                                    //         </div>
-                                                    //     </div>
-                                                    //     <div className="flex justify-between">
-                                                    //         <div className="flex gap-2">
-                                                    //             <div className="h-4 w-4 bg-white text-sm flex items-center justify-center">
-                                                    //                 {filteredAppointment.item_id_state_time === 35
-                                                    //                     ? 'N'
-                                                    //                     : filteredAppointment.item_id_state_time === 36
-                                                    //                         ? 'A'
-                                                    //                         : ''}
-                                                    //             </div>
-                                                    //             <div className="h-4 w-4 bg-white text-sm flex items-center justify-center">
-                                                    //                 R
-                                                    //             </div>
-                                                    //         </div>
-                                                    //         <div
-                                                    //             className={`w-12 h-4 rounded-sm ${filteredAppointment.item_entrace &&
-                                                    //                 filteredAppointment.item_atention === null &&
-                                                    //                 filteredAppointment.item_exit === null
-                                                    //                 ? 'bg-green-500'
-                                                    //                 : filteredAppointment.item_entrace &&
-                                                    //                     filteredAppointment.item_atention &&
-                                                    //                     filteredAppointment.item_exit === null
-                                                    //                     ? 'bg-yellow-300'
-                                                    //                     : filteredAppointment.item_entrace &&
-                                                    //                         filteredAppointment.item_atention &&
-                                                    //                         filteredAppointment.item_exit
-                                                    //                         ? 'bg-blue-500'
-                                                    //                         : 'bg-white'
-                                                    //                 }`}
-                                                    //         ></div>
-                                                    //     </div>
-                                                    // </div>
-                                                    <div
-                                                        className={`flex flex-col justify-between h-5/6 p-2 mx-1
+                            {hours
+                                ?.filter((hour: any) => hour.id_cabecera_detalle !== 46)
+                                ?.map((hour: any, i: number) => (
+                                    <tr key={i}>
+                                        <td className="border h-24 text-center w-10">{hour.descripcion}</td>
+                                        {renderedEmployees?.map((employee: any, j: number) => {
+                                            const filteredAppointment = filterAppointmentsByHourAndEmployee(
+                                                hour,
+                                                employee,
+                                                selectedSedeId,
+                                                selectedDate,
+                                                selectedProfessionId
+                                            );
+                                            return (
+                                                <td
+                                                    key={j}
+                                                    className={`border h-20 w-52 cursor-pointer`}
+                                                    onClick={() => {
+                                                        if (!filteredAppointment) handleCellClick(hour, employee);
+                                                    }}
+                                                >
+                                                    {filteredAppointment ? (
+                                                        <div
+                                                            className={`flex flex-col justify-between h-5/6 p-2 mx-1
                                                              ${filteredAppointment.item_color === 'Blue' ? 'bg-blue-300' : 'bg-orange-300'}`}
 
-                                                    >
-                                                        <div className='flex flex-wrap items-center justify-between'>
-                                                            <div className='flex flex-col '>
-                                                                <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>
-                                                                <span className='text-xs underline'>{filteredAppointment.item_procedure_name}</span>
+                                                        >
+                                                            <div className='flex flex-wrap items-center justify-between'>
+                                                                <div className='flex flex-col '>
+                                                                    <h3 className='capitalize text-xs font-bold'>{filteredAppointment.item_patient_name.toLowerCase()}</h3>
+                                                                    <span className='text-xs underline'>{filteredAppointment.item_procedure_name}</span>
 
-                                                            </div>
-
-                                                            <div className='flex gap-2'>
-                                                                <Link href={`list/${filteredAppointment.id_appointment}`} className='text-xs bg-yellow-400 p-1 rounded-md' >Detalle</Link>
-                                                                <button
-                                                                    className='text-xs bg-gray-200 p-1 rounded-md'
-                                                                    onClick={() => handleDetailAppointmentClick(filteredAppointment.id_appointment)}
-                                                                >
-                                                                    Atencion
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div className='flex justify-between'>
-                                                            <div className='flex gap-2'>
-                                                                <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>
-                                                                    {filteredAppointment.item_id_state_time === 35 ? 'N' : filteredAppointment.item_id_state_time === 36 ? 'A' : ''}
                                                                 </div>
-                                                                <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>R</div>
+
+                                                                <div className='flex gap-2'>
+                                                                    <Link href={`list/${filteredAppointment.id_appointment}`} className='text-xs bg-yellow-400 p-1 rounded-md' >Detalle</Link>
+                                                                    <button
+                                                                        className='text-xs bg-gray-200 p-1 rounded-md'
+                                                                        onClick={() => handleDetailAppointmentClick(filteredAppointment.id_appointment)}
+                                                                    >
+                                                                        Atencion
+                                                                    </button>
+                                                                </div>
                                                             </div>
-                                                            <div
-                                                                className={
-                                                                    `w-12 h-4 rounded-sm ${filteredAppointment.item_entrace && filteredAppointment.item_atention === null && filteredAppointment.item_exit === null ? 'bg-green-500' :
-                                                                        filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit === null ? 'bg-yellow-300' :
-                                                                            filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit ? 'bg-blue-500' : 'bg-white'}`}
-                                                            >
+                                                            <div className='flex justify-between'>
+                                                                <div className='flex gap-2'>
+                                                                    <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>
+                                                                        {filteredAppointment.item_id_state_time === 35 ? 'N' : filteredAppointment.item_id_state_time === 36 ? 'A' : ''}
+                                                                    </div>
+                                                                    <div className='h-4 w-4 bg-white text-sm flex items-center justify-center'>R</div>
+                                                                </div>
+                                                                <div
+                                                                    className={
+                                                                        `w-12 h-4 rounded-sm ${filteredAppointment.item_entrace && filteredAppointment.item_atention === null && filteredAppointment.item_exit === null ? 'bg-green-500' :
+                                                                            filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit === null ? 'bg-yellow-300' :
+                                                                                filteredAppointment.item_entrace && filteredAppointment.item_atention && filteredAppointment.item_exit ? 'bg-blue-500' : 'bg-white'}`}
+                                                                >
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                ) : (
-                                                    <div></div>
-                                                )}
-                                            </td>
-                                        );
-                                    })}
-                                </tr>
-                            ))}
+                                                    ) : (
+                                                        <div></div>
+                                                    )}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </section>

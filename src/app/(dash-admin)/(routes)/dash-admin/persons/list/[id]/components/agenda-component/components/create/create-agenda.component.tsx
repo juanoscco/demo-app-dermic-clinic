@@ -21,13 +21,13 @@ const validationSchema = Yup.object({
     estado: Yup.boolean().required('Required')
 });
 
-export  function CreateAgendaComponent({ id, data, onClose, update }: Props) {
+export function CreateAgendaComponent({ id, data, onClose, update }: Props) {
     const [addAgenda, { isLoading }] = useAddAgendaMutation()
 
     const formik = useFormik<AgendaOpening>({
         initialValues: {
             usuario_registro: {
-                id_usuario: id,
+                id_usuario: data?.usuario.id_usuario,
             },
             empleado: {
                 id_empleado: id,
@@ -36,10 +36,10 @@ export  function CreateAgendaComponent({ id, data, onClose, update }: Props) {
                 id_empresa: 1
             },
             fecha_apertura: "",
-            hora_inicio: "",
-            hora_final: "",
+            hora_inicio: '00:00:00.00',
+            hora_final: '00:00:00.00',
             estado: true,
-            estado_eliminado:false
+            estado_eliminado: false
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -53,6 +53,11 @@ export  function CreateAgendaComponent({ id, data, onClose, update }: Props) {
             }
         }
     });
+    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+        const time = e.target.value;
+        const formattedTime = `${time}:00.00`; // Add seconds and milliseconds
+        formik.setFieldValue(field, formattedTime);
+    };
     return (
         <PopupUpdate>
             <button onClick={onClose}>X</button>
@@ -77,12 +82,8 @@ export  function CreateAgendaComponent({ id, data, onClose, update }: Props) {
                     <input
                         type="time"
                         name="hora_inicio"
-                        onChange={(e) => {
-                            const time = e.target.value;
-                            const formattedTime = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-GB', { hour12: false });
-                            formik.setFieldValue('hora_inicio', formattedTime);
-                        }}
-                        value={formik.values.hora_inicio.substring(0, 5)}
+                        onChange={(e) => handleTimeChange(e, 'hora_inicio')}
+                        value={formik.values.hora_inicio.substring(0, 5)} // Show only HH:mm in input
                         className='w-full py-2 outline-none px-1'
                     />
                     {formik.errors.hora_inicio ? <div>{formik.errors.hora_inicio}</div> : null}
@@ -90,16 +91,12 @@ export  function CreateAgendaComponent({ id, data, onClose, update }: Props) {
                 <div className='border border-gray-300 text-left p-2'>
                     <label>Hora Final</label>
                     <input
-                        type="time"
-                        name="hora_final"
-                        onChange={(e) => {
-                            const time = e.target.value;
-                            const formattedTime = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('en-GB', { hour12: false });
-                            formik.setFieldValue('hora_final', formattedTime);
-                        }}
-                        value={formik.values.hora_final ? formik.values.hora_final.substring(0, 5) : ''}
-                        className='w-full py-2 outline-none px-1'
-                    />
+                            type="time"
+                            name="hora_final"
+                            onChange={(e) => handleTimeChange(e, 'hora_final')}
+                            value={formik.values.hora_final.substring(0, 5)} // Show only HH:mm in input
+                            className='w-full py-2 outline-none px-1'
+                        />
                     {formik.errors.hora_final ? <div>{formik.errors.hora_final}</div> : null}
                 </div>
 

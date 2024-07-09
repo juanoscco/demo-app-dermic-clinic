@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react'
 import { useUpdateEmployeeMutation } from './store/service'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {PopupUpdate} from '@/components/popup/popup-update/';
+import { PopupUpdate } from '@/components/popup/popup-update/';
 import { GetDniApiHook } from '@/config/hook-dni';
 import { useGetInfrastructureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/infrastructure/list/store/service';
 import { Employee } from '@/app/(dash-admin)/(routes)/dash-admin/persons/create/interface';
+import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
 
 interface Props {
   onClose: any;
@@ -16,7 +17,7 @@ interface Props {
 }
 
 
-export  function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
+export function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
   const [selectedSede, setSelectedSede] = useState(null);
 
   const [updateEmployee, { isLoading: loadingEmployee, isError }] = useUpdateEmployeeMutation();
@@ -24,11 +25,16 @@ export  function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
   const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
   const { data: dataInfra, error: errorInfra, isLoading: loadingInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 10, page: 0 })
 
+
+  const { data: dataTitle } = useGetFindHeadBoardQuery(3)
+
+  const { data: dataBreak } = useGetFindHeadBoardQuery(4)
+
   const formik = useFormik<Employee>({
     initialValues: {
       tipo_documento: {
         id_cabecera: 2,
-        id_cabecera_detalle: 3,
+        id_cabecera_detalle: 5,
         descripcion: 'DNI',
         valor: '',
       },
@@ -54,13 +60,13 @@ export  function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
       },
       titulo: {
         id_cabecera: data.titulo?.id_cabecera || 3,
-        id_cabecera_detalle: data.titulo?.id_cabecera_detalle || 6,
+        id_cabecera_detalle: data.titulo?.id_cabecera_detalle || 8,
         descripcion: data.titulo?.descripcion || '',
         valor: '',
       },
       dia_sin_refriguerio: {
         id_cabecera: data.dia_sin_refriguerio?.id_cabecera || 4,
-        id_cabecera_detalle: data.dia_sin_refriguerio?.id_cabecera_detalle || 8,
+        id_cabecera_detalle: data.dia_sin_refriguerio?.id_cabecera_detalle || 11,
         descripcion: data.dia_sin_refriguerio?.descripcion || '',
         valor: '',
       },
@@ -90,26 +96,26 @@ export  function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
 
     },
     validationSchema: Yup.object({
-      numero: Yup.string().required('Requerido'),
+      // numero: Yup.string().required('Requerido'),
       nombres: Yup.string().required('Requerido'),
-      telefono: Yup.string().required('Requerido'),
-      correo: Yup.string().email('Email inválido').required('Requerido'),
-      dia_sin_refriguerio: Yup.object({
-        id_cabecera_detalle: Yup.number().required('Requerido'),
-        descripcion: Yup.string().required('Requerido'),
-      }),
-      titulo: Yup.object({
-        id_cabecera_detalle: Yup.number().required('Requerido'),
-        descripcion: Yup.string().required('Requerido'),
-      }),
-      usuario: Yup.object({
-        username: Yup.string().required('Requerido'),
-        password: Yup.string().required('Requerido'),
-        rol: Yup.object({
-          id_rol: Yup.string().required('Requerido'),
-        })
-      }),
-      estado: Yup.boolean().required('Requerido'),
+      // telefono: Yup.string().required('Requerido'),
+      // correo: Yup.string().email('Email inválido').required('Requerido'),
+      // dia_sin_refriguerio: Yup.object({
+      //   id_cabecera_detalle: Yup.number().required('Requerido'),
+      //   descripcion: Yup.string().required('Requerido'),
+      // }),
+      // titulo: Yup.object({
+      //   id_cabecera_detalle: Yup.number().required('Requerido'),
+      //   descripcion: Yup.string().required('Requerido'),
+      // }),
+      // usuario: Yup.object({
+      //   username: Yup.string().required('Requerido'),
+      //   password: Yup.string().required('Requerido'),
+      //   rol: Yup.object({
+      //     id_rol: Yup.string().required('Requerido'),
+      //   })
+      // }),
+      // estado: Yup.boolean().required('Requerido'),
     }),
     onSubmit: async (values) => {
       // console.log(values)
@@ -220,12 +226,11 @@ export  function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
             onBlur={formik.handleBlur}
             className='w-full py-2 outline-none px-1'
           >
-            <option value={8}>Lunes</option>
-            <option value={9}>Martes</option>
-            <option value={10}>Miércoles</option>
-            <option value={11}>Jueves</option>
-            <option value={12}>Viernes</option>
-            <option value={13}>Sábado</option>
+            {dataBreak?.cabecera?.cabeceras_detalles.map((item: any) => (
+              <option value={item.id_cabecera_detalle} key={item.id_cabecera_detalle}>
+                {item.descripcion}
+              </option>
+            ))}
           </select>
           {formik.touched.dia_sin_refriguerio?.id_cabecera_detalle && formik.errors.dia_sin_refriguerio?.id_cabecera_detalle ? (
             <div className='text-red-500 text-sm'>{formik.errors.dia_sin_refriguerio.id_cabecera_detalle}</div>
@@ -247,9 +252,9 @@ export  function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
 
           >
             {/* <option value=""></option> */}
-            <option value={5}>Cosmiatras</option>
-            <option value={6}>Doctores</option>
-            <option value={7}>Secretarias</option>
+            {dataTitle?.cabecera?.cabeceras_detalles.map((item: any) => (
+              <option value={item.id_cabecera_detalle} key={item.id_cabecera_detalle}>{item.descripcion}</option>
+            ))}
 
           </select>
         </div>
@@ -327,23 +332,7 @@ export  function EmployeeUpdateComponent({ onClose, id, data, update }: Props) {
             ))}
           </select>
         </div>
-        <div className="border border-gray-300 text-left p-2">
-          <label className='text-font-777 text-sm'>Estado <span className="text-red-500">*</span></label>
-          {/* <input type="text" className='w-full py-2 outline-none px-1' /> */}
-          <select
-            name='estado'
-            value={formik.values.estado ? 'true' : 'false'}
-            onChange={(e) => formik.setFieldValue('estado', e.target.value === 'true')}
-            className='w-full py-2 outline-none px-1'
-          >
-            {/* <option value=""></option> */}
-            <option value="true">Habilitado</option>
-            <option value="false">Desabilitado</option>
-          </select>
-          {formik.touched.estado && formik.errors.estado ? (
-            <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
-          ) : null}
-        </div>
+       
 
         <button className='bg-[#82b440] p-2 text-white' type='submit'>
           {loadingEmployee ? 'Actualizando...' : 'actualizar'}

@@ -4,12 +4,25 @@ import { CreateAgendaComponent } from './components/create/';
 import { UpdateAgendaComponent } from './components/update'
 import { useGetAgendaQuery } from '../../../../agenda-opening/components/list/store/service';
 import { DeleteAgendaComponent } from './components/delete/delete-agenda.component';
+import {formatTime, formatTimeExtra } from "@/utils/formatTime"
 
 interface Props {
     idPerson?: number;
     dataPerson?: any;
 }
 
+const formatTimeToAmPm = (time: string) => {
+    const [hours, minutes, seconds] = time.split(':');
+    const date = new Date();
+    date.setHours(Number(hours));
+    date.setMinutes(Number(minutes));
+    date.setSeconds(Number(seconds));
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
 export default function AgendaPersonComponent({ dataPerson, idPerson }: Props) {
 
     // Create
@@ -117,8 +130,8 @@ export default function AgendaPersonComponent({ dataPerson, idPerson }: Props) {
                                         .map((agenda: any, index: number) => (
                                             <tr key={index}>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.fecha_apertura}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.hora_inicio}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{agenda.hora_final}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeToAmPm(agenda.hora_inicio)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeToAmPm(agenda.hora_final)}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm  flex flex-wrap gap-1">
                                                     <button
                                                         className='text-yellow-500'

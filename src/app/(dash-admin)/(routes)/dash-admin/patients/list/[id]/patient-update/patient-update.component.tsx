@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Alert } from '@/components/popup/popup-alert';
 import { GetDniApiHook } from '@/config/hook-dni';
+import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
 
 interface Props {
   onClose: any;
@@ -14,7 +15,12 @@ interface Props {
   data?: any;
   update?: any
 }
-
+const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const formattedDate = date.toISOString().split('T')[0];
+  return formattedDate;
+};
 export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
 
   const [updatePatient, { data: dataPatient, isLoading: loadingPatient, isError }] = useUpdatePatientMutation();
@@ -22,13 +28,15 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
   const { data: dniData, isLoading: loadingDni, handleClick, setDni, error: errorDni } = GetDniApiHook();
 
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    const formattedDate = date.toISOString().split('T')[0];
-    return formattedDate;
-  };
 
+  const { data: dataCivilState } = useGetFindHeadBoardQuery(8)
+
+  const { data: dataStateOld } = useGetFindHeadBoardQuery(9)
+
+
+  const civilState = dataCivilState?.cabecera?.cabeceras_detalles
+
+  const stateOld = dataStateOld?.cabecera?.cabeceras_detalles
 
   const formik = useFormik({
     initialValues: {
@@ -50,7 +58,7 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
       telefono: data.telefono || '',
       nacimiento: formatDate(data.nacimiento),
       estado_civil: {
-        id_cabecera: data.estado_civil.id_cabecera,
+        id_cabecera: 8,
         id_cabecera_detalle: data.estado_civil.id_cabecera_detalle,
         descripcion: data.estado_civil.descripcion || '',
         valor: data.estado_civil.valor || ''
@@ -61,7 +69,7 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
       distrito: data.distrito || '',
       lugar_nacimiento: data.lugar_nacimiento || '',
       estado_antiguedad: {
-        id_cabecera: data.estado_antiguedad.id_cabecera,
+        id_cabecera: 9,
         id_cabecera_detalle: data.estado_antiguedad.id_cabecera_detalle,
         descripcion: data.estado_antiguedad.descripcion || '',
         valor: data.estado_antiguedad.valor || ''
@@ -103,16 +111,7 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
     }
   });
 
-  const estadosAntiguedad = [
-    { id: 35, descripcion: "Nuevo" },
-    { id: 36, descripcion: "Antiguo" }
-  ];
-  const estadosCiviles = [
-    { id: 31, descripcion: "Soltero/a" },
-    { id: 32, descripcion: "Casado/a" },
-    { id: 33, descripcion: "Divorciado/a" },
-    { id: 34, descripcion: "Viudo/a" }
-  ];
+
   useEffect(() => {
     if (dniData && dniData.nombre) {
       formik.setFieldValue('nombres', dniData.nombre);
@@ -133,6 +132,7 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
       <form
         onSubmit={formik.handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
         <div className='border border-gray-300 text-left p-2'>
           <label className='text-font-777 text-sm' htmlFor="numero_documento_identidad">DNI  <span className="text-red-500">*</span></label>
           <div className='flex gap-3'>
@@ -156,7 +156,6 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
           </div>
           {errorDni && <div className='text-red-400'>Error en DNI</div>}
         </div>
-
         <div className='border border-gray-300 text-left p-2'>
           <label htmlFor="nombres">Apellidos y Nombres <span className="text-red-500">*</span></label>
           <input
@@ -204,8 +203,8 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
             className='w-full py-2 outline-none px-1'
             onChange={(e) => {
               formik.handleChange(e);
-              const selectedOption = estadosCiviles.find(
-                (estado) => estado.id.toString() === e.target.value
+              const selectedOption = civilState?.find(
+                (estado: any) => estado.id_cabecera_detalle.toString() === e.target.value
               );
               formik.setFieldValue(
                 'estado_civil.descripcion',
@@ -215,12 +214,14 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
             onBlur={formik.handleBlur}
             value={formik.values.estado_civil.id_cabecera_detalle}
           >
-            <option value="">Selecciona una opción</option>
-            {estadosCiviles.map(estado => (
-              <option key={estado.id} value={estado.id}>
+
+            {civilState?.filter((estado: any) => estado.id_cabecera_detalle !== 43).map((estado: any) => (
+              <option key={estado.id_cabecera_detalle} value={estado.id_cabecera_detalle}>
                 {estado.descripcion}
               </option>
             ))}
+
+
           </select>
 
         </div>
@@ -298,8 +299,8 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
             className='w-full py-2 outline-none px-1'
             onChange={(e) => {
               formik.handleChange(e);
-              const selectedOption = estadosAntiguedad.find(
-                (estado) => estado.id.toString() === e.target.value
+              const selectedOption = stateOld?.find(
+                (estado: any) => estado.id_cabecera_detalle.toString() === e.target.value
               );
               formik.setFieldValue(
                 'estado_antiguedad.descripcion',
@@ -309,12 +310,14 @@ export function PatientUpdateComponent({ onClose, id, data, update }: Props) {
             onBlur={formik.handleBlur}
             value={formik.values.estado_antiguedad.id_cabecera_detalle}
           >
-            <option value="">Selecciona una opción</option>
-            {estadosAntiguedad.map(estado => (
-              <option key={estado.id} value={estado.id}>
-                {estado.descripcion}
-              </option>
-            ))}
+
+            {stateOld
+              ?.map((estado: any) => (
+                <option key={estado.id_cabecera_detalle} value={estado.id_cabecera_detalle}>
+                  {estado.descripcion}
+                </option>
+              ))}
+
           </select>
 
         </div>

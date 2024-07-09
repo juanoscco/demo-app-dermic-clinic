@@ -15,7 +15,6 @@ export default function PersonsAgendaOpening() {
   const [filter, setFilter] = useState('');
   const { data, isLoading, error, refetch } = useGetAgendaQuery({ page: currentPage - 1, limit: perPage, filter })
 
-  console.log(data)
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       refetch();

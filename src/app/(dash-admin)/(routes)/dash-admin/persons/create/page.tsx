@@ -36,7 +36,7 @@ export default function UserCreate() {
         initialValues: {
             tipo_documento: {
                 id_cabecera: 2,
-                id_cabecera_detalle: 3,
+                id_cabecera_detalle: 5,
                 descripcion: 'DNI',
                 valor: '',
             },
@@ -101,7 +101,7 @@ export default function UserCreate() {
             }),
         }),
         onSubmit: async (values, { resetForm }) => {
-            // console.log(values)
+            console.log(values)
             await addEmployee(values);
             resetForm();
             router.push('./list')

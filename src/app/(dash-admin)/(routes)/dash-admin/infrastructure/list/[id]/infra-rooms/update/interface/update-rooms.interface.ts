@@ -18,6 +18,7 @@ export interface InfraRoom {
     nombres: string;
     piso: number | string;
     estado: boolean;
+    estado_eliminado: boolean
 }
 
 export interface ReponseInfraRoom {

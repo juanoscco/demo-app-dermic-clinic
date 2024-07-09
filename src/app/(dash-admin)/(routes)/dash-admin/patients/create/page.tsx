@@ -42,7 +42,7 @@ export default function PatientsCreate() {
             nacimiento: "",
             estado_civil: {
                 id_cabecera: 8,
-                id_cabecera_detalle: 31,
+                id_cabecera_detalle: 38,
                 descripcion: "Soltero/a",
                 valor: ""
             },

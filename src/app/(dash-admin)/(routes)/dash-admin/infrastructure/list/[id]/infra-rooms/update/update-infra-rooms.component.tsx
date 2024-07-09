@@ -39,7 +39,8 @@ export default function UpdateInfraRoomsComponent({ id, dataUpdate, onClose, upd
             nombres: dataUpdate?.nombres,
             piso: dataUpdate?.piso,
             estado: dataUpdate?.estado,
-            id_sala_tratamiento: dataUpdate?.id_sala_tratamiento
+            id_sala_tratamiento: dataUpdate?.id_sala_tratamiento,
+            estado_eliminado: false
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {

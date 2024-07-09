@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { PopupUpdate } from '@/components/popup/popup-update';
 import { Exception } from "../../inteface"
 import { useUpdateExceptionMutation } from '@/app/(dash-admin)/(routes)/dash-admin/persons/exceptions/components/update/store/service';
+import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
 interface Props {
     id?: number | any;
     data?: any;
@@ -24,39 +25,12 @@ const validationSchema = Yup.object({
     motivo: Yup.string().required('Required')
 });
 
-const timeOptions = [
-    { id_cabecera_detalle: 40, descripcion: "09:00 a.m." },
-    { id_cabecera_detalle: 41, descripcion: "09:20 a.m." },
-    { id_cabecera_detalle: 42, descripcion: "09:40 a.m." },
-    { id_cabecera_detalle: 43, descripcion: "10:00 a.m." },
-    { id_cabecera_detalle: 44, descripcion: "10:20 a.m." },
-    { id_cabecera_detalle: 45, descripcion: "10:40 a.m." },
-    { id_cabecera_detalle: 46, descripcion: "11:00 a.m." },
-    { id_cabecera_detalle: 47, descripcion: "11:20 a.m." },
-    { id_cabecera_detalle: 48, descripcion: "11:40 a.m." },
-    { id_cabecera_detalle: 49, descripcion: "12:00 p.m." },
-    { id_cabecera_detalle: 50, descripcion: "12:20 p.m." },
-    { id_cabecera_detalle: 51, descripcion: "12:40 p.m." },
-    { id_cabecera_detalle: 52, descripcion: "13:00 p.m." },
-    { id_cabecera_detalle: 53, descripcion: "13:20 p.m." },
-    { id_cabecera_detalle: 54, descripcion: "13:40 p.m." },
-    { id_cabecera_detalle: 55, descripcion: "14:00 p.m." },
-    { id_cabecera_detalle: 56, descripcion: "14:20 p.m." },
-    { id_cabecera_detalle: 57, descripcion: "14:40 p.m." },
-    { id_cabecera_detalle: 58, descripcion: "15:00 p.m." },
-    { id_cabecera_detalle: 59, descripcion: "15:20 p.m." },
-    { id_cabecera_detalle: 60, descripcion: "15:40 p.m." },
-    { id_cabecera_detalle: 61, descripcion: "16:00 p.m." },
-    { id_cabecera_detalle: 62, descripcion: "16:20 p.m." },
-    { id_cabecera_detalle: 63, descripcion: "16:40 p.m." },
-    { id_cabecera_detalle: 64, descripcion: "17:00 p.m." },
-    { id_cabecera_detalle: 65, descripcion: "17:20 p.m." },
-    { id_cabecera_detalle: 66, descripcion: "17:40 p.m." },
-    { id_cabecera_detalle: 67, descripcion: "18:00 p.m." }
-];
+
 export function UpdateExceptionComponent({ id, data, onClose, update }: Props) {
 
-    const [updateExcetion, { isLoading }] = useUpdateExceptionMutation()
+    const [updateExcetion, { isLoading }] = useUpdateExceptionMutation();
+    const { data: dataTimeOptiones } = useGetFindHeadBoardQuery(10);
+    const timeOptions = dataTimeOptiones?.cabecera?.cabeceras_detalles;
     const formik = useFormik<Exception>({
         initialValues: {
             id_excepcion: id,
@@ -138,45 +112,6 @@ export function UpdateExceptionComponent({ id, data, onClose, update }: Props) {
                     ) : null}
                 </div>
 
-                {/* <div className='border border-gray-300 text-left p-2'>
-                    <label htmlFor="hora_inicio">Hora Inicio</label>
-                    <select
-                        id="hora_inicio"
-                        className='w-full py-2 outline-none px-1'
-
-                        {...formik.getFieldProps('hora_inicio.descripcion')}
-
-                    >
-                        {timeOptions.map(option => (
-                            <option key={option.id_cabecera_detalle} value={option.descripcion}>
-                                {option.descripcion}
-                            </option>
-                        ))}
-                    </select>
-                    {formik.touched.hora_inicio?.descripcion && formik.errors.hora_inicio?.descripcion ? (
-                        <div>{formik.errors.hora_inicio.descripcion}</div>
-                    ) : null}
-                </div>
-
-                <div className='border border-gray-300 text-left p-2'>
-                    <label htmlFor="hora_final">Hora Final</label>
-                    <select
-                        id="hora_final"
-                        className='w-full py-2 outline-none px-1'
-
-                        {...formik.getFieldProps('hora_final.descripcion')}
-
-                    >
-                        {timeOptions.map(option => (
-                            <option key={option.id_cabecera_detalle} value={option.descripcion}>
-                                {option.descripcion}
-                            </option>
-                        ))}
-                    </select>
-                    {formik.touched.hora_final?.descripcion && formik.errors.hora_final?.descripcion ? (
-                        <div>{formik.errors.hora_final.descripcion}</div>
-                    ) : null}
-                </div> */}
                 <div className='border border-gray-300 text-left p-2'>
                     <label htmlFor="hora_inicio">Hora Inicio</label>
                     <select
@@ -184,7 +119,7 @@ export function UpdateExceptionComponent({ id, data, onClose, update }: Props) {
                         className='w-full py-2 outline-none px-1'
                         value={formik.values.hora_inicio.descripcion}
                         onChange={(e) => {
-                            const selectedOption = timeOptions.find(option => option.descripcion === e.target.value);
+                            const selectedOption = timeOptions?.find((option:any) => option.descripcion === e.target.value);
                             if (selectedOption) {
                                 formik.setFieldValue('hora_inicio.descripcion', selectedOption.descripcion);
                                 formik.setFieldValue('hora_inicio.id_cabecera_detalle', selectedOption.id_cabecera_detalle);
@@ -192,7 +127,7 @@ export function UpdateExceptionComponent({ id, data, onClose, update }: Props) {
                             // formik.submitForm();
                         }}
                     >
-                        {timeOptions.map(option => (
+                        {timeOptions?.map((option:any) => (
                             <option key={option.id_cabecera_detalle} value={option.descripcion}>
                                 {option.descripcion}
                             </option>
@@ -210,7 +145,7 @@ export function UpdateExceptionComponent({ id, data, onClose, update }: Props) {
                         className='w-full py-2 outline-none px-1'
                         value={formik.values.hora_final.descripcion}
                         onChange={(e) => {
-                            const selectedOption = timeOptions.find(option => option.descripcion === e.target.value);
+                            const selectedOption = timeOptions?.find((option:any) => option.descripcion === e.target.value);
                             if (selectedOption) {
                                 formik.setFieldValue('hora_final.descripcion', selectedOption.descripcion);
                                 formik.setFieldValue('hora_final.id_cabecera_detalle', selectedOption.id_cabecera_detalle);
@@ -218,7 +153,7 @@ export function UpdateExceptionComponent({ id, data, onClose, update }: Props) {
                             // formik.submitForm();
                         }}
                     >
-                        {timeOptions.map(option => (
+                        {timeOptions?.map((option:any) => (
                             <option key={option.id_cabecera_detalle} value={option.descripcion}>
                                 {option.descripcion}
                             </option>

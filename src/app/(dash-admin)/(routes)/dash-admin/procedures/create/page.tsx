@@ -6,27 +6,23 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { decodeToken } from '@/app/(dash-admin)/utils';
 import { useRouter } from 'next/navigation';
+import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
 
 export default function ProceduresCreate() {
     const [addProcedure, { data, isLoading, isError }] = useAddProcedureMutation();
 
-    const durationOptions = [
-        { id: 14, descripcion: "5 minutos" },
-        { id: 15, descripcion: "10 minutos" },
-        { id: 16, descripcion: "15 minutos" },
-        { id: 17, descripcion: "20 minutos" },
-        { id: 18, descripcion: "25 minutos" },
-        { id: 19, descripcion: "30 minutos" },
-        { id: 20, descripcion: "35 minutos" },
-        { id: 21, descripcion: "40 minutos" },
-        { id: 22, descripcion: "45 minutos" },
-        { id: 23, descripcion: "50 minutos" },
-        { id: 24, descripcion: "55 minutos" },
-        { id: 25, descripcion: "60 minutos" },
-    ];
+    const { data: dataDurationOptions } = useGetFindHeadBoardQuery(5);
+    const durationOptions = dataDurationOptions?.cabecera?.cabeceras_detalles;
+
+    const { data: dataTypeProceduresOptions } = useGetFindHeadBoardQuery(6);
+    const typeProceduresOptions = dataTypeProceduresOptions?.cabecera?.cabeceras_detalles;
+
+    const { data: dataSubtypeProceduresOptions } = useGetFindHeadBoardQuery(7);
+    const subtypeProceduresOptions = dataSubtypeProceduresOptions?.cabecera?.cabeceras_detalles;
+
     const handleDuracionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = parseInt(event.target.value, 10);
-        const selectedOption = durationOptions.find(option => option.id === selectedId);
+        const selectedOption = durationOptions.find((option:any) => option.id_cabecera_detalle === selectedId);
 
         if (selectedOption) {
             formik.setFieldValue('duracion.id_cabecera_detalle', selectedId);
@@ -38,27 +34,18 @@ export default function ProceduresCreate() {
         { value: 'false', label: "No" },
     ];
 
-    const typeProceduresOptions = [
-        { id: 27, descripcion: 'Piel' },
-        { id: 28, descripcion: 'Otros' },
-    ];
-
-    const subtypeProceduresOptions = [
-        { id: 29, descripcion: 'Público' },
-        { id: 30, descripcion: 'Privado' },
-    ];
-
     const handleTypeProceduresChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOption = typeProceduresOptions.find(option => option.id === parseInt(e.target.value));
-        formik.setFieldValue('tipo_procedimiento.id_cabecera_detalle', selectedOption?.id);
+        const selectedOption = typeProceduresOptions.find((option:any) => option.id_cabecera_detalle === parseInt(e.target.value));
+        formik.setFieldValue('tipo_procedimiento.id_cabecera_detalle', selectedOption?.id_cabecera_detalle);
         formik.setFieldValue('tipo_procedimiento.descripcion', selectedOption?.descripcion);
     };
 
     const handleSubtypeProceduresChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOption = subtypeProceduresOptions.find(option => option.id === parseInt(e.target.value));
-        formik.setFieldValue('subtipo_procedimiento.id_cabecera_detalle', selectedOption?.id);
+        const selectedOption = subtypeProceduresOptions.find((option:any) => option.id_cabecera_detalle === parseInt(e.target.value));
+        formik.setFieldValue('subtipo_procedimiento.id_cabecera_detalle', selectedOption?.id_cabecera_detalle);
         formik.setFieldValue('subtipo_procedimiento.descripcion', selectedOption?.descripcion);
     };
+
     const decoded = decodeToken({});
 
     const router = useRouter();
@@ -68,8 +55,8 @@ export default function ProceduresCreate() {
             nombres: "",
             duracion: {
                 id_cabecera: 5,
-                id_cabecera_detalle: 17,
-                descripcion: "20 minutos",
+                id_cabecera_detalle: 18,
+                descripcion: "--Seleccione--",
                 valor: ""
             },
             empresa: {
@@ -81,14 +68,14 @@ export default function ProceduresCreate() {
             anestesia: true,
             tipo_procedimiento: {
                 id_cabecera: 6,
-                id_cabecera_detalle: 27,
-                descripcion: "Piel",
+                id_cabecera_detalle: 31,
+                descripcion: "--Seleccione--",
                 valor: ""
             },
             subtipo_procedimiento: {
                 id_cabecera: 7,
-                id_cabecera_detalle: 30,
-                descripcion: "Privado",
+                id_cabecera_detalle: 35,
+                descripcion: "--Seleccione--",
                 valor: ""
             },
             estado: true,
@@ -156,8 +143,8 @@ export default function ProceduresCreate() {
                             value={formik.values.duracion.id_cabecera_detalle}
                             onChange={handleDuracionChange}
                         >
-                            {durationOptions.map((option) => (
-                                <option key={option.id} value={option.id}>
+                            {durationOptions?.map((option:any) => (
+                                <option key={option.id_cabecera_detalle} value={option.id_cabecera_detalle}>
                                     {option.descripcion}
                                 </option>
                             ))}
@@ -194,8 +181,8 @@ export default function ProceduresCreate() {
                             value={formik.values.tipo_procedimiento.id_cabecera_detalle}
                             onChange={handleTypeProceduresChange}
                         >
-                            {typeProceduresOptions.map((option) => (
-                                <option key={option.id} value={option.id}>
+                            {typeProceduresOptions?.map((option:any) => (
+                                <option key={option.id_cabecera_detalle} value={option.id_cabecera_detalle}>
                                     {option.descripcion}
                                 </option>
                             ))}
@@ -213,8 +200,8 @@ export default function ProceduresCreate() {
                             value={formik.values.subtipo_procedimiento.id_cabecera_detalle}
                             onChange={handleSubtypeProceduresChange}
                         >
-                            {subtypeProceduresOptions.map((option) => (
-                                <option key={option.id} value={option.id}>
+                            {subtypeProceduresOptions?.map((option:any) => (
+                                <option key={option.id_cabecera_detalle} value={option.id_cabecera_detalle}>
                                     {option.descripcion}
                                 </option>
                             ))}
