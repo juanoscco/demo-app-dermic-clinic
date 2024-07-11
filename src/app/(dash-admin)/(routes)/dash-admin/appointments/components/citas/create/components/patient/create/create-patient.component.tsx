@@ -57,25 +57,12 @@ export default function CreatePatientComponent({ addPatient, loadingPatient, nex
         },
         validationSchema: Yup.object({
             nombres: Yup.string().required('Requerido'),
-            // tipo_documento_identidad: Yup.object({
-            //     descripcion: Yup.string().required('Requerido'),
-            // }).required('Requerido'),
-            // numero_documento_identidad: Yup.string().required('Requerido'),
             telefono: Yup.string()
                 .matches(/^[0-9]+$/, 'El teléfono debe contener solo números')
                 .required('Requerido'),
-            // nacimiento: Yup.date().required('Requerido'),
-            // estado_civil: Yup.object({
-            //     descripcion: Yup.string().required('Requerido'),
-            // }).required('Requerido'),
-            // ocupacion: Yup.string().required('Requerido'),
+
             email: Yup.string().email('Correo electrónico no válido')
-            // direccion: Yup.string().required('Requerido'),
-            // distrito: Yup.string().required('Requerido'),
-            // lugar_nacimiento: Yup.string().required('Requerido'),
-            // estado_antiguedad: Yup.object({
-            //     descripcion: Yup.string().required('Requerido'),
-            // }).required('Requerido'),
+
         }),
         onSubmit: async (values, { resetForm }) => {
             // console.log(values);
@@ -86,14 +73,15 @@ export default function CreatePatientComponent({ addPatient, loadingPatient, nex
         },
     });
     const estadosAntiguedad = [
-        { id: 35, descripcion: "Nuevo" },
-        { id: 36, descripcion: "Antiguo" }
+        { id: 44, descripcion: "Nuevo" },
+        { id: 45, descripcion: "Antiguo" }
     ];
     const estadosCiviles = [
-        { id: 31, descripcion: "Soltero/a" },
-        { id: 32, descripcion: "Casado/a" },
-        { id: 33, descripcion: "Divorciado/a" },
-        { id: 34, descripcion: "Viudo/a" }
+        { id: 38, descripcion: "--Seleccione--" },
+        { id: 39, descripcion: "Soltero/a" },
+        { id: 40, descripcion: "Casado/a" },
+        { id: 41, descripcion: "Divorciado/a" },
+        { id: 42, descripcion: "Viudo/a" }
     ];
 
     useEffect(() => {
@@ -104,7 +92,6 @@ export default function CreatePatientComponent({ addPatient, loadingPatient, nex
 
     return (
         <React.Fragment>
-            <h1 className='text-2xl px-3 pt-2'>Crear paciente</h1>
             <section className='mt-4 p-4 bg-white'>
                 <form
                     onSubmit={formik.handleSubmit}

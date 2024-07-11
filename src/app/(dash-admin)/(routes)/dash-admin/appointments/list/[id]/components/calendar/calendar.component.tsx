@@ -1,63 +1,32 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useGetAppointmentListQuery } from '../../../../components/citas/list/store/service';
 import { useGetInfrastructureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/infrastructure/list/store/service';
 import { useGetRoomProcedureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/procedures/list/components/Rooms/store/get/service';
 import { useGetEmployeesQuery } from '@/app/(dash-admin)/(routes)/dash-admin/persons/list/store/service';
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useUpdateAppointmentMutation } from '../../../../components/citas/update/store/service';
 import { DeleteAppointmentComponents } from '../../../../components/citas/delete/components';
 import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
+import { useGetLocationProcedureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/procedures/list/components/Location/store/get/service';
+import { useGetPersonalProcedureQuery } from '@/app/(dash-admin)/(routes)/dash-admin/procedures/list/components/Personal/store/get/service';
 
 interface Props {
     dataDetailAppointmentById?: any;
     refetch?: any;
 }
 
-const hours = [
-    { id_cabecera_detalle: 40, descripcion: "09:00 a.m.", valor: "" },
-    { id_cabecera_detalle: 41, descripcion: "09:20 a.m.", valor: "" },
-    { id_cabecera_detalle: 42, descripcion: "09:40 a.m.", valor: "" },
-    { id_cabecera_detalle: 43, descripcion: "10:00 a.m.", valor: "" },
-    { id_cabecera_detalle: 44, descripcion: "10:20 a.m.", valor: "" },
-    { id_cabecera_detalle: 45, descripcion: "10:40 a.m.", valor: "" },
-    { id_cabecera_detalle: 46, descripcion: "11:00 a.m.", valor: "" },
-    { id_cabecera_detalle: 47, descripcion: "11:20 a.m.", valor: "" },
-    { id_cabecera_detalle: 48, descripcion: "11:40 a.m.", valor: "" },
-    { id_cabecera_detalle: 49, descripcion: "12:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 50, descripcion: "12:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 51, descripcion: "12:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 52, descripcion: "13:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 53, descripcion: "13:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 54, descripcion: "13:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 55, descripcion: "14:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 56, descripcion: "14:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 57, descripcion: "14:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 58, descripcion: "15:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 59, descripcion: "15:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 60, descripcion: "15:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 61, descripcion: "16:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 62, descripcion: "16:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 63, descripcion: "16:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 64, descripcion: "17:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 65, descripcion: "17:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 66, descripcion: "17:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 67, descripcion: "18:00 p.m.", valor: "" },
-    { id_cabecera_detalle: 68, descripcion: "18:20 p.m.", valor: "" },
-    { id_cabecera_detalle: 69, descripcion: "18:40 p.m.", valor: "" },
-    { id_cabecera_detalle: 70, descripcion: "19:00 p.m.", valor: "" }
-];
 
 const title_employe = [
     {
-        id_cabecera_detalle: 5,
+        id_cabecera_detalle: 8,
         descripcion: "Cosmiatras",
         valor: ""
     },
     {
-        id_cabecera_detalle: 6,
+        id_cabecera_detalle: 9,
         descripcion: "Doctores",
         valor: ""
     },
@@ -97,6 +66,7 @@ interface DataDetailAppointment {
     estado: boolean;
     estado_eliminado: boolean
 }
+
 const getCurrentDate = () => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -108,10 +78,7 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
     // *******
     const { data: dataAppointment, isLoading: loadAppointmentRoom, refetch: refetchAppointment } = useGetAppointmentListQuery({ limit: 150000, page: 0, id_empleado: 0 })
     const { data: dataInfra, isLoading: loadInfra, refetch: refetchInfra } = useGetInfrastructureQuery({ limit: 20, page: 0, filter: '' })
-    const { data: dataRoomProcedure, isLoading: loadRoomProcedures, refetch: refetchRoomProcedure } = useGetRoomProcedureQuery({ limit: 300, page: 0, filter: '' });
     const { data: dataEmployee, isLoading: loadEmployee, refetch: refetchEmployee } = useGetEmployeesQuery({ limit: 20000, page: 0, filter: '' });
-
-    const roomProcedures = dataRoomProcedure?.data?.content
 
     const { data: dataHours } = useGetFindHeadBoardQuery(10);
     const hours = dataHours?.cabecera?.cabeceras_detalles
@@ -132,7 +99,6 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
     const handleSedeChange = (event: any) => {
         setSelectedSedeId(parseInt(event.target.value, 10));
     };
-
 
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDate(event.target.value);
@@ -172,20 +138,12 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
     };
 
     useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
+        if (!loadAppointmentRoom && !loadInfra && !loadEmployee) {
             refetchInfra();
-        }, 300);
-
-        return () => clearTimeout(delayDebounceFn);
-    }, [refetchInfra]);
-
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
             refetchEmployee();
-        }, 300);
-
-        return () => clearTimeout(delayDebounceFn);
-    }, [refetchEmployee]);
+            refetchAppointment();
+        }
+    }, [loadAppointmentRoom, loadInfra, loadEmployee, refetchInfra, refetchEmployee, refetchAppointment])
 
     // ******
     const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
@@ -260,17 +218,85 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
         });
     };
 
-    const handleRoomChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = parseInt(e.target.value);
-        setSelectedRoom(value);
-        formik.setFieldValue('sala_tratamiento.id_sala_tratamiento', value);
-    };
+    // ************************
+    const { data: dataRoomProcedure, isLoading: loadRoomProcedures, refetch: refetchRoomProcedure } = useGetRoomProcedureQuery({ limit: 300, page: 0, filter: '' });
+    const { data: dataLocationProcedure, isLoading: loadLocationProcedure, refetch: refetchLocationProcedure } = useGetLocationProcedureQuery({ limit: 300, page: 0, filter: '' });
+    const { data: dataTitleProcedure, isLoading: loadEmployeeProcedure, refetch: refetchEmployeeProcedure } = useGetPersonalProcedureQuery({ limit: 300, page: 0, filter: '' })
 
-    const handleProcedureChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = parseInt(e.target.value);
-        setSelectedProcedure(value);
-        formik.setFieldValue('procedimiento.id_procedimiento', value);
+    type FormattedProcedure = {
+        id_proc: number;
+        name_proc: string;
+        rooms: { id_rooms: number; name_rooms: string }[];
     };
+    useEffect(() => {
+        if (!loadRoomProcedures && !loadLocationProcedure && !loadEmployeeProcedure) {
+            refetchRoomProcedure();
+            refetchLocationProcedure();
+            refetchEmployeeProcedure();
+        }
+    }, [loadRoomProcedures, loadLocationProcedure, loadEmployeeProcedure, refetchRoomProcedure, refetchLocationProcedure, refetchEmployeeProcedure])
+
+    const roomProcedures = dataRoomProcedure?.data?.content;
+    const locationProcedures = dataLocationProcedure?.data?.content;
+    const titleProcedures = dataTitleProcedure?.data?.content;
+
+    const [filteredProcedure, setFilteredProcedure] = useState<FormattedProcedure[]>([]);
+    const [rooms, setRooms] = useState<{ id_rooms: number; name_rooms: string }[]>([]);
+
+    const filteredProceduresKey = useMemo(() =>
+        locationProcedures
+            ?.filter((item: any) => item.sede.id_sede === selectedSedeId)
+            ?.flatMap((item: any) => item.procedimiento_sede_detalle.map((detail: any) => detail.procedimiento.id_procedimiento)) || [],
+        [locationProcedures, selectedSedeId]
+    );
+
+    const filteredTitleProcedures = useMemo(() =>
+        titleProcedures
+            ?.filter((data: any) => data.titulo.id_cabecera_detalle === selectedProfessionId)
+            ?.flatMap((item: any) => item.procedimiento_personales_detalle.map((detail: any) => detail.procedimiento.id_procedimiento)) || [],
+        [titleProcedures, selectedProfessionId]
+    );
+
+    const filteredRoomProceduresKey = useMemo(() =>
+        roomProcedures
+            ?.filter((item: any) => item.procedimiento_sala_detalle.some((detail: any) => detail.sala_tratamiento.sede.id_sede === selectedSedeId))
+            ?.map((item: any) => item.procedimiento.id_procedimiento) || [],
+        [roomProcedures, selectedSedeId]
+    );
+
+    const findIntersection = useCallback((array1: any[], array2: any[]) => {
+        return array1.filter((value: any) => array2.includes(value));
+    }, []);
+
+    const combinedProcedures = useMemo(() =>
+        findIntersection(filteredProceduresKey, findIntersection(filteredTitleProcedures, filteredRoomProceduresKey)),
+        [filteredProceduresKey, filteredTitleProcedures, filteredRoomProceduresKey, findIntersection]
+    );
+
+    useEffect(() => {
+        if (roomProcedures) {
+            const filtered = roomProcedures.filter((item: any) =>
+                combinedProcedures.includes(item.procedimiento.id_procedimiento)
+            );
+
+            const formattedProcedures: FormattedProcedure[] = filtered.map((proc: any) => ({
+                id_proc: proc.procedimiento.id_procedimiento,
+                name_proc: proc.procedimiento.nombres,
+                rooms: proc.procedimiento_sala_detalle
+                    .filter((roomsDetail: any) =>
+                        roomsDetail.sala_tratamiento.sede.id_sede === selectedSedeId
+                    )
+                    .map((roomsDetail: any) => ({
+                        id_rooms: roomsDetail.sala_tratamiento.id_sala_tratamiento,
+                        name_rooms: roomsDetail.sala_tratamiento.nombres,
+                    })),
+            }));
+
+            setFilteredProcedure(formattedProcedures);
+        }
+    }, [roomProcedures, combinedProcedures, selectedSedeId]);
+
+    // *****************
 
     const formik = useFormik({
         initialValues: initialValues,
@@ -278,9 +304,8 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
         onSubmit: async (values) => {
             try {
                 if (dataDetailAppointmentById?.id_cita) {
-                    console.log(values);
+                    // console.log(values);
                     await updateAppointment({ appointmentId: dataDetailAppointmentById?.id_cita, appointmentData: values }).unwrap();
-                    console.log("SE ACTUALIZO CORRECTAMENTE!");
                     refetch();
                     refetchAppointment()
                     // router.push("/dash-admin/appointments/appointment-calendar");
@@ -295,14 +320,6 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
 
 
     // ****
-    type FormattedProcedure = {
-        id_proc: number;
-        name_proc: string;
-        rooms: { id_rooms: number; name_rooms: string }[];
-    };
-    const [filteredProcedure, setFilteredProcedure] = useState<FormattedProcedure[]>([]);
-    const [rooms, setRooms] = useState<{ id_rooms: number; name_rooms: string }[]>([]);
-
     useEffect(() => {
         if (!loadRoomProcedures && roomProcedures) {
             const filtered = roomProcedures.filter((item: any) =>
@@ -339,6 +356,18 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
             setRooms([]);
         }
     }, [formik.values.procedimiento.id_procedimiento, filteredProcedure]);
+
+    const handleRoomChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = parseInt(e.target.value);
+        setSelectedRoom(value);
+        formik.setFieldValue('sala_tratamiento.id_sala_tratamiento', value);
+    };
+
+    const handleProcedureChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = parseInt(e.target.value);
+        setSelectedProcedure(value);
+        formik.setFieldValue('procedimiento.id_procedimiento', value);
+    };
 
     /**
      * 
@@ -549,27 +578,6 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                                 <label className="text-gray-700 font-semibold mb-1">Empleado</label>
                                 <p className="text-gray-600 mb-2">{selectedEmployee?.nombres ? selectedEmployee?.nombres : 'Seleccione una de las casillas'}</p>
                             </div>
-
-                            <div className='border border-gray-300 text-left p-2'>
-                                <label>Sala Tratamiento</label>
-                                {isEditable ? (
-                                    <select
-                                        className='w-full py-2 outline-none px-1'
-                                        value={selectedRoom ?? ''}
-                                        onChange={handleRoomChange}
-                                    >
-                                        <option value="">Selecciona un especialista</option>
-                                        {rooms.map(room => (
-                                            <option key={room.id_rooms} value={room.id_rooms}>
-                                                {room.name_rooms}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <p className="text-gray-600">{dataDetailAppointmentById.sala_tratamiento.nombres}</p>
-                                )}
-                            </div>
-
                             <div className='border border-gray-300 text-left p-2'>
                                 <label htmlFor="procedimiento.id_procedimiento" className="text-gray-700 font-semibold mb-2">Procedimiento</label>
                                 {isEditable ? (
@@ -579,16 +587,33 @@ export default function CalendarComponent({ dataDetailAppointmentById, refetch }
                                         onChange={handleProcedureChange}
                                     >
                                         <option value="">Seleccione un procedimiento</option>
-                                        {filteredProcedure.map(proc => (
-                                            <option key={proc.id_proc} value={proc.id_proc}>
-                                                {proc.name_proc}
-                                            </option>
+                                        {filteredProcedure.map((item: any) => (
+                                            <option key={item.id_proc} value={item.id_proc}>{item.name_proc}</option>
                                         ))}
                                     </select>
                                 ) : (
                                     <p className="text-gray-600">{dataDetailAppointmentById.procedimiento.nombres}</p>
                                 )}
                             </div>
+                            <div className='border border-gray-300 text-left p-2'>
+                                <label>Sala Tratamiento</label>
+                                {isEditable ? (
+                                    <select
+                                        className='w-full py-2 outline-none px-1 bg-gray-100'
+                                        value={selectedRoom ?? ''}
+                                        onChange={handleRoomChange}
+                                        disabled
+                                    >
+                                        {rooms.map((room: any) => (
+                                            <option key={room.id_rooms} value={room.id_rooms}>{room.name_rooms}</option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <p className="text-gray-600">{dataDetailAppointmentById.sala_tratamiento.nombres}</p>
+                                )}
+                            </div>
+
+
                             <button
                                 className={`rounded-md ${isEditable ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-gray-500 text-white'}`}
                                 type="button"

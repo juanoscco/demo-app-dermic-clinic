@@ -22,6 +22,7 @@ const title_employe = [
         valor: ""
     },
 ]
+
 const getCurrentDate = () => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -248,7 +249,7 @@ export default function AppointmentCalendar() {
                                             return (
                                                 <td
                                                     key={j}
-                                                    className={`border h-20 w-52 cursor-pointer`}
+                                                    className={`border h-20 w-52 cursor-pointer hover:bg-gray-200`}
                                                     onClick={() => {
                                                         if (!filteredAppointment) handleCellClick(hour, employee);
                                                     }}

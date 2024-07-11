@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Schedule } from "./inteface"
 import { useAddScheduleMutation } from '@/app/(dash-admin)/(routes)/dash-admin/persons/schedules/components/create/store/service';
+import { useGetFindHeadBoardQuery } from '@/config/search-headboard/service';
 
 interface Props {
     idPerson?: number;
@@ -15,6 +16,9 @@ interface Props {
 
 export default function CreateScheduleComponent({ idPerson, dataPerson, onClose, update }: Props) {
     const [addSchelude, { isLoading }] = useAddScheduleMutation()
+
+    const { data: dataTimeOptiones } = useGetFindHeadBoardQuery(10)
+    const timeOptions = dataTimeOptiones?.cabecera?.cabeceras_detalles;
 
     const formik = useFormik<Schedule>({
         initialValues: {
@@ -131,59 +135,7 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
         }
     });
 
-    const opcionesInicioTemprano = [
-        { id_cabecera_detalle: 47, descripcion: "08:00 a.m." },
-        { id_cabecera_detalle: 48, descripcion: "08:20 a.m." },
-        { id_cabecera_detalle: 49, descripcion: "08:40 a.m." },
-        { id_cabecera_detalle: 50, descripcion: "09:00 a.m." },
-        { id_cabecera_detalle: 51, descripcion: "09:20 a.m." },
-        { id_cabecera_detalle: 52, descripcion: "09:40 a.m." },
-        { id_cabecera_detalle: 53, descripcion: "10:00 a.m." },
-    ];
 
-    const opcionesFinalTemprano = [
-        { id_cabecera_detalle: 54, descripcion: "10:20 a.m." },
-        { id_cabecera_detalle: 55, descripcion: "10:40 a.m." },
-        { id_cabecera_detalle: 56, descripcion: "11:00 a.m." },
-        { id_cabecera_detalle: 57, descripcion: "11:20 a.m." },
-        { id_cabecera_detalle: 58, descripcion: "11:40 a.m." },
-        { id_cabecera_detalle: 59, descripcion: "12:00 p.m." },
-        { id_cabecera_detalle: 60, descripcion: "12:20 p.m." },
-        { id_cabecera_detalle: 61, descripcion: "12:40 p.m." }
-
-    ];
-
-    const opcionesInicioTarde = [
-        { id_cabecera_detalle: 62, descripcion: "13:00 p.m." },
-        { id_cabecera_detalle: 63, descripcion: "13:20 p.m." },
-        { id_cabecera_detalle: 64, descripcion: "13:40 p.m." },
-        { id_cabecera_detalle: 65, descripcion: "14:00 p.m." },
-        { id_cabecera_detalle: 66, descripcion: "14:20 p.m." },
-        { id_cabecera_detalle: 67, descripcion: "14:40 p.m." },
-        { id_cabecera_detalle: 68, descripcion: "15:00 p.m." }
-    ];
-
-    const opcionesFinalTarde = [
-        { id_cabecera_detalle: 69, descripcion: "15:20 p.m." },
-        { id_cabecera_detalle: 70, descripcion: "15:40 p.m." },
-        { id_cabecera_detalle: 71, descripcion: "16:00 p.m." },
-        { id_cabecera_detalle: 72, descripcion: "16:20 p.m." },
-        { id_cabecera_detalle: 73, descripcion: "16:40 p.m." },
-        { id_cabecera_detalle: 74, descripcion: "17:00 p.m." },
-        { id_cabecera_detalle: 75, descripcion: "17:20 p.m." },
-        { id_cabecera_detalle: 76, descripcion: "17:40 p.m." },
-        { id_cabecera_detalle: 77, descripcion: "18:00 p.m." },
-        { id_cabecera_detalle: 78, descripcion: "18:20 p.m." },
-        { id_cabecera_detalle: 79, descripcion: "18:40 p.m." },
-        { id_cabecera_detalle: 80, descripcion: "19:00 p.m." },
-        { id_cabecera_detalle: 81, descripcion: "19:20 p.m." },
-        { id_cabecera_detalle: 82, descripcion: "19:40 p.m." },
-        { id_cabecera_detalle: 83, descripcion: "20:00 p.m." },
-        { id_cabecera_detalle: 84, descripcion: "20:20 p.m." },
-        { id_cabecera_detalle: 85, descripcion: "20:40 p.m." },
-        { id_cabecera_detalle: 86, descripcion: "21:00 p.m." },
-
-    ];
 
 
     const handleActivationToggle = (index: any, active: any) => {
@@ -203,40 +155,26 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                 <button onClick={onClose} className='text-2xl font-bold'>x</button>
             </div>
             <form onSubmit={formik.handleSubmit}>
-                {/* <div className="mb-4 flex gap-2">
-                    <label className="block text-gray-700">Nombre Horario</label>
-                    <input
-                        type="text"
-                        name="nombre_horario"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.nombre_horario}
-                        className="mt-1 p-2 border border-gray-300 rounded w-full outline-none"
-                    />
-                    {formik.touched.nombre_horario && formik.errors.nombre_horario ? (
-                        <div className="text-red-500 flex items-center">{formik.errors.nombre_horario}</div>
-                    ) : null}
-                </div> */}
+
 
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {formik.values.horario_trabajo_detalle?.map((detalle, index) => (
                         <div key={index} className='border border-gray-300  p-4 '>
                             <h1 className="font-bold text-lg">{detalle?.semana.descripcion}</h1>
-
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded">
                                 <div className="flex flex-col gap-3">
                                     <div className="mb-2">
                                         <label className="block text-gray-700">Temprano Inicio</label>
                                         <select
                                             name={`horario_trabajo_detalle[${index}].temprano_inicio.id_cabecera_detalle`}
-                                            onChange={(e) => handleSelectChange(e, index, 'temprano_inicio', opcionesInicioTemprano)}
+                                            onChange={(e) => handleSelectChange(e, index, 'temprano_inicio', timeOptions)}
                                             onBlur={formik.handleBlur}
                                             value={detalle.temprano_inicio?.id_cabecera_detalle || ''}
                                             disabled={!detalle.estado}
                                             className="mt-1 p-2 border rounded w-full"
                                         >
-                                            {opcionesInicioTemprano.map((opcion) => (
+                                            {timeOptions?.map((opcion:any) => (
                                                 <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
                                                     {opcion.descripcion}
                                                 </option>
@@ -247,13 +185,13 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                                         <label className="block text-gray-700">Tarde Inicio</label>
                                         <select
                                             name={`horario_trabajo_detalle[${index}].tarde_inicio.id_cabecera_detalle`}
-                                            onChange={(e) => handleSelectChange(e, index, 'tarde_inicio', opcionesInicioTarde)}
+                                            onChange={(e) => handleSelectChange(e, index, 'tarde_inicio', timeOptions)}
                                             onBlur={formik.handleBlur}
                                             value={detalle.tarde_inicio?.id_cabecera_detalle || ''}
                                             disabled={!detalle.estado}
                                             className="mt-1 p-2 border rounded w-full"
                                         >
-                                            {opcionesInicioTarde.map((opcion) => (
+                                            {timeOptions?.map((opcion:any) => (
                                                 <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
                                                     {opcion.descripcion}
                                                 </option>
@@ -266,13 +204,13 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                                         <label className="block text-gray-700">Temprano Final</label>
                                         <select
                                             name={`horario_trabajo_detalle[${index}].temprano_final.id_cabecera_detalle`}
-                                            onChange={(e) => handleSelectChange(e, index, 'temprano_final', opcionesFinalTemprano)}
+                                            onChange={(e) => handleSelectChange(e, index, 'temprano_final', timeOptions)}
                                             onBlur={formik.handleBlur}
                                             value={detalle.temprano_final?.id_cabecera_detalle || ''}
                                             disabled={!detalle.estado}
                                             className="mt-1 p-2 border rounded w-full"
                                         >
-                                            {opcionesFinalTemprano.map((opcion) => (
+                                            {timeOptions?.map((opcion:any) => (
                                                 <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
                                                     {opcion.descripcion}
                                                 </option>
@@ -283,13 +221,13 @@ export default function CreateScheduleComponent({ idPerson, dataPerson, onClose,
                                         <label className="block text-gray-700">Tarde Final</label>
                                         <select
                                             name={`horario_trabajo_detalle[${index}].tarde_final.id_cabecera_detalle`}
-                                            onChange={(e) => handleSelectChange(e, index, 'tarde_final', opcionesFinalTarde)}
+                                            onChange={(e) => handleSelectChange(e, index, 'tarde_final', timeOptions)}
                                             onBlur={formik.handleBlur}
                                             value={detalle.tarde_final?.id_cabecera_detalle || ''}
                                             disabled={!detalle.estado}
                                             className="mt-1 p-2 border rounded w-full"
                                         >
-                                            {opcionesFinalTarde.map((opcion) => (
+                                            {timeOptions?.map((opcion:any) => (
                                                 <option key={opcion.id_cabecera_detalle} value={opcion.id_cabecera_detalle}>
                                                     {opcion.descripcion}
                                                 </option>

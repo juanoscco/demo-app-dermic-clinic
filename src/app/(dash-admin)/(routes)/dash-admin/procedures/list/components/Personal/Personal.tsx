@@ -21,11 +21,16 @@ export default function Personal() {
   // GET
   const { data: getHeadBoard, isLoading: loadHeadBoard } = useGetFindHeadBoardQuery(3)
   const { data: dataHeadBoardTitleFindById, refetch: refefetchDataHeadBoardById } = useGetHeadBoardProcedureAvailableByIdQuery(selectedHeadBoardId)
-  const { data: dataHeadBoardProcedure, refetch: refetchDataHeadBoard } = useGetPersonalProcedureQuery({ limit: 300, page: 0, filter: '' })
+  const { data: dataHeadBoardProcedure, isLoading: loadDataHeadBoard, refetch: refetchDataHeadBoard } = useGetPersonalProcedureQuery({ limit: 300, page: 0, filter: '' })
 
   const headBoard = getHeadBoard?.cabecera?.cabeceras_detalles
   // console.log(dataHeadBoardProcedure)
 
+  useEffect(() => {
+    if (!loadDataHeadBoard) {
+      refetchDataHeadBoard()
+    }
+  }, [loadDataHeadBoard, refetchDataHeadBoard])
   // POST
   const [addHeadboardTitle, { data: addHeadboard, isLoading: addLoadHeadboard }] = useAddPersonalProcedureMutation();
 
@@ -45,7 +50,7 @@ export default function Personal() {
       id_cabecera_detalle: selectedHeadBoardDetails?.id_cabecera_detalle || null,
       descripcion: selectedHeadBoardDetails?.descripcion || '',
       procedimiento_personales_detalle: selectedHeadBoardDetails?.procedures?.map((proc: any) => proc.id_proc) || [],
-      estado_eliminado:false
+      estado_eliminado: false
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -75,10 +80,12 @@ export default function Personal() {
             personalProcedureData: payload
           }).unwrap();
           refetchDataHeadBoard();
+          refefetchDataHeadBoardById();
         } else {
           // console.log('Adding Headboard Title with payload:', payload);
           await addHeadboardTitle(payload).unwrap();
           refetchDataHeadBoard();
+          refefetchDataHeadBoardById();
         }
       } catch (error) {
         console.error('Error al enviar los datos:', error);
@@ -214,21 +221,23 @@ export default function Personal() {
                 <div>Cargando....</div>
               ) :
                 (
-                  headBoard?.map((board: any) => (
-                    <li
-                      key={board.id_cabecera_detalle}
-                      className={`flex items-center justify-between mt-1 py-1 px-2 cursor-pointer ${selectedHeadBoardId === board.id_cabecera_detalle ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
-                      onClick={() => handleHeadboardPersonalClick(board.id_cabecera_detalle)}
-                    >
-                      {board.descripcion}
-                    </li>
-                  ))
+                  headBoard
+                    ?.filter((item: any) => item.id_cabecera_detalle !== 7 && item.id_cabecera_detalle !== 10)
+                    ?.map((board: any) => (
+                      <li
+                        key={board.id_cabecera_detalle}
+                        className={`flex items-center justify-between mt-1 py-1 px-2 cursor-pointer ${selectedHeadBoardId === board.id_cabecera_detalle ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
+                        onClick={() => handleHeadboardPersonalClick(board.id_cabecera_detalle)}
+                      >
+                        {board.descripcion}
+                      </li>
+                    ))
                 )}
             </ul>
           </section>
           <section className='w-full lg:w-2/6 max-h-full h-[35rem] border border-gray-300 overflow-x-auto mt-4 lg:mt-0'>
             <ul className='p-2'>
-              <input type="text" className='outline-none border border-gray-200 rounded-md p-2 w-full' placeholder='Buscar...' />
+              {/* <input type="text" className='outline-none border border-gray-200 rounded-md p-2 w-full' placeholder='Buscar...' /> */}
               {/* {selectedHeadBoardId} */}
               {selectedHeadBoardId === 0 ? (
                 <div className='flex items-center justify-center '>Seleccione una opción</div>

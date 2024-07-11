@@ -47,6 +47,8 @@ export default function RoomsProcedure() {
     return () => clearTimeout(delayDebounceFn);
   }, [refetchInfraRoom]);
 
+  const [isSaved, setIsSaved] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       procedimiento: selectedProcedureDetails?.id_procedimiento || null,
@@ -75,9 +77,13 @@ export default function RoomsProcedure() {
         if (selectedProcedureDetails?.id_procedimiento_sala) {
           await updateRoomProcedure({ roomProcedureId: selectedProcedureDetails.id_procedimiento_sala, roomProcedureData: payload }).unwrap();
           refetchRoomProcedures();
+          refetchInfraRoom();
+
         } else {
           await addRoomProcedure(payload).unwrap();
           refetchRoomProcedures();
+          refetchInfraRoom(); 
+
         }
 
       } catch (error) {
@@ -263,7 +269,7 @@ export default function RoomsProcedure() {
         </section>
         <section className='w-full lg:w-2/6 max-h-full h-[35rem] border border-gray-300 overflow-x-auto mt-4 lg:mt-0'>
           <ul className='p-4 flex flex-col'>
-            <input className='outline-none border border-gray-200 rounded-md p-2 w-full' type='text' placeholder='Buscar...' />
+            {/* <input className='outline-none border border-gray-200 rounded-md p-2 w-full' type='text' placeholder='Buscar...' /> */}
             {/* {selectedProcedureId} */}
             {selectedProcedureId === 0 ? (
               <div className='flex items-center justify-center '>Seleccione un procedimiento</div>
@@ -279,13 +285,6 @@ export default function RoomsProcedure() {
                             {procedure.data_sede[sede].map((room: any, j: number) => (
                               <li key={j} className='flex justify-end gap-2'>
                                 <span>Sala: {room.sala}</span>
-                                {/* <input
-                                  type="checkbox"
-                                  name="procedimiento_sala_detalle"
-                                  value={room.idSala}
-                                  checked={isChecked(room)}
-                                  onChange={() => handleCheckboxChange(room.idSala)}
-                                /> */}
                                 <input
                                   type="checkbox"
                                   name="procedimiento_sala_detalle"
@@ -319,19 +318,29 @@ export default function RoomsProcedure() {
         </section>
       </section>
       <section className='w-[90%] flex justify-end pb-3'>
-        {selectedProcedureDetails?.id_procedimiento_sala ? (
+        {/* {selectedProcedureDetails?.id_procedimiento_sala ? (
           <button type="submit" className='px-3 py-1 bg-[#82b440] rounded-md text-white'>
-            {/* {loadUpdateRoomProcedure ? 'Actualizando....' : 'Actualizar'} */}
-            {formik.isSubmitting ? 'Actualizando....' : 'Actualizar'}
+            {loadUpdateRoomProcedure ? 'Actualizando....' : 'Actualizar'}
 
           </button>
         ) : (
           <button type="submit" className='px-3 py-1 bg-[#82b440] rounded-md text-white'>
-            {/* {loadingRoom ? 'Grabando...' : 'Grabar'} */}
-            {formik.isSubmitting ? 'Grabando...' : 'Grabar'}
+            {loadingRoom ? 'Grabando...' : 'Grabar'}
 
           </button>
-        )}
+        )} */}
+        <button type="submit" className='px-3 py-1 bg-[#82b440] rounded-md text-white'>
+          {
+            selectedProcedureDetails?.id_procedimiento_sala  ? (
+              loadUpdateRoomProcedure ? 'Actualizando....' : 'Actualizar'
+            ) : (
+              loadingRoom ? 'Grabando...' : 'Grabar'
+            )
+          }
+        </button>
+        {/* {formik.isSubmitting ? 'Actualizando....' : 'Actualizar'} */}
+        {/* {formik.isSubmitting ? 'Grabando...' : 'Grabar'} */}
+
         {dataUpdateRoomProcedure && (<Alert type='success'>Actualizado Satisfactoriamente!!</Alert>)}
         {dataRoomProcedure && (<Alert type='success'>Creacion Satisfactoriamente</Alert>)}
         {errorRoom && <Alert type='error'>Error al enviar los datos</Alert>}

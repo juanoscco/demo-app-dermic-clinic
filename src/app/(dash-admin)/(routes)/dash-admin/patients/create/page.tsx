@@ -100,10 +100,6 @@ export default function PatientsCreate() {
         }
     }, [dniData, formik.setFieldValue]);
 
-
-
-
-
     return (
         <React.Fragment>
             <h1 className='text-2xl'>Crear paciente</h1>

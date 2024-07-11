@@ -140,23 +140,23 @@ export default function Procedures() {
         setCurrentPage
     };
     const headers = (
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-3 md:flex-row flex-col'>
             <Link
                 href={`./create`}
-                className='p-2 bg-blue-500 rounded-md text-white'
+                className='p-2 bg-blue-500 rounded-md text-white xl:w-auto w-full text-center'
 
             >
                 Crear
             </Link>
             <button
                 onClick={handleExportExcel}
-                className='p-2 bg-green-500 rounded-md text-white'
+                className='p-2 bg-green-500 rounded-md text-white xl:w-auto w-full'
             >
                 Excel
             </button>
             <button
                 onClick={handlePrint}
-                className='bg-gray-500 p-2 text-white rounded-md'
+                className='bg-gray-500 p-2 text-white rounded-md xl:w-auto w-full'
             >
                 Imprimir
             </button>

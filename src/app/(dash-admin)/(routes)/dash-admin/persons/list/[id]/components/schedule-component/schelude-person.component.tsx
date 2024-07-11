@@ -20,6 +20,7 @@ export default function ScheludePersonComponent({ idPerson, dataPerson }: Props)
 
     const filteredSchedules = dataSchedule?.data?.content.filter((schedule: any) => schedule?.empleado?.id_empleado === idPerson)
 
+    
 
     // Crear
     const togglePopup = () => {

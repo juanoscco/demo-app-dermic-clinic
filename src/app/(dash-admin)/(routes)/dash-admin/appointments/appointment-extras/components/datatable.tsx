@@ -43,48 +43,52 @@ export const DataTable: React.FC<DataTableProps> = ({ data, columns, actions, fi
 
     return (
         <section className="flex flex-col gap-3">
-            <section className="flex justify-between items-center mt-5 gap-3 bg-white rounded-md p-3">
+            <section className='flex xl:justify-between flex-col xl:flex-row mt-5 bg-white rounded-md p-4'>
                 <input
                     type="text"
                     placeholder={filterPlaceholder}
                     value={searchTerm}
                     onChange={handleSearchChange}
-                    className="p-2 border border-gray-300 rounded-md mb-2 outline-none w-full md:w-auto"
+                    className="px-2 py-1 border border-gray-300 rounded-md mb-2 outline-none"
                 />
-                {actions && <div className="flex flex-col xl:flex-row items-center gap-3">{actions}</div>}
+                {actions && <div className='flex items-center gap-3 md:flex-row flex-col'>{actions}</div>}
             </section>
 
-            <section className="bg-white p-2 rounded-md w-full xl:h-[35rem] h-full overflow-x-auto">
-                <table className="w-full border-collapse">
-                    <thead>
-                        <tr className="border-b border-gray-200">
-                            {columns.map(column => (
-                                <th key={column.key} className="px-4 py-2 text-left">{column.label}</th>
-                            ))}
-                            {/* <th className="px-4 py-2 text-left">Acciones</th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginatedData
-                            .filter((item: any) => item.estado)
-                            .map((item, index) => (
-                                <tr key={index} className="border-b">
-                                    {columns.map(column => (
-                                        <td key={column.key} className="px-4 py-2">
-                                            {column.render ? column.render(item) : item[column.key]}
-                                        </td>
-                                    ))}
-                                    {/* <td className="px-4 py-2">
-                                        <button className="text-red-500">Eliminar</button>
-                                    </td> */}
-                                </tr>
-                            ))}
-                    </tbody>
-                </table>
+            <section className="bg-white p-2 rounded-md w-full h-full overflow-x-auto xl:h-[35rem]">
+                <div className="min-w-full inline-block align-middle">
+                    <table className="min-w-[1000px] w-full border-collapse">
+                        <thead>
+                            <tr className="border-b border-gray-200">
+                                {columns.map(column => (
+                                    <th key={column.key} className="px-2 py-1 text-left sm:px-4 sm:py-2">{column.label}</th>
+                                ))}
+                                {/* <th className="px-4 py-2 text-left">Acciones</th> */}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paginatedData
+                                .filter((item: any) => item.estado)
+                                .map((item, index) => (
+                                    <tr key={index} className="border-b">
+                                        {columns.map(column => (
+                                            <td key={column.key} className="px-2 py-1 sm:px-4 sm:py-2">
+                                                {column.render ? column.render(item) : item[column.key]}
+                                            </td>
+                                        ))}
+                                        {/* <td className="px-4 py-2">
+                                <button className="text-red-500">Eliminar</button>
+                            </td> */}
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
-            <section className="bg-white p-3 flex justify-between items-center rounded-lg">
-                <div className="flex gap-3 items-center">
+
+
+            <section className="bg-white p-3 flex flex-col md:flex-row justify-between  rounded-lg gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 ">
                     <div className="flex gap-2 items-center">
                         <label htmlFor="itemsPerPage" className="text-gray-700">Datos por página:</label>
                         <select
@@ -100,7 +104,7 @@ export const DataTable: React.FC<DataTableProps> = ({ data, columns, actions, fi
                     </div>
                     <span className="text-gray-600">Total datos: {filteredData.length}</span>
                 </div>
-                <div className="flex gap-3 items-center">
+                <div className="flex gap-3 ">
                     <button
                         onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                         disabled={currentPage === 1}
@@ -118,6 +122,7 @@ export const DataTable: React.FC<DataTableProps> = ({ data, columns, actions, fi
                     </button>
                 </div>
             </section>
+
         </section>
     );
 };

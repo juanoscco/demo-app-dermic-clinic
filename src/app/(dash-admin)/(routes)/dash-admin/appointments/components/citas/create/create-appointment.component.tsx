@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { useAddAppointmentMutation } from './store/service';
 import { Appointment } from './interface';
 import { useGetRoomProcedureQuery } from '../../../../procedures/list/components/Rooms/store/get/service';
@@ -9,6 +9,10 @@ import { DatatableComponent } from "@/components/datatable/";
 import CreatePatientComponent from './components/patient/create/create-patient.component';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useGetLocationProcedureQuery } from '../../../../procedures/list/components/Location/store/get/service';
+import { useGetPersonalProcedureQuery } from '../../../../procedures/list/components/Personal/store/get/service';
+
+import {decodeToken} from "@/app/(dash-admin)/utils"
 
 interface Props {
     hour?: any;
@@ -45,10 +49,18 @@ const validationSchema = Yup.object({
     }),
     estado: Yup.boolean().required('Requerido')
 });
+
+type FormattedProcedure = {
+    id_proc: number;
+    name_proc: string;
+    rooms: { id_rooms: number; name_rooms: string }[];
+};
+
 export function CreateAppointmentComponent({
     hour, employee, date, closePopup, idTitle, refetch, location
 }: Props) {
 
+    const decoded = decodeToken({})
     /**
      * 
      */
@@ -64,15 +76,79 @@ export function CreateAppointmentComponent({
 
     // *******
     const { data: dataRoomProcedure, isLoading: loadRoomProcedures, refetch: refetchRoomProcedure } = useGetRoomProcedureQuery({ limit: 300, page: 0, filter: '' });
+    const { data: dataLocationProcedure, isLoading: loadLocationProcedure, refetch: refetchLocationProcedure } = useGetLocationProcedureQuery({ limit: 300, page: 0, filter: '' });
+    const { data: dataTitleProcedure, isLoading: loadEmployeeProcedure, refetch: refetchEmployeeProcedure } = useGetPersonalProcedureQuery({ limit: 300, page: 0, filter: '' })
 
-    const roomProcedures = dataRoomProcedure?.data?.content
+
     useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
+        if (!loadRoomProcedures && !loadLocationProcedure && !loadEmployeeProcedure) {
             refetchRoomProcedure();
-        }, 300);
+            refetchLocationProcedure();
+            refetchEmployeeProcedure();
+        }
+    }, [loadRoomProcedures, loadLocationProcedure, loadEmployeeProcedure, refetchRoomProcedure, refetchLocationProcedure, refetchEmployeeProcedure])
 
-        return () => clearTimeout(delayDebounceFn);
-    }, [refetchRoomProcedure]);
+    const roomProcedures = dataRoomProcedure?.data?.content;
+    const locationProcedures = dataLocationProcedure?.data?.content;
+    const titleProcedures = dataTitleProcedure?.data?.content;
+
+
+    const [filteredProcedure, setFilteredProcedure] = useState<FormattedProcedure[]>([]);
+    const [rooms, setRooms] = useState<{ id_rooms: number; name_rooms: string }[]>([]);
+
+    const filteredProceduresKey = useMemo(() =>
+        locationProcedures
+            ?.filter((item: any) => item.sede.id_sede === location)
+            ?.flatMap((item: any) => item.procedimiento_sede_detalle.map((detail: any) => detail.procedimiento.id_procedimiento)) || [],
+        [locationProcedures, location]
+    );
+
+    const filteredTitleProcedures = useMemo(() =>
+        titleProcedures
+            ?.filter((data: any) => data.titulo.id_cabecera_detalle === idTitle)
+            ?.flatMap((item: any) => item.procedimiento_personales_detalle.map((detail: any) => detail.procedimiento.id_procedimiento)) || [],
+        [titleProcedures, idTitle]
+    );
+
+    const filteredRoomProceduresKey = useMemo(() =>
+        roomProcedures
+            ?.filter((item: any) => item.procedimiento_sala_detalle.some((detail: any) => detail.sala_tratamiento.sede.id_sede === location))
+            ?.map((item: any) => item.procedimiento.id_procedimiento) || [],
+        [roomProcedures, location]
+    );
+
+    const findIntersection = useCallback((array1: any[], array2: any[]) => {
+        return array1.filter((value: any) => array2.includes(value));
+    }, []);
+
+    const combinedProcedures = useMemo(() =>
+        findIntersection(filteredProceduresKey, findIntersection(filteredTitleProcedures, filteredRoomProceduresKey)),
+        [filteredProceduresKey, filteredTitleProcedures, filteredRoomProceduresKey, findIntersection]
+    );
+
+    useEffect(() => {
+        if (roomProcedures) {
+            const filtered = roomProcedures.filter((item: any) =>
+                combinedProcedures.includes(item.procedimiento.id_procedimiento)
+            );
+
+            const formattedProcedures: FormattedProcedure[] = filtered.map((proc: any) => ({
+                id_proc: proc.procedimiento.id_procedimiento,
+                name_proc: proc.procedimiento.nombres,
+                rooms: proc.procedimiento_sala_detalle
+                    .filter((roomsDetail: any) =>
+                        roomsDetail.sala_tratamiento.sede.id_sede === location
+                    )
+                    .map((roomsDetail: any) => ({
+                        id_rooms: roomsDetail.sala_tratamiento.id_sala_tratamiento,
+                        name_rooms: roomsDetail.sala_tratamiento.nombres,
+                    })),
+            }));
+
+            setFilteredProcedure(formattedProcedures);
+        }
+    }, [roomProcedures, combinedProcedures, location]);
+
 
     // *****
     const [perPage, setPerPage] = useState(10);
@@ -109,7 +185,7 @@ export function CreateAppointmentComponent({
                 id_empresa: 1
             },
             usuario_registro: {
-                id_usuario: employee.usuario.id_usuario
+                id_usuario: decoded?.id_usuario
             },
             paciente: {
                 id_paciente: 0,
@@ -144,6 +220,9 @@ export function CreateAppointmentComponent({
             }
         },
     });
+
+
+
     const columns = [
         {
             title: 'Paciente',
@@ -180,52 +259,28 @@ export function CreateAppointmentComponent({
     };
 
     useEffect(() => {
-        if (dataAddPatient?.data?.id_paciente) {
-            formik.setValues((prevValues: any) => ({
-                ...prevValues,
-                paciente: {
-                    id_paciente: dataAddPatient.data.id_paciente,
-                    nombres: dataAddPatient.data.nombres
-                }
-            }));
+        const selectedProcedure = filteredProcedure.find(
+            (proc) => proc.id_proc === Number(formik.values.procedimiento.id_procedimiento)
+        );
+        if (selectedProcedure) {
+            setRooms(selectedProcedure.rooms);
+        } else {
+            setRooms([]);
         }
-    }, [dataAddPatient, formik.setFieldValue]);
+    }, [formik.values.procedimiento.id_procedimiento, filteredProcedure]);
 
-    // ****
 
-    type FormattedProcedure = {
-        id_proc: number;
-        name_proc: string;
-        rooms: { id_rooms: number; name_rooms: string }[];
+    // ***** Deben de estar vacios
+    const headers = (
+        <div></div>
+    );
+    const paginationControls = {
+        perPageOptions: [10, 20, 30, 40, 50],
+        perPage,
+        setPerPage,
+        currentPage,
+        setCurrentPage
     };
-    const [filteredProcedure, setFilteredProcedure] = useState<FormattedProcedure[]>([]);
-    const [rooms, setRooms] = useState<{ id_rooms: number; name_rooms: string }[]>([]);
-
-    useEffect(() => {
-        if (!loadRoomProcedures && roomProcedures) {
-            const filtered = roomProcedures.filter((item: any) =>
-                item.procedimiento_sala_detalle.some(
-                    (detail: any) => detail.sala_tratamiento.sede.id_sede === location
-                )
-            );
-
-            const formattedProcedures: FormattedProcedure[] = filtered.map((proc: any) => ({
-                id_proc: proc.procedimiento.id_procedimiento,
-                name_proc: proc.procedimiento.nombres,
-                rooms: proc.procedimiento_sala_detalle
-                    .filter(
-                        (roomsDetail: any) =>
-                            roomsDetail.sala_tratamiento.sede.id_sede === location
-                    )
-                    .map((roomsDetail: any) => ({
-                        id_rooms: roomsDetail.sala_tratamiento.id_sala_tratamiento,
-                        name_rooms: roomsDetail.sala_tratamiento.nombres,
-                    })),
-            }));
-
-            setFilteredProcedure(formattedProcedures);
-        }
-    }, [loadRoomProcedures, roomProcedures, location]);
 
     useEffect(() => {
         const selectedProcedure = filteredProcedure.find(
@@ -238,19 +293,6 @@ export function CreateAppointmentComponent({
         }
     }, [formik.values.procedimiento.id_procedimiento, filteredProcedure]);
 
-    // *****
-    const headers = (
-        <div className='flex items-center gap-3 md:flex-row flex-col'>
-
-        </div>
-    );
-    const paginationControls = {
-        perPageOptions: [10, 20, 30, 40, 50],
-        perPage,
-        setPerPage,
-        currentPage,
-        setCurrentPage
-    };
     return (
         <div
             className="fixed inset-0  flex justify-end items-center bg-black bg-opacity-50"
@@ -336,7 +378,6 @@ export function CreateAppointmentComponent({
                             </div>
                             <div
                                 className='border border-gray-300 text-left p-2'
-
                             >
                                 <label htmlFor="">Especialista</label>
                                 <input
@@ -358,36 +399,30 @@ export function CreateAppointmentComponent({
                                     value={formik.values.procedimiento.id_procedimiento}
                                 >
                                     <option value="">Seleccione un procedimiento</option>
-                                    {filteredProcedure.map(proc => (
-                                        <option key={proc.id_proc} value={proc.id_proc}>
-                                            {proc.name_proc}
-                                        </option>
+
+                                    {filteredProcedure.map((item: any) => (
+                                        <option key={item.id_proc} value={item.id_proc}>{item.name_proc}</option>
                                     ))}
                                 </select>
                                 {formik.touched.procedimiento?.id_procedimiento && formik.errors.procedimiento?.id_procedimiento ? (
                                     <div>{formik.errors.procedimiento.id_procedimiento}</div>
                                 ) : null}
                             </div>
-                            <div className='border border-gray-300 text-left p-2'>
+
+                            <div className='border border-gray-300 text-left p-2 '>
                                 <label>Sala Tratamiento</label>
                                 <select
                                     name="sala_tratamiento.id_sala_tratamiento"
-                                    className='w-full py-2 outline-none px-1'
-
+                                    className='w-full py-2 outline-none px-1 bg-gray-100 font-semibold'
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.sala_tratamiento?.id_sala_tratamiento}
+                                    disabled
                                 >
-                                    <option value="">Seleccione una sala</option>
-                                    {rooms.map(room => (
-                                        <option key={room.id_rooms} value={room.id_rooms}>
-                                            {room.name_rooms}
-                                        </option>
+                                    {rooms.map((room: any) => (
+                                        <option key={room.id_rooms} value={room.id_rooms}>{room.name_rooms}</option>
                                     ))}
                                 </select>
-                                {/* {formik.touched.sala_tratamiento?.id_sala_tratamiento && formik.errors.sala_tratamiento?.id_sala_tratamiento ? (
-                                    <div>{formik.errors.sala_tratamiento.id_sala_tratamiento}</div>
-                                ) : null} */}
                             </div>
                             <button
                                 type="button"

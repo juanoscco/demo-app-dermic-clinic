@@ -48,7 +48,7 @@ export function AsideComponent({ isNavActive, handleNavItemClick, decoded }: Pro
               <li key={section.id} className='flex flex-col gap-2 cursor-pointer' onClick={handleNavItemClick}>
                 <Link href={section.link}>
                   <div className='flex gap-2 items-center justify-between hover:text-[#82b440] focus:text-[#82b440]'>
-                    <p>{section.title}</p>
+                    <p className='font-semibold'>{section.title}</p>
                     <i className={section.icon}></i>
                   </div>
                 </Link>
@@ -60,7 +60,7 @@ export function AsideComponent({ isNavActive, handleNavItemClick, decoded }: Pro
                 onClick={() => section.links && toggleAccordion(section.id)}
               >
                 <div className='flex gap-2 items-center justify-between hover:text-[#82b440] focus:text-[#82b440]'>
-                  <p>{section.title}</p>
+                  <p className='font-semibold'>{section.title}</p>
                   <i className={section.icon}></i>
                 </div>
                 {openSections[section.id] &&

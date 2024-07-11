@@ -135,7 +135,7 @@ export default function ApointmentExtras() {
   // ******
   const data = paginatedAppointments();
   const columns = [
-    { key: 'hora_registro', label: 'Hora', render: (item: any) => <span>{formatTime(item?.hora_registro)}</span> },
+    { key: 'hora_registro', label: 'Hora', render: (item: any) => <span>{item?.hora_registro}</span> },
     {
       key: 'paciente', label: 'Paciente', render: (item: any) => <div>
         <p>{item?.paciente.nombres}</p>
@@ -197,10 +197,11 @@ export default function ApointmentExtras() {
   const handleExportExcel = ExcelExport({ data: data, columns: columnsForExcelAndPrint, filename: 'citas_extras' })
 
   const handlePrint = PrintButton({ data: data, columns: columnsForExcelAndPrint, nametitle: 'citas_extras' })
+
   const actions = (
-    <>
+    <React.Fragment>
       <button
-        className="p-2 bg-blue-500 rounded-md text-white w-full md:w-auto"
+        className='p-2 bg-blue-500 rounded-md text-white xl:w-auto w-full text-center'
         onClick={togglePopup}
 
       >
@@ -208,15 +209,17 @@ export default function ApointmentExtras() {
       </button>
       <button
         onClick={handleExportExcel}
-        className="p-2 bg-green-500 rounded-md text-white w-full md:w-auto">
+        className='p-2 bg-green-500 rounded-md text-white xl:w-auto w-full'
+      >
         Excel
       </button>
       <button
         onClick={handlePrint}
-        className="p-2 bg-gray-500 text-white rounded-md mt-2 xl:mt-0 w-full md:w-auto">
+        className='bg-gray-500 p-2 text-white rounded-md xl:w-auto w-full'
+      >
         Imprimir
       </button>
-    </>
+    </React.Fragment>
   );
 
   // ******

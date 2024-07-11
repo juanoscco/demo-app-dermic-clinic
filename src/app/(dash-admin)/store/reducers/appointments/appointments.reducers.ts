@@ -4,12 +4,14 @@ import { findIdAppointmentDetailReducer } from "@/app/(dash-admin)/(routes)/dash
 import { findDateAppointmentReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/find-date-appointment/store/reducer";
 import { appointmentRoomListReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/list-by-room-appointment/store/reducer";
 import { appointmentListReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/list/store/reducer";
+import { appointmentInfoUpdateReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/update-info-appointment/store/reducers";
 import { appointmentScheduleUpdateReducers } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/update-schedule-appointment/store/reducers";
 import { appointmentUpdateReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/citas/update/store/reducer";
 import { extraAppointmentCreateReducers } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/create/store/reducer";
 import { appointmentExtraDeleteReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/delete/store/reducer";
 import { extraAppointmentDetailReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/find-by-id/store/reducer";
 import { extraAppointmentListReducers } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/list/store/reducer";
+import { appointmentExtraInfoUpdateReducers } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/update-info-extras-appointment/store/reducers";
 import { appointmentExtraScheduleUpdateReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/update-schedule-extra-appointment/store/reducers";
 import { extraAppointmentUpdateReducer } from "@/app/(dash-admin)/(routes)/dash-admin/appointments/components/extras/update/store/reducer";
 
@@ -22,7 +24,8 @@ export const appointmentsReducer = {
     ...appointmentDeleteReducer,
     ...findDateAppointmentReducer,
     ...findIdAppointmentDetailReducer,
-    // 
+    ...appointmentInfoUpdateReducer,
+    // Extras
     ...extraAppointmentUpdateReducer,
     ...extraAppointmentDetailReducer,
     ...extraAppointmentListReducers,
@@ -31,5 +34,6 @@ export const appointmentsReducer = {
 
     ...appointmentScheduleUpdateReducers,
     // 
-    ...appointmentExtraScheduleUpdateReducer
+    ...appointmentExtraScheduleUpdateReducer,
+    ...appointmentExtraInfoUpdateReducers
 }

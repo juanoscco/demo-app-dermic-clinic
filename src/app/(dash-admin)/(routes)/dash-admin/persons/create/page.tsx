@@ -67,8 +67,8 @@ export default function UserCreate() {
                 password: '',
                 rol: {
                     id_rol: 1,
-                    descripcion: 'ADMINISTRATOR',
-                    valor: 'ADMINISTRADOR',
+                    descripcion: '',
+                    valor: '',
                     estado: true,
                 },
                 estado: true,
@@ -85,16 +85,21 @@ export default function UserCreate() {
             sede: Yup.object().shape({
                 id_sede: Yup.number().required('Requerido'),
             }),
-            
+
             usuario: Yup.object().shape({
                 username: Yup.string().required('Requerido'),
                 password: Yup.string().required('Requerido'),
             }),
         }),
         onSubmit: async (values, { resetForm }) => {
-            await addEmployee(values);
-            resetForm();
-            router.push('./list')
+            try {
+                console.log(values);
+                await addEmployee(values);
+                resetForm();
+                router.push('./list');
+            } catch (error) {
+                console.error(error);
+            }
         },
     });
 
@@ -194,13 +199,7 @@ export default function UserCreate() {
                             onBlur={formik.handleBlur}
                             className='w-full py-2 outline-none px-1'
                         >
-                            {/* <option value={0}>Seleccione</option>
-                            <option value={8}>Lunes</option>
-                            <option value={9}>Martes</option>
-                            <option value={10}>Miércoles</option>
-                            <option value={11}>Jueves</option>
-                            <option value={12}>Viernes</option>
-                            <option value={13}>Sábado</option> */}
+
                             {dataBreak?.cabecera?.cabeceras_detalles.map((item: any) => (
                                 <option value={item.id_cabecera_detalle} key={item.id_cabecera_detalle}>
                                     {item.descripcion}
@@ -226,10 +225,6 @@ export default function UserCreate() {
                             className='w-full py-2 outline-none px-1'
 
                         >
-                            {/* <option value={0}>Seleccione</option>
-                            <option value={5}>Cosmiatras</option>
-                            <option value={6}>Doctores</option>
-                            <option value={7}>Secretarias</option> */}
                             {dataTitle?.cabecera?.cabeceras_detalles.map((item: any) => (
                                 <option value={item.id_cabecera_detalle} key={item.id_cabecera_detalle}>{item.descripcion}</option>
                             ))}
@@ -277,6 +272,7 @@ export default function UserCreate() {
                         >
                             {/* <option value=""></option> */}
                             <option value={1}>Administrador</option>
+                            <option value={2}>Empleado</option>
                             {/* <option value={2}>Empleado</option> */}
                         </select>
                         {formik.touched.usuario?.rol?.id_rol && formik.errors.usuario?.rol?.id_rol ? (
@@ -313,22 +309,6 @@ export default function UserCreate() {
                                 ))}
                         </select>
                     </div>
-                    {/* <div className="border border-gray-300 text-left p-2">
-                        <label className='text-font-777 text-sm'>Estado <span className="text-red-500">*</span></label>
-                        <select
-                            name='estado'
-                            value={formik.values.estado ? 'true' : 'false'}
-                            onChange={(e) => formik.setFieldValue('estado', e.target.value === 'true')}
-                            className='w-full py-2 outline-none px-1'
-                        >
-                            <option value="true">Habilitado</option>
-                            <option value="false">Desabilitado</option>
-                        </select>
-                        {formik.touched.estado && formik.errors.estado ? (
-                            <div className='text-red-500 text-sm'>{formik.errors.estado}</div>
-                        ) : null}
-                    </div> */}
-
                     <button className='bg-[#82b440] p-2 text-white' type='submit'>
                         {loadingEmployee ? 'Creando...' : 'Crear'}
                     </button>
