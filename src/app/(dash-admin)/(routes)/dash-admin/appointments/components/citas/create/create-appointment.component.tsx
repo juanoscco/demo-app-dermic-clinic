@@ -12,7 +12,7 @@ import * as Yup from 'yup';
 import { useGetLocationProcedureQuery } from '../../../../procedures/list/components/Location/store/get/service';
 import { useGetPersonalProcedureQuery } from '../../../../procedures/list/components/Personal/store/get/service';
 
-import {decodeToken} from "@/app/(dash-admin)/utils"
+import { decodeToken } from "@/app/(dash-admin)/utils"
 
 interface Props {
     hour?: any;
@@ -409,7 +409,8 @@ export function CreateAppointmentComponent({
                                 ) : null}
                             </div>
 
-                            <div className='border border-gray-300 text-left p-2 '>
+                            <div className='hidde md:block'></div>
+                            <div className='border border-gray-300 text-left p-2 hidden'>
                                 <label>Sala Tratamiento</label>
                                 <select
                                     name="sala_tratamiento.id_sala_tratamiento"

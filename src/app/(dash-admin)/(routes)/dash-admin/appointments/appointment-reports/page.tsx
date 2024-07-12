@@ -194,7 +194,7 @@ export default function AppointmentReports() {
           <tbody className="divide-y divide-gray-200">
             {filteredAppointments?.map((appointment: any) => (
               <tr key={appointment.id_cita} className="border-b border-gray-200">
-                <td className="px-4 py-2 text-xs sm:text-sm">{appointment.paciente.nombres}</td>
+                <td className="px-4 py-2 text-xs sm:text-sm capitalize">{appointment.paciente.nombres.toLowerCase()}</td>
                 <td className="px-4 py-2 text-xs sm:text-sm flex flex-col">
                   <span>{appointment.sala_tratamiento.nombres}</span>
                   <span>{appointment.procedimiento.nombres}</span>
