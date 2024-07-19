@@ -1,0 +1,5 @@
+export * from "./infrastructures"
+export * from "./patients"
+export * from "./persons"
+export * from "./procedures"
+export * from "./appointments"

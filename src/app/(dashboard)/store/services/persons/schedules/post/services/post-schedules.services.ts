@@ -1,0 +1,25 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import Cookies from 'js-cookie';
+// import { Schedule, ResponseSchedule } from "../../../../interface/"
+import { prepareHeaders } from '@/app/(dashboard)/utils/';
+
+const baseUrl = `${process.env.API_DOCKER_JAVA_REST}/horario_trabajo`;
+
+export const scheduleCreateApi = createApi({
+    reducerPath: 'scheduleCreateApi',
+    baseQuery: fetchBaseQuery({
+        baseUrl,
+        prepareHeaders
+    }),
+    endpoints: (builder) => ({
+        addSchedule: builder.mutation({
+            query: (newSchedule) => ({
+                url: '',
+                method: 'POST',
+                body: newSchedule,
+            }),
+        }),
+    }),
+});
+
+export const { useAddScheduleMutation } = scheduleCreateApi;

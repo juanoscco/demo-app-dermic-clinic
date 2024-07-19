@@ -1,0 +1,7 @@
+export * from "./delete"
+export * from "./get"
+export * from "./find-by-id"
+export * from "./post"
+export * from "./put"
+export * from "./put-info-extra-appointment"
+export * from "./put-info-hour-attention"

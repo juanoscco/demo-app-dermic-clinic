@@ -1,18 +1,39 @@
-import { authMiddleware } from "@/app/(auth)/store/middleware";
-import { dniSearchMiddleware } from "@/config/search-dni/middleware";
-import { patientMiddlewares } from "@/app/(dash-admin)/store/middleware/patients"
-import { personsMiddleware } from "@/app/(dash-admin)/store/middleware/persons";
-import { infrastructureMiddleware } from "@/app/(dash-admin)/store/middleware/infrastructure";
-import { proceduresMiddleware } from "@/app/(dash-admin)/store/middleware/procedures/";
-import { infrastructureRoomsMiddleware } from "@/app/(dash-admin)/store/middleware/infrastructure-rooms";
-import { personsSchedulesMiddleware } from "@/app/(dash-admin)/store/middleware/persons-schedules";
-import { personsExceptionsMiddleware } from "@/app/(dash-admin)/store/middleware/persons-exception/";
-import { personsAgendaOpeningMiddleware } from "@/app/(dash-admin)/store/middleware/persons-agenda-opening";
-import { appointmentsMiddleware } from "@/app/(dash-admin)/store/middleware/appointments";
-import { proceduresLocationMiddleware } from "@/app/(dash-admin)/store/middleware/procedures-location";
-import { proceduresPersonalMiddleware } from "@/app/(dash-admin)/store/middleware/procedures-personal";
-import { proceduresRoomsMiddleware } from "@/app/(dash-admin)/store/middleware/procedures-rooms";
-import { findHeadboardMiddleware } from "@/config/search-headboard/middleware";
+import type { ThunkMiddleware } from "@reduxjs/toolkit";
+
+// 
+import { authMiddleware } from "@/app/(auth)/store";
+
+// 
+import {
+    findHeadboardMiddleware,
+    dniSearchMiddleware,
+    searchClientsRecurrentsInOptiabiMiddleware
+} from "@/config/";
+
+
+// Patients
+import { patientMiddlewares } from "@/app/(dashboard)/store/middleware/patients"
+
+// Infrastructure
+import { infrastructureMiddleware } from "@/app/(dashboard)/store/middleware/infrastructure";
+import { infrastructureRoomsMiddleware } from "@/app/(dashboard)/store/middleware/infrastructure/";
+
+// Employees
+import { personsMiddleware } from "@/app/(dashboard)/store/middleware/persons";
+import { personsSchedulesMiddleware } from "@/app/(dashboard)/store/middleware/persons";
+import { personsExceptionsMiddleware } from "@/app/(dashboard)/store/middleware/persons/";
+import { personsAgendaOpeningMiddleware } from "@/app/(dashboard)/store/middleware/persons";
+
+// Appointments
+import { appointmentsMiddleware } from "@/app/(dashboard)/store/middleware/appointments";
+
+// Procedures
+import { proceduresMiddleware } from "@/app/(dashboard)/store/middleware/procedures/";
+import { proceduresLocationMiddleware } from "@/app/(dashboard)/store/middleware/procedures";
+import { proceduresPersonalMiddleware } from "@/app/(dashboard)/store/middleware/procedures";
+import { proceduresRoomsMiddleware } from "@/app/(dashboard)/store/middleware/procedures";
+
+// 
 
 export const rootMiddlewares = (
     getDefaultMiddleware: any
@@ -20,6 +41,7 @@ export const rootMiddlewares = (
     dniSearchMiddleware,
     authMiddleware,
     findHeadboardMiddleware,
+    searchClientsRecurrentsInOptiabiMiddleware,
     ...patientMiddlewares,
     ...personsMiddleware,
     ...infrastructureMiddleware,

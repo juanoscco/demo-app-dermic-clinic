@@ -1,9 +1,6 @@
-"use client"
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseUrl = process.env.API_MIGO_DNI_REST
-
-// URL : 'https://api.migo.pe/api/v1/'
 
 export const dniSearchApi = createApi({
   reducerPath: 'api',
@@ -26,5 +23,3 @@ export const dniSearchApi = createApi({
 });
 
 export const { useGetDniDataMutation } = dniSearchApi;
-
-// export default apiSlice;

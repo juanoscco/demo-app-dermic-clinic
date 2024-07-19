@@ -1,0 +1,35 @@
+image: node:20
+
+stages:
+  - build_dev
+  - build_prod
+
+cache:
+  paths:
+    - node_modules/
+
+build_dev:
+  stage: build_dev
+  script:
+    - npm install
+    - npm run build
+    - tar -czf .next.tar.gz src public
+  artifacts:
+    paths:
+      - .next.tar.gz
+    expire_in: 1 day
+  only:
+    - develop
+
+build_prod:
+  stage: build_prod
+  script:
+    - npm install
+    - npm run build
+    - tar -czf .next.tar.gz src public
+  artifacts:
+    paths:
+      - .next.tar.gz
+    expire_in: 1 day
+  only:
+    - main

@@ -1,1 +1,0 @@
-export * from "./delete-infra-rooms.middleware"

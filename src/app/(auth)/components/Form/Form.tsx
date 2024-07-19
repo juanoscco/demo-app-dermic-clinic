@@ -11,6 +11,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { LoginFormValues } from "@/app/(auth)/models/login.interface"
 
+import { jwtDecode } from 'jwt-decode';
 
 
 // TODO: ORDERING THIS CODE BECAUSE I WANNA REUSE
@@ -42,24 +43,30 @@ export default function FormLogin() {
     },
   });
 
-
   useEffect(() => {
     if (data) {
       if (data.jwt) {
-        // Guardar token en localStorage
         window.localStorage.setItem('token', data.jwt);
 
-        // Guardar los primeros 10 caracteres del token en una cookie
         const shortToken = data.jwt.slice(0, 10);
         Cookies.set('logged', shortToken, { path: '/' });
-        // console.log('Cookie set:', Cookies.get('logged'));
-        // Decodificar el JWT
-    
-        router.push('/dash-admin/home');
+
+        const decoded: any = jwtDecode(data.jwt);
+
+        if (decoded?.role === 'EMPLOYEE') {
+          router.push('/dash-employee/home');
+        }
+        else if (decoded?.role === 'VISUALIZER') {
+          router.push('/dash-visualizer/home');
+        }
+        else if (decoded?.role === 'DOCTOR') {
+          router.push('/dash-doctor/home');
+        }
+        else {
+          router.push('/dash-admin/home');
+        }
       } else {
         console.error('No JWT token in data');
-
-        // Establecer cookie de logged = false
         Cookies.set('logged', 'false', { path: '/' });
         console.log('Cookie set:', Cookies.get('logged'));
       }
@@ -86,7 +93,7 @@ export default function FormLogin() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.username}
-            // {...formik.getFieldProps('username')}
+          // {...formik.getFieldProps('username')}
           />
           {formik.touched.username && formik.errors.username ? (
             <div className='text-red-400'>{formik.errors.username}</div>
@@ -102,7 +109,7 @@ export default function FormLogin() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
-            // {...formik.getFieldProps('password')}
+          // {...formik.getFieldProps('password')}
           />
           {formik.touched.password && formik.errors.password ? (
             <div className='text-red-400'>{formik.errors.password}</div>

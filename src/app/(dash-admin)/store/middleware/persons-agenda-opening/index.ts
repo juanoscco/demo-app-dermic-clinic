@@ -1,1 +1,0 @@
-export * from "./persons-agenda-opening.middleware"

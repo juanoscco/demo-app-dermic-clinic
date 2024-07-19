@@ -1,0 +1,5 @@
+export * from "./patient/delete"
+export * from "./patient/get"
+export * from "./patient/find-by-id"
+export * from "./patient/post"
+export * from "./patient/put"
